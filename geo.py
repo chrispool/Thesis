@@ -11,7 +11,7 @@ from operator import itemgetter
 def main(argv):
 	
 	'''settings'''
-	minutes = 120
+	minutes = 60
 	nTweets = 2
 	hashAccuracy = 6
 	
@@ -41,7 +41,7 @@ def main(argv):
 		clusters[key].append(elements) # create new cluster
 	
 	i = 1
-
+	print(len(clusters.keys()))
 
 	'''loop door clusters om te kijken wat event candidates zijn'''
 	for cl in clusters.keys():
@@ -65,7 +65,7 @@ def main(argv):
 					coord = element[1].split()
 					'''textfiles maken van alle afzonderlijke clusters en JS file maken voor Google map'''
 					f.write("{}, {}, {}, {} \n".format(element[2], element[0].replace("'", ""), ', '.join(reversed(coord)), element[3])) 
-					js.write("['{} {}', {}, {}, {}]\n".format(element[2],element[3], element[0].replace("'", ""), ', '.join(reversed(coord)), i))
+					js.write("['{} {} {}', {}, {}],\n".format(element[2],element[3], element[0].replace("'", ""), ', '.join(reversed(coord)), i))
 				f.close()
 
 	js.write('];')
