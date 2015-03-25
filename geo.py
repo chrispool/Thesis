@@ -13,7 +13,7 @@ def main(argv):
 	'''settings'''
 	minutes = 60
 	nTweets = 2
-	hashAccuracy = 6
+	hashAccuracy = 7
 	
 
 	clusters = defaultdict(list)
@@ -27,7 +27,7 @@ def main(argv):
 		elements = line.strip().split('\t')
 		coord = elements[1].split()
 		
-		geoH = geohash.encode(float(coord[1]),float(coord[0]),8)[:hashAccuracy]
+		geoH = geohash.encode(float(coord[1]),float(coord[0]),hashAccuracy)
 		s = ' '.join(elements[3].split()[:2])
 		ts = int(time.mktime(datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timetuple()))
 		

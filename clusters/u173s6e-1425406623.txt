@@ -1,0 +1,4 @@
+ICDefect, #ICDirect 955 (V 19:52 van Amsterdam Airport) naar Amsterdam Centraal rijdt vandaag niet. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-03 19:17:03 CET Tue 
+Liotje, @NS_online serieus, de intercity direct rijdt echt zelden op tijd of uberhapt! Snap nu wel waarom iedereen altijd haat heeft over het ov..., 52.309238, 4.76169, 2015-03-03 19:18:06 CET Tue 
+ICDefect, #ICDirect 966 (V 20:09 van Amsterdam Airport) naar Breda rijdt vandaag niet. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-03 19:39:32 CET Tue 
+ICDefect, #ICDirect 957 (V 20:21 van Amsterdam Airport) naar Amsterdam Centraal rijdt vandaag niet. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-03 19:52:02 CET Tue 

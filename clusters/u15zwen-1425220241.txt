@@ -1,0 +1,7 @@
+112alarm_Opsch, #RHENEN Opschaling | P 1 BRAND-GEZONDHEIDSZORG Nieuwe Veenendaalseweg __ RHN zc De Tollekamp (middelbrand | http://t.co/tgvhtMjP8a #p2000, 51.960461, 5.56868, 2015-03-01 15:30:41 CET Sun 
+112alarm_Opsch, #RHENEN Opschaling | P 1 BRAND-GEZONDHEIDSZORG Nieuwe Veenendaalseweg __ RHN zc De Tollekamp (middelbrand | http://t.co/oZ367SUGOy #p2000, 51.960461, 5.56868, 2015-03-01 15:34:57 CET Sun 
+112alarm_Opsch, #RHENEN Opschaling | P 1 BRAND-GEZONDHEIDSZORG Nieuwe Veenendaalseweg __ RHN zc De Tollekamp (grote brand | http://t.co/YTIGE6Ngt5 #p2000, 51.960461, 5.56868, 2015-03-01 15:45:37 CET Sun 
+112alarm_Opsch, #RHENEN Opschaling | P 1 BRAND-GEZONDHEIDSZORG Nieuwe Veenendaalseweg __ RHN zc De Tollekamp (grote brand | http://t.co/Khk8iZeLjI #p2000, 51.960461, 5.56868, 2015-03-01 15:45:54 CET Sun 
+112alarm_Opsch, #RHENEN Opschaling | P 1 BRAND-GEZONDHEIDSZORG Nieuwe Veenendaalseweg __ RHN zc De Tollekamp (grote brand | http://t.co/pTdWMZwKe0 #p2000, 51.960461, 5.56868, 2015-03-01 15:45:57 CET Sun 
+112alarm_Opsch, #RHENEN Opschaling | P 1 BRAND-GEZONDHEIDSZORG Nieuwe Veenendaalseweg __ RHN zc De Tollekamp (grote brand | http://t.co/HEr87iLciP #p2000, 51.960461, 5.56868, 2015-03-01 15:45:57 CET Sun 
+cop_spotter, #alarm Brand zc de Tollekamp Rhenen Nw veenendaalseweg 51. Wordt ontruimd. Brandweer tp - Nieuwe Veenendaalseweg 51, 3911 ME Rhenen, Neth..., 51.960414, 5.567961, 2015-03-01 16:00:07 CET Sun 
