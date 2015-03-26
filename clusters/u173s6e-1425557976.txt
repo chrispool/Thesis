@@ -1,3 +1,0 @@
-ICDefect, #ICDirect 931 (V 13:52 van Amsterdam Airport) naar Amsterdam Centraal is 13 minuten vertraagd., 52.309444, 4.761944, 2015-03-05 13:19:36 CET Thu 
-ICDefect, #ICDirect 933 (V 14:21 van Amsterdam Airport) naar Amsterdam Centraal is 5 minuten vertraagd., 52.309444, 4.761944, 2015-03-05 13:47:05 CET Thu 
-RuudKaitjily, Dat is mooi thuis komen (@ Amsterdam Airport @Schiphol (AMS) in Schiphol, Noord-Holland) https://t.co/TGp51UgeRw http://t.co/QK90Z7WKFL, 52.30924, 4.762187, 2015-03-05 13:59:47 CET Thu 

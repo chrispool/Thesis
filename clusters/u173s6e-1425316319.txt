@@ -1,4 +1,0 @@
-ICDefect, #ICDirect 1051 (V 18:35 van Amsterdam Airport) naar Amsterdam Centraal is 19 minuten vertraagd. Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-02 18:11:59 CET Mon 
-ICDefect, #ICDirect 1051 (V 18:35 van Amsterdam Airport) naar Amsterdam Centraal rijdt vandaag niet. #fail Geld terug? Zie http://t.co/wQfqoWuNi2, 52.309444, 4.761944, 2015-03-02 18:34:29 CET Mon 
-ICDefect, #ICDirect 953 (V 19:21 van Amsterdam Airport) naar Amsterdam Centraal is 6 minuten vertraagd., 52.309444, 4.761944, 2015-03-02 18:49:30 CET Mon 
-AlexHoosemans, Vertrek naar glasgow. Fijne dagen met leuke klant (@ Amsterdam Airport @Schiphol (AMS) in Schiphol, Noord-Holland) https://t.co/TR3m64BvRg, 52.30924, 4.762187, 2015-03-02 18:59:56 CET Mon 

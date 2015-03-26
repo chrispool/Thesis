@@ -1,4 +1,0 @@
-112alarm_MON, #ZWOLLE #MON | PRIO 2 Dier op hoogte : Schrevenweg : Kranenburgweg : Zwolle 041631 041650 (rv,OVDB Alarm) | http://t.co/1poiJDTvyI #p2000, 52.52798, 6.139185, 2015-03-04 18:02:16 CET Wed 
-BrandweerMON, PRIO 2 Dier op hoogte : Schrevenweg : Kranenburgweg : Zwolle 041631 041650 (rv,OVDB Alarm), 52.528177, 6.139785, 2015-03-04 18:02:17 CET Wed 
-P2000Regio4, 18:02:15 P2 Dier op hoogte : Schrevenweg : Kranenburgweg : Zwolle 041631 #041650 (rv,OVDB Alarm) http://t.co/xkoGKeV918, 52.528177, 6.139785, 2015-03-04 18:02:17 CET Wed 
-112IJsselland, 18:02:15 P2 Dier op hoogte : Schrevenweg : Kranenburgweg : Zwolle 041631 #041650 (rv,OVDB Alarm), 52.528177, 6.139785, 2015-03-04 18:02:17 CET Wed 

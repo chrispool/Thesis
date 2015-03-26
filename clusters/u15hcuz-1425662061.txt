@@ -1,9 +1,0 @@
-112alarm_Opsch, #BERGENOPZOOM Opschaling | PRIO 1 9192 7233 Plejadenlaan Bergen op Zoom Woningbrand (INC: 09) (middelbrand | http://t.co/HTB5Mr1277 #p2000, 51.486665, 4.306055, 2015-03-06 18:14:21 CET Fri 
-112alarm_Opsch, #BERGENOPZOOM Opschaling | PRIO 1 Plejadenlaan Bergen op Zoom Woningbrand (INC: 09) (middelbrand) (GRIP: 1 | http://t.co/MUydn4H3uE #p2000, 51.486665, 4.306055, 2015-03-06 18:17:36 CET Fri 
-112alarm_Opsch, #BERGENOPZOOM Opschaling | PRIO 1 Plejadenlaan Bergen op Zoom Woningbrand (INC: 09) (middelbrand) (GRIP: 1 | http://t.co/EJ5IFtnNi4 #p2000, 51.486665, 4.306055, 2015-03-06 18:17:39 CET Fri 
-112alarm_Opsch, #BERGENOPZOOM Opschaling | PRIO 1 Plejadenlaan Bergen op Zoom Woningbrand (INC: 09) (middelbrand) (GRIP: 1 | http://t.co/Bsz2QKYiYt #p2000, 51.486665, 4.306055, 2015-03-06 18:17:39 CET Fri 
-112alarm_Opsch, #BERGENOPZOOM Opschaling | (OPS BR: middel A1 : Plejadenlaan Bergen op Zoom | http://t.co/lxVIVJ8lXl #p2000, 51.486665, 4.306055, 2015-03-06 18:17:49 CET Fri 
-112alarm_Opsch, #BERGENOPZOOM Opschaling | A1 (GRIP: 1) AMBU LFL02 Plejadenlaan Bergen op Zoom boz bon 21770 | http://t.co/7gaV2pow9X #p2000, 51.486665, 4.306055, 2015-03-06 18:20:29 CET Fri 
-112alarm_Opsch, #BERGENOPZOOM Opschaling | (OPS BR: middel A1 : Plejadenlaan Bergen op Zoom 18241 | http://t.co/1QxGSOmZA5 #p2000, 51.486665, 4.306055, 2015-03-06 18:21:36 CET Fri 
-112alarm_Opsch, #BERGENOPZOOM Opschaling | (OPS BR: middel A1 : Plejadenlaan Bergen op Zoom 18242 | http://t.co/0701nxubhu #p2000, 51.486665, 4.306055, 2015-03-06 18:22:01 CET Fri 
-waarisdebrand, #LifeLiner2: A1 (GRIP: 1) AMBU LFL02 Plejadenlaan ##BERGEN OP ZOOM boz bon 21770, 51.486658, 4.305727, 2015-03-06 18:22:01 CET Fri 

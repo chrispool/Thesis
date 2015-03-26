@@ -1,6 +1,0 @@
-ICDefect, #ICDirect 949 (V 18:21 van Amsterdam Airport) naar Amsterdam Centraal is 5 minuten vertraagd., 52.309444, 4.761944, 2015-03-03 18:09:33 CET Tue 
-Barend, @KoenvanH Zouden wij dit jaar niet naar Autosalon Genève gaan?, 52.309219, 4.76183, 2015-03-03 18:10:55 CET Tue 
-ICDefect, #ICDirect 951 (V 18:52 van Amsterdam Airport) naar Amsterdam Centraal is 32 minuten vertraagd. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-03 18:22:01 CET Tue 
-ICDefect, #ICDirect 962 (V 19:09 van Amsterdam Airport) naar Breda rijdt vandaag niet. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-03 18:42:02 CET Tue 
-ICDefect, #ICDirect 953 (V 19:21 van Amsterdam Airport) naar Amsterdam Centraal is 14 minuten vertraagd., 52.309444, 4.761944, 2015-03-03 18:52:01 CET Tue 
-ICDefect, #ICDirect 964 (V 19:39 van Amsterdam Airport) naar Breda rijdt vandaag niet. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-03 19:04:31 CET Tue 

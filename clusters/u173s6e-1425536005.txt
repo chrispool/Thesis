@@ -1,5 +1,0 @@
-tim_beekman, @Shanejorden1110 is en blijft vroeg haha, 52.309145, 4.761251, 2015-03-05 07:13:25 CET Thu 
-ICDefect, #ICDirect 907 (V 7:52 van Amsterdam Airport) naar Amsterdam Centraal is 6 minuten vertraagd., 52.309444, 4.761944, 2015-03-05 07:17:05 CET Thu 
-ICDefect, #ICDirect 907 (V 7:52 van Amsterdam Airport) naar Amsterdam Centraal is nu 18 minuten vertraagd. Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-05 07:19:36 CET Thu 
-ICDefect, #ICDirect 907 (V 7:52 van Amsterdam Airport) naar Amsterdam Centraal rijdt vandaag niet. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 52.309444, 4.761944, 2015-03-05 07:37:05 CET Thu 
-ICDefect, #ICDirect 909 (V 8:21 van Amsterdam Airport) naar Amsterdam Centraal is 7 minuten vertraagd., 52.309444, 4.761944, 2015-03-05 07:49:35 CET Thu 

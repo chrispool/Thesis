@@ -1,3 +1,0 @@
-ICDefect, #ICDirect 1051 (V 18:09 van Rotterdam) naar Amsterdam Centraal is 20 minuten vertraagd. #fail Geld terug? Zie http://t.co/wQfqoWMoGC, 51.924999, 4.468889, 2015-03-02 18:11:59 CET Mon 
-JohanKH, @zeppoos ja! Nogal. Maar goed, er gaat wel een trein naar Delft Zuid, dus het valt nog een beetje mee ..., 51.925255, 4.469095, 2015-03-02 18:33:12 CET Mon 
-ICDefect, #ICDirect 953 (V 18:54 van Rotterdam) naar Amsterdam Centraal is 7 minuten vertraagd., 51.924999, 4.468889, 2015-03-02 18:49:30 CET Mon 

@@ -1,5 +1,0 @@
-TijsTest, Een nieuwe test #oostende Brussel gent, 50.88117, 4.452681, 2015-03-02 12:41:22 CET Mon 
-TijsDenayer, Het testen van dit nieuwe ding stage test, 50.881175, 4.452782, 2015-03-02 13:07:56 CET Mon 
-TijsTest, Testen kan toch zo fijn zijn... Stage, 50.881112, 4.452831, 2015-03-02 13:12:07 CET Mon 
-TijsTest, En we blijven maar doorgaan met testen voor de stage, 50.881099, 4.452832, 2015-03-02 13:14:49 CET Mon 
-TijsDenayer, Een tests via hier dan stage, 50.881167, 4.452753, 2015-03-02 13:15:23 CET Mon 
