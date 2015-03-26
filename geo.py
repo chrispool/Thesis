@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import sys
 import geohash
 from collections import defaultdict
@@ -6,77 +8,97 @@ import math
 import time
 import datetime
 from operator import itemgetter
+import os
+
+# SETTINGS
+MINUTES       = 60  # maximum tijdsinterval tweets binnen een GeoHash
+N_TWEETS      = 2   # minimale hoeveelheid tweets in cluster
+HASH_ACCURACY = 7   # nauwkeurigheid van GeoHash
 
 
-def main(argv):
-	
-	'''settings'''
-	minutes = 60
-	nTweets = 2
-	hashAccuracy = 7
-	
+def timeTweetDict():
+    return defaultdict(list)
 
-	clusters = defaultdict(list)
-	
-	js = open('markers.js','w')
-	js.write(' var locations = [')
-	
-	n = 0
-	for line in open(argv[1]):
-		n += 1
-		elements = line.strip().split('\t')
-		coord = elements[1].split()
-		
-		geoH = geohash.encode(float(coord[1]),float(coord[0]),hashAccuracy)
-		s = ' '.join(elements[3].split()[:2])
-		ts = int(time.mktime(datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timetuple()))
-		
+def emptyClusterFolder():
+	filelist = [ f for f in os.listdir("clusters/") if f.endswith(".txt") ]
+	for f in filelist:
+		os.remove(f)
+	print("cluster folder is empty")
 
-		key = (geoH, ts)
-		for k in clusters.keys():
-			if k[0] == geoH:
-				if k[1] <= ts <= (k[1] + (minutes*60)):
-					key = (geoH, k[1])			
-				
-		clusters[key].append(elements) # create new cluster
-	
-	i = 1
-	print(len(clusters.keys()))
+def createClusters(tweetfile):
+    print("Finding tweet clusters...")
+    
+    clusters = defaultdict(timeTweetDict)
+    
+    with open(tweetfile) as f:
+        for line in f:
+            tweet = line.strip().split('\t')
+            coord = tweet[1].split()
+            
+            geoHash = geohash.encode(float(coord[1]),float(coord[0]), HASH_ACCURACY)
+            tweetTime = ' '.join(tweet[3].split()[:2])
+            # converteer de tijd van de tweet naar unix time
+            unixTime = int(time.mktime(datetime.datetime.strptime(tweetTime, "%Y-%m-%d %H:%M:%S").timetuple()))
+            
+            foundTime = unixTime
+            # probeer geohash en tijd toe te voegen aan bestaande cluster
+            if geoHash in clusters:
+                for times in clusters[geoHash]:
+                    if times <= unixTime <= times + MINUTES * 60:
+                        # wat nu als deze tweet binnen de tijd van meerdere clusters valt?
+                        # ik ga hier uit van de laatst geziene tijd
+                        foundTime = times
+            
+            clusters[geoHash][foundTime].append(tweet)
 
-	'''loop door clusters om te kijken wat event candidates zijn'''
-	for cl in clusters.keys():
-		val = list(clusters[cl])
-		timeCluster = defaultdict(list)
+    return clusters
+    
+    
+def selectEventCandidates(clusters):
+    print("Selecting event candidates...")
+    
+    js = open('markers.js','w')
+    js.write('var locations = [')
+    i = 1
+    
+    # loop door clusters om te kijken wat event candidates zijn
+    for hashes in clusters:
+        for times in clusters[hashes]:
+            
+            tweets = clusters[hashes][times]
+            
+            userlist = []
+            geolist = []
 
-		userlist = []
-		geolist = []
-
-		if len(val) > nTweets: #als cluster meer dan nTweets bevat
-			for element in clusters[cl]:
-				if not element[2] in userlist: #toeveogen aan lijst met unieke users van dit cluster
-					userlist.append(element[2])
-				if not element[1] in geolist: #toeveogen aan lijst met unieke locaties van dit cluster
-					geolist.append(element[1])
-	
-		if len(userlist) > 1 and len(geolist) > 1: # als er meer dan 1 unieke gebruikers en lcoaties zijn pas weergeven
-				f = open('clusters/' + cl[0] + '-' + str(cl[1]) + '.txt','w')
-				for element in clusters[cl]:
-					i = i + 1
-					coord = element[1].split()
-					'''textfiles maken van alle afzonderlijke clusters en JS file maken voor Google map'''
-					f.write("{}, {}, {}, {} \n".format(element[2], element[0].replace("'", ""), ', '.join(reversed(coord)), element[3])) 
-					js.write("['{} {} {}', {}, {}],\n".format(element[2],element[3], element[0].replace("'", ""), ', '.join(reversed(coord)), i))
-				f.close()
-
-	js.write('];')
-	js.close()			
-
-		
-	
-	
-	
+            # cluster bevat meer dan N_TWEETS
+            if len(tweets) > N_TWEETS:
+                for tweet in tweets:
+                    if not tweet[2] in userlist:  # toevoegen aan lijst met unieke users van dit cluster
+                        userlist.append(tweet[2])
+                    if not tweet[1] in geolist:   # toevoegen aan lijst met unieke locaties van dit cluster
+                        geolist.append(tweet[1])
+    
+            # cluster pas opslaan wanneer er meer dan 1 unieke gebruiker en locatie in staat
+            if len(userlist) > 1 and len(geolist) > 1:
+                with open('clusters/' + hashes + '-' + str(times) + '.txt','w') as f:
+                    for tweet in tweets:
+                        i = i + 1
+                        coord = tweet[1].split()
+                        # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
+                        
+                        f.write("{}, {}, {}, {} \n".format(tweet[2], tweet[0].replace("'", ""),
+                                                           ', '.join(reversed(coord)), tweet[3]))
+                        js.write("['{} {} {}', {}, {}],\n".format(tweet[2],tweet[3], tweet[0].replace("'", ""), 
+                                                                  ', '.join(reversed(coord)), i))
+                        
+    js.write('];')
+    js.close()          
 
 
-	
-
-main(sys.argv)
+if __name__ == "__main__":
+    start = time.time()
+    emptyClusterFolder()
+    clusters = createClusters(sys.argv[1])
+    selectEventCandidates(clusters)
+    runTime = time.time() - start
+    print("Finding clusters and selecting event candidates took", runTime, "seconds.")
