@@ -22,7 +22,7 @@ def timeTweetDict():
 def emptyClusterFolder():
 	filelist = [ f for f in os.listdir("clusters/") if f.endswith(".txt") ]
 	for f in filelist:
-		os.remove(f)
+		os.remove('clusters/' + f)
 	print("cluster folder is empty")
 
 def createClusters(tweetfile):
