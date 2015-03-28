@@ -7,3 +7,5 @@ def main():
         if elements[1] != '' :
         tweets.append(elements)
         print('\t'.join(elements))
+
+main()
