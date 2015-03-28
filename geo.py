@@ -14,7 +14,8 @@ import os
 MINUTES       = 60  # maximum tijdsinterval tweets binnen een GeoHash
 N_TWEETS      = 2   # minimale hoeveelheid tweets in cluster
 HASH_ACCURACY = 7   # nauwkeurigheid van GeoHash
-
+UNIQUEUSERS   = 3   # aantal unieke gebruikers in cluster
+UNIQUECOORDS  = 3   # aantal unieke locaties in cluster
 
 def timeTweetDict():
     return defaultdict(list)
@@ -79,7 +80,7 @@ def selectEventCandidates(clusters):
                         geolist.append(tweet[1])
     
             # cluster pas opslaan wanneer er meer dan 1 unieke gebruiker en locatie in staat
-            if len(userlist) > 1 and len(geolist) > 1:
+            if len(userlist) >= UNIQUEUSERS and len(geolist) >= UNIQUECOORDS:
                 with open('clusters/' + hashes + '-' + str(times) + '.txt','w') as f:
                     for tweet in tweets:
                         i = i + 1
