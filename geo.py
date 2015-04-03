@@ -21,10 +21,16 @@ def timeTweetDict():
     return defaultdict(list)
 
 def emptyClusterFolder():
-	filelist = [ f for f in os.listdir("clusters/") if f.endswith(".txt") ]
-	for f in filelist:
-		os.remove('clusters/' + f)
-	print("cluster folder is empty")
+    if not os.path.isdir("clusters"): 
+        # clustermap bestaat nog niet
+        os.makedirs("clusters")
+        print("Created a new cluster folder.")
+    else:
+        # clustermap bestaat, haal oude clusters weg
+        filelist = [ f for f in os.listdir("clusters/") if f.endswith(".txt") ]
+        for f in filelist:
+            os.remove('clusters/' + f)
+        print("Emptied the cluster folder.")
 
 def createClusters(tweetfile):
     print("Finding tweet clusters...")
@@ -51,16 +57,18 @@ def createClusters(tweetfile):
                         foundTime = times
             
             clusters[geoHash][foundTime].append(tweet)
+            if unixTime > foundTime:
+                # zet de tijd vooruit om het event in leven te houden
+                clusters[geoHash][unixTime] = clusters[geoHash][foundTime]
+                del clusters[geoHash][foundTime]
 
-    return clusters
-    
+    return clusters    
     
 def selectEventCandidates(clusters):
     print("Selecting event candidates...")
     
     js = open('markers.js','w')
     js.write('var locations = [')
-    i = 1
     
     # loop door clusters om te kijken wat event candidates zijn
     for hashes in clusters:
@@ -79,22 +87,31 @@ def selectEventCandidates(clusters):
                     if not tweet[1] in geolist:   # toevoegen aan lijst met unieke locaties van dit cluster
                         geolist.append(tweet[1])
     
+            writableCluster = ""
+            i = 0
+            avgLon = 0
+            avgLat = 0
             # cluster pas opslaan wanneer er meer dan 1 unieke gebruiker en locatie in staat
             if len(userlist) >= UNIQUEUSERS and len(geolist) >= UNIQUECOORDS:
                 with open('clusters/' + hashes + '-' + str(times) + '.txt','w') as f:
+                    js.write("['")
                     for tweet in tweets:
                         i = i + 1
                         coord = tweet[1].split()
-                        # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
-                        
-                        f.write("{}, {}, {}, {} \n".format(tweet[2], tweet[0].replace("'", ""),
-                                                           ', '.join(reversed(coord)), tweet[3]))
-                        js.write("['{} {} {}', {}, {}],\n".format(tweet[2],tweet[3], tweet[0].replace("'", ""), 
-                                                                  ', '.join(reversed(coord)), i))
-                        
+                        avgLon += float(coord[0])
+                        avgLat += float(coord[1])
+                        # backslashes voor multiline strings in Javascript
+                        writableCluster += "{} {} {}<br/><br/>\\\n".format(tweet[2], tweet[3], tweet[0].replace("'", "\\'"))
+                    # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
+                    # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
+                    # Oftewel, we doen even alsof de aarde plat is ;-)
+                    avgLon /= i
+                    avgLat /= i
+                    # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
+                    f.write(writableCluster + "{} {}".format(avgLat,avgLon))
+                    js.write(writableCluster[:-2] + "', {}, {}],\n".format(avgLat,avgLon))
     js.write('];')
     js.close()          
-
 
 if __name__ == "__main__":
     start = time.time()
