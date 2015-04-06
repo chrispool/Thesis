@@ -1,14 +1,9 @@
 #!/usr/bin/python3
 
-import sys
-import geohash
+import sys, os, math, time, datetime, re, geohash
 from collections import defaultdict
 from collections import Counter
-import math
-import time
-import datetime
 from operator import itemgetter
-import os
 
 # SETTINGS
 MINUTES       = 60  # maximum tijdsinterval tweets binnen een GeoHash
@@ -31,6 +26,24 @@ def emptyClusterFolder():
         for f in filelist:
             os.remove('clusters/' + f)
         print("Emptied the cluster folder.")
+        
+def createIdf(tweetfile):
+    idf = defaultdict(float)
+    # pattern voor simpele tokenisatie: alles behalve letters, cijfers en 
+    # underscores wordt vervangen door een spatie
+    pat = re.compile('[\W]+')
+    with open(tweetfile) as f:
+        for line in f:
+            tweet = line.strip().split('\t')[0]
+            tokTweet = pat.sub(' ', tweet).lower().split()
+            for word in tokTweet:
+                idf[word] += 1
+    # bereken idf-score voor ieder woord
+    n = len(idf)
+    for word in idf:
+        idf[word] = math.log10(n / idf[word])
+        
+    return idf
 
 def createClusters(tweetfile):
     print("Finding tweet clusters...")
@@ -109,13 +122,14 @@ def selectEventCandidates(clusters):
                     avgLat /= i
                     # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
                     f.write(writableCluster + "{} {}".format(avgLat,avgLon))
-                    js.write(writableCluster[:-2] + "', {}, {}],\n".format(avgLat,avgLon))
+                    js.write(writableCluster[:-2] + "{} {}', {}, {}],\n".format(avgLat,avgLon,avgLat,avgLon))
     js.write('];')
     js.close()          
 
 if __name__ == "__main__":
     start = time.time()
     emptyClusterFolder()
+    #idf = createIdf(sys.argv[1])
     clusters = createClusters(sys.argv[1])
     selectEventCandidates(clusters)
     runTime = time.time() - start
