@@ -89,18 +89,21 @@ class ClusterCreator:
                         # van het cluster overeen?
                         if len(tweetSet & topTfIdf[geoHash][times]) > 0:
                             clusters[geoHash][times].append(tweet)
-                            # bereken topTfIdf opnieuw
-                            topTfIdf[geoHash][times] = self.__topTfIdf(clusters[geoHash][times])
+                            # bereken topTfIdf voor de nieuwe cluster
+                            topTfIdf[geoHash][tweetTime] = self.__topTfIdf(clusters[geoHash][times])
                             # zet de tijd vooruit naar de tijd van de nieuwe tweet
                             # om het event in leven te houden
+                            clusters[geoHash][tweetTime] = clusters[geoHash][times]
+                            # verwijder de cluster op de oude tijd
                             if tweetTime != times:
-                                clusters[geoHash][tweetTime] = clusters[geoHash][times]
                                 del clusters[geoHash][times]
+                                del topTfIdf[geoHash][times]
                             break
-                # Alle tijden gehad waarin deze tweet had kunnen passen, maar deze 
-                # tweet past nergens! Nieuwe cluster maken.
-                clusters[geoHash][tweetTime].append(tweet)
-                topTfIdf[geoHash][tweetTime] = self.__topTfIdf(clusters[geoHash][tweetTime])
+                else:
+                    # Alle tijden gehad waarin deze tweet had kunnen passen, maar deze 
+                    # tweet past nergens! Nieuwe cluster maken.
+                    clusters[geoHash][tweetTime].append(tweet)
+                    topTfIdf[geoHash][tweetTime] = self.__topTfIdf(clusters[geoHash][tweetTime])
             else:
                 # geoHash bestaat nog niet! Voeg tijd en tweet toe aan nieuwe geoHash.
                 clusters[geoHash][tweetTime].append(tweet)

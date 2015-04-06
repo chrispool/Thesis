@@ -31,7 +31,7 @@ class TweetFetcher:
     
     def __init__(self, tweetFile):
         # SETTINGS
-        self.HASH_ACCURACY = 7 # precisie van geoHash
+        self.HASH_ACCURACY = 6 # precisie van geoHash
         
         self.tweetDicts, self.idf = self.__createTweetDicts(tweetFile)
         
