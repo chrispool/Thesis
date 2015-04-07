@@ -15,7 +15,7 @@ zijn gepost. Daarnaast wordt voor nieuwe tweets gekeken of ze minstens
 toe bevatten.
 """
 
-import os, sys
+import os, sys, time
 from TweetFetcher import TweetFetcher
 from collections import defaultdict
 from operator import itemgetter
@@ -168,7 +168,10 @@ class ClusterCreator:
 
 # DEMO
 if __name__ == "__main__":
+    start = time.time() 
     if len(sys.argv) != 2:
         print("./ClusterCreator.py tweetFile")
         sys.exit()
     creator = ClusterCreator(sys.argv[1])
+    runTime = time.time() - start
+    print("Finding clusters and selecting event candidates took", runTime, "seconds.")
