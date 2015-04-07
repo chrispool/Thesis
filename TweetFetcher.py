@@ -11,7 +11,7 @@ tekst<TAB>lengtegraad breedtegraad<TAB>gebruikersnaam<TAB>tijd
 
 Een tweet-dictionary bevat de volgende (keys) gegevens voor elke tweet:
 * text    : de tekst
-* tokText : lijst van woorden (grof getokeniseerde tekst)
+* tokens  : lijst van woorden (grof getokeniseerde tekst)
 * lon     : de lengtegraad
 * lat     : de breedtegraad
 * user    : de gebruikersnaam
@@ -48,7 +48,7 @@ class TweetFetcher:
             for line in f:
                 tweetElements = line.strip().split('\t')
                 text = tweetElements[0]
-                tokText = pat.sub(' ', text).lower().split()
+                tokens = pat.sub(' ', text).lower().split()
                 coords = tweetElements[1].split()
                 lat, lon = float(coords[1]), float(coords[0])
                 # maak een geoHash met precisie HASH_ACCURACY
@@ -58,13 +58,13 @@ class TweetFetcher:
                 unixTime = int(time.mktime(datetime.datetime.strptime(tweetTime, "%Y-%m-%d %H:%M:%S").timetuple()))
                 # zet alle waarden in een tweet dictionary
                 tweetDicts.append({"text"    : text,
-                                   "tokText" : tokText,
+                                   "tokens" :  tokens,
                                    "lon"     : lon,
                                    "lat"     : lat,
                                    "user"    : tweetElements[2],
                                    "time"    : unixTime,
                                    "geoHash" : geoHash})
-                for word in tokText:
+                for word in tokens:
                     idf[word] += 1
         
         # bereken idf-score voor ieder woord
@@ -90,5 +90,5 @@ if __name__ == "__main__":
     idf = fetcher.getIdf()
     for tweet in tweetDicts[:5]:
         print(tweet)
-        for word in tweet["tokText"]:
+        for word in tweet["tokens"]:
             print(word, idf[word])

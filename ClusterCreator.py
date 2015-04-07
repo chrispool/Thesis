@@ -26,9 +26,9 @@ class ClusterCreator:
         # SETTINGS
         self.MINUTES = 60     # Na hoeveel minuten kan een tweet niet meer
                               # bij een event horen?
-        self.N_TWEETS = 2     # Min hoeveelheid tweets in candidate cluster
-        self.UNIQUEUSERS = 2  # Unieke gebruikers in een cluster
-        self.UNIQUECOORDS = 2 # Unieke coordinaten in een cluster
+        self.N_TWEETS = 3     # Min hoeveelheid tweets in candidate cluster
+        self.UNIQUEUSERS = 3  # Unieke gebruikers in een cluster
+        self.UNIQUECOORDS = 3 # Unieke coordinaten in een cluster
         
         fetcher = TweetFetcher(tweetFile)
         # voor de keys van de tweet dictionaries, zie TweetFetcher.py
@@ -58,7 +58,7 @@ class ClusterCreator:
         tfIdfDict = defaultdict(float)
         # bepaal de tf-waarden
         for tweet in tweetCluster:
-            for word in tweet["tokText"]:
+            for word in tweet["tokens"]:
                 tfIdfDict[word] += 1
         # vermenigvuldig nu tf met idf (dit gedeelte kan ook weggelaten
         # worden om te testen met alleen tf!
@@ -84,7 +84,7 @@ class ClusterCreator:
             if geoHash in clusters:
                 for times in clusters[geoHash].keys():
                     if times <= tweetTime <= times + self.MINUTES * 60:
-                        tweetSet = set(tweet["tokText"])
+                        tweetSet = set(tweet["tokens"])
                         # komen de woorden van de tweet en de belangrijkste n woorden
                         # van het cluster overeen?
                         if len(tweetSet & topTfIdf[geoHash][times]) > 0:
