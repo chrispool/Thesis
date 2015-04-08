@@ -61,7 +61,7 @@ class ClusterCreator:
             for word in tweet["tokens"]:
                 tfIdfDict[word] += 1
         # vermenigvuldig nu tf met idf (dit gedeelte kan ook weggelaten
-        # worden om te testen met alleen tf!
+        # worden om te testen met alleen tf!)
         for word in tfIdfDict:
             tfIdfDict[word] *= self.idf[word]
         # en geef een set van de top n woorden terug
@@ -108,12 +108,7 @@ class ClusterCreator:
                 # geoHash bestaat nog niet! Voeg tijd en tweet toe aan nieuwe geoHash.
                 clusters[geoHash][tweetTime].append(tweet)
                 topTfIdf[geoHash][tweetTime] = self.__topTfIdf(clusters[geoHash][tweetTime])
-        #for hashes in clusters:
-         #   for times in clusters[hashes]:
-          #      for tweet in clusters[hashes][times]:
-           #         if len(clusters[hashes][times]) > 1:
-            #            print(tweet["text"])
-             #   print()
+                
         return clusters
         
     def __selectEventCandidates(self):
@@ -153,8 +148,8 @@ class ClusterCreator:
                             avgLon += tweet["lon"]
                             avgLat += tweet["lat"]
                             # backslashes voor multiline strings in Javascript
-                            # tijd moet weer geconverteerd worden naar "standaard" tijd, beetje jammer...
-                            writableCluster += "{} {} {}<br/><br/>\\\n".format(tweet["time"], tweet["user"], tweet["text"].replace("'", "\\'"))
+                            writableCluster += "{} {} {}<br/><br/>\\\n".format(tweet["localTime"], 
+                                                tweet["user"], tweet["text"].replace("'", "\\'"))
                         # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
                         # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
                         # Oftewel, we doen even alsof de aarde plat is ;-)
