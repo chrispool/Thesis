@@ -16,7 +16,7 @@ toe bevatten.
 """
 
 import os, sys, time
-from TweetFetcher import TweetFetcher
+from TweetPreprocessor import TweetPreprocessor
 from collections import defaultdict
 from operator import itemgetter
 
@@ -30,13 +30,15 @@ class ClusterCreator:
         self.UNIQUEUSERS = 3  # Unieke gebruikers in een cluster
         self.UNIQUECOORDS = 3 # Unieke coordinaten in een cluster
         
-        fetcher = TweetFetcher(tweetFile)
-        # voor de keys van de tweet dictionaries, zie TweetFetcher.py
+        fetcher = TweetPreprocessor(tweetFile)
+        # voor de keys van de tweet dictionaries, zie TweetPreprocessor.py
         self.tweetDicts = fetcher.getTweetDicts()
         self.idf = fetcher.getIdf()
         # maak of leeg de map met clusters
         self.__emptyClusterFolder()
-        self.clusters = self.__createClusters()
+        self.clusters = defaultdict(self.__timeTweetDict)
+        self.topTfIdf = defaultdict(self.__timeTweetDict)
+        self.__createClusters()
         self.__selectEventCandidates()
         
     def __emptyClusterFolder(self):
@@ -69,47 +71,43 @@ class ClusterCreator:
         topTfIdf = set()
         for word,tfIdf in sort:
             topTfIdf.add(word)
-
+        
         return topTfIdf
             
     def __createClusters(self):
         print("Creating tweet clusters...")
-        clusters = defaultdict(self.__timeTweetDict)
-        topTfIdf = defaultdict(self.__timeTweetDict)
     
         for tweet in self.tweetDicts:
             geoHash = tweet["geoHash"]
-            tweetTime = tweet["time"]
+            tweetTime = tweet["unixTime"]
 
-            if geoHash in clusters:
-                for times in clusters[geoHash].keys():
+            if geoHash in self.clusters:
+                for times in self.clusters[geoHash].keys():
                     if times <= tweetTime <= times + self.MINUTES * 60:
                         tweetSet = set(tweet["tokens"])
                         # komen de woorden van de tweet en de belangrijkste n woorden
                         # van het cluster overeen?
-                        if len(tweetSet & topTfIdf[geoHash][times]) > 0:
-                            clusters[geoHash][times].append(tweet)
+                        if len(tweetSet & self.topTfIdf[geoHash][times]) > 0:
+                            self.clusters[geoHash][times].append(tweet)
                             # bereken topTfIdf voor de nieuwe cluster
-                            topTfIdf[geoHash][tweetTime] = self.__topTfIdf(clusters[geoHash][times])
+                            self.topTfIdf[geoHash][tweetTime] = self.__topTfIdf(self.clusters[geoHash][times])
                             # zet de tijd vooruit naar de tijd van de nieuwe tweet
                             # om het event in leven te houden
-                            clusters[geoHash][tweetTime] = clusters[geoHash][times]
+                            self.clusters[geoHash][tweetTime] = self.clusters[geoHash][times]
                             # verwijder de cluster op de oude tijd
                             if tweetTime != times:
-                                del clusters[geoHash][times]
-                                del topTfIdf[geoHash][times]
+                                del self.clusters[geoHash][times]
+                                del self.topTfIdf[geoHash][times]
                             break
                 else:
                     # Alle tijden gehad waarin deze tweet had kunnen passen, maar deze 
                     # tweet past nergens! Nieuwe cluster maken.
-                    clusters[geoHash][tweetTime].append(tweet)
-                    topTfIdf[geoHash][tweetTime] = self.__topTfIdf(clusters[geoHash][tweetTime])
+                    self.clusters[geoHash][tweetTime].append(tweet)
+                    self.topTfIdf[geoHash][tweetTime] = self.__topTfIdf(self.clusters[geoHash][tweetTime])
             else:
                 # geoHash bestaat nog niet! Voeg tijd en tweet toe aan nieuwe geoHash.
-                clusters[geoHash][tweetTime].append(tweet)
-                topTfIdf[geoHash][tweetTime] = self.__topTfIdf(clusters[geoHash][tweetTime])
-                
-        return clusters
+                self.clusters[geoHash][tweetTime].append(tweet)
+                self.topTfIdf[geoHash][tweetTime] = self.__topTfIdf(self.clusters[geoHash][tweetTime])
         
     def __selectEventCandidates(self):
         print("Selecting event candidates...")
@@ -143,6 +141,7 @@ class ClusterCreator:
                 if len(userlist) >= self.UNIQUEUSERS and len(geolist) >= self.UNIQUECOORDS:
                     with open('clusters/' + hashes + '-' + str(times) + '.txt','w') as f:
                         js.write("['")
+                        writableCluster += "{}<br/><br/>".format(str(self.topTfIdf[hashes][times]).replace("'", "\\'"))
                         for tweet in tweets:
                             i = i + 1
                             avgLon += tweet["lon"]
