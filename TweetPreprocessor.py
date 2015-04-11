@@ -36,6 +36,23 @@ class TweetPreprocessor:
         # SETTINGS
         self.HASH_ACCURACY = 7 # precisie van geoHash
         
+        # regex pattern voor simpele tokenisatie: alles behalve letters, 
+        # cijfers en underscores wordt vervangen door een spatie
+        self.pat = re.compile('[\W]+')
+        # Nederlandse stopwoorden (NLTK stopwoorden plus een lijst op internet)
+        self.stoplist = \
+        ["aan", "afd", "als", "bij", "ik", "mij", "we", "wij", "jij", "je", "jou", "ons", "jullie", "dat",
+         "u", "hij", "zij", "hem", "haar", "de", "den", "der", "des", "deze", "die", "dit", "dl", "door",
+         "dr", "ed", "een", "en", "enige", "enkele", "enz", "et", "etc", "het", "hierin", "hoe", "hun",
+         "in", "inzake", "is", "met", "na", "naar", "nabij", "niet", "no", "nu", "of", "om", "onder",
+         "onze", "ook", "oorspr", "op", "over", "pas", "pres", "prof", "publ", "sl", "st", "te", "tegen",
+         "ten", "ter", "tot", "uit", "uitg", "vakgr", "van", "vanaf", "vert", "vol", "voor", "voortgez",
+         "wat", "wie", "zijn", "waar", "wanneer", "was", "had", "er", "maar", "dan", "zou", "mijn", "men",
+         "zo", "ze", "zich", "heb", "daar", "heeft", "hebben", "want", "nog", "zal", "me", "ge", "gij",
+         "geen", "iets", "worden", "toch", "al", "waren", "veel", "meer", "doen", "toen", "moet", "ben",
+         "zonder", "kan", "dus", "alles", "ja", "eens", "hier", "werd", "altijd", "doch", "wordt", "wezen",
+         "kunnen", "zelf", "reeds", "wil", "kon", "niets", "uw", "iemand", "geweest", "andere"]
+        
         self.tweetDicts, self.idf = self.__createTweetDicts(tweetFile)
         
     # Laad een bestand met msgpack
@@ -46,7 +63,23 @@ class TweetPreprocessor:
                 return d
         except:
             return False    
-    
+
+    def __tokenize(self, text):
+        tokens = text.split()
+        # filter links
+        for word in tokens[:]:
+            if word.startswith("http:"):
+                tokens.remove(word)
+        filterLinkText = ' '.join(tokens)
+        # vervang alles behalve letters/cijfers door een spatie
+        tokens = self.pat.sub(' ', filterLinkText).lower().split()
+        # filter stopwoorden, cijfers en losse karakters
+        for word in tokens[:]:
+            if word in self.stoplist or word.isdigit() or len(word) < 2:
+                tokens.remove(word)
+        # filter dubbele woorden
+        return list(set(tokens))
+        
     # Maak de lijst van tweet dictionaries en bereken meteen alle idf-waarden
     def __createTweetDicts(self, tweetFile):
         
@@ -61,30 +94,12 @@ class TweetPreprocessor:
         print("Creating new tweet dictionaries and an idf dictionary for ", tweetFile, ".", sep = "")
         idf = defaultdict(float)
         tweetDicts = []
-        # regex pattern voor simpele tokenisatie: alles behalve letters, 
-        # cijfers en underscores wordt vervangen door een spatie
-        pat = re.compile('[\W]+')
-        # stopwoorden
-        stoplist = \
-        ["aan", "afd", "als", "bij", "ik", "mij", "we", "wij", "jij", "je", "jou", "ons", "jullie", "dat",
-         "u", "hij", "zij", "hem", "haar", "de", "den", "der", "des", "deze", "die", "dit", "dl", "door",
-         "dr", "ed", "een", "en", "enige", "enkele", "enz", "et", "etc", "het", "hierin", "hoe", "hun",
-         "in", "inzake", "is", "met", "na", "naar", "nabij", "niet", "no", "nu", "of", "om", "onder",
-         "onze", "ook", "oorspr", "op", "over", "pas", "pres", "prof", "publ", "sl", "st", "te", "tegen",
-         "ten", "ter", "tot", "uit", "uitg", "vakgr", "van", "vanaf", "vert", "vol", "voor", "voortgez",
-         "wat", "wie", "zijn", "waar", "wanneer"]
-        
+
         with open(tweetFile) as f:
             for line in f:
                 tweetElements = line.strip().split('\t')
                 text = tweetElements[0]
-                tokens = pat.sub(' ', text).lower().split()
-                # filter stopwoorden, cijfers en losse karakters
-                for word in tokens[:]:
-                    if word in stoplist or word.isdigit() or len(word) < 2:
-                        tokens.remove(word)
-                # filter dubbele woorden
-                tokens = list(set(tokens))
+                tokens = self.__tokenize(text)
                 coords = tweetElements[1].split()
                 lat, lon = float(coords[1]), float(coords[0])
                 # maak een geoHash met precisie HASH_ACCURACY
