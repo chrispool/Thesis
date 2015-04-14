@@ -31,7 +31,7 @@ class ClusterMerger:
         self.idf = self.creator.getIdf()
         # voeg clusters samen
         self.__mergeClusters()
-        self.__writeClustersToFile()
+        self.eventCandidates = self.__selectEventCandidates()
                
     def __mergeClusters(self):
         for geoHash in self.clusters:
@@ -85,7 +85,7 @@ class ClusterMerger:
     def __eventCandidatesDic(self):
         return defaultdict(list)
 
-    def __writeClustersToFile(self):
+    def __selectEventCandidates(self):
         print("Write clusters to file")
         nClusters = 0
         eventCandidates = defaultdict(self.__eventCandidatesDic)
@@ -103,12 +103,9 @@ class ClusterMerger:
                 if len(set(userlist)) >= self.creator.UNIQUEUSERS:
                     eventCandidates[cluster][times] = self.clusters[cluster][times]
                     nClusters += 1
+        print("{} clusters created.".format(nClusters)) 
+        return eventCandidates
         
-        with open('eventCandidates.bin', 'wb') as f:
-            msgpack.dump(eventCandidates, f)
-        
-        print("{} clusters created.".format(nClusters))          
-
     def __emptyClusterFolder(self):
         if not os.path.isdir("clusters"): 
             # clustermap bestaat nog niet
