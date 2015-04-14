@@ -86,10 +86,9 @@ class ClusterMerger:
         return defaultdict(list)
 
     def __selectEventCandidates(self):
-        print("Write clusters to file")
+        print("Select clusters")
         nClusters = 0
         eventCandidates = defaultdict(self.__eventCandidatesDic)
-        # schrijf alle clusters naar bestand
         for cluster in self.clusters:
             for times in self.clusters[cluster]:    
                 
@@ -103,7 +102,7 @@ class ClusterMerger:
                 if len(set(userlist)) >= self.creator.UNIQUEUSERS:
                     eventCandidates[cluster][times] = self.clusters[cluster][times]
                     nClusters += 1
-        print("{} clusters created.".format(nClusters)) 
+        print("{} clusters selected.".format(nClusters)) 
         return eventCandidates
         
     def __emptyClusterFolder(self):

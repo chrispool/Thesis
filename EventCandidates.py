@@ -39,7 +39,9 @@ class EventCandidates:
                     self.annotatedEvents[geohash][timestamp] = False
 
         print("Total of {} are events of the {} candidates".format(nEvents, nCandidates))
-        
+     
+    def createGoogleMap(self):
+        pass   
     
     def formatTweets(self, cluster):
         text = [tweet['text'] for tweet in cluster]
