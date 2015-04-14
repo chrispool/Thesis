@@ -24,6 +24,7 @@ class ClusterCreator:
         self.MINUTES = 60     # Na hoeveel minuten kan een tweet niet meer
                               # bij een event horen?
         self.N_TWEETS = 2     # Min hoeveelheid tweets in candidate cluster
+        self.UNIQUEUSERS = 2     # Min hoeveelheid tweets in candidate cluster
         
         preprocess = TweetPreprocessor(tweetFile)
         # voor de keys van de tweet dictionaries, zie TweetPreprocessor.py
