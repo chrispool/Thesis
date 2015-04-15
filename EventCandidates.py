@@ -32,8 +32,8 @@ class EventCandidates:
                 print(self.formatTweets(self.merger.eventCandidates[geohash][timestamp]))
                 print("--------------------------")
                 print()
-                #choice = input('Cluster? j/n ')
-                choice = 'j'
+                choice = input('Cluster? j/n ')
+                
                 if choice == 'j':
                     self.annotatedEvents[geohash][timestamp] = True
                     nEvents += 1
@@ -57,10 +57,6 @@ class EventCandidates:
             json.dump(self.annotatedEvents, outfile)
                 
 
-
-    
- 
-    
     def formatTweets(self, cluster):
         text = [tweet['text'] for tweet in cluster]
         return ('\n'.join(text))
