@@ -19,15 +19,10 @@ Een tweet-dictionary bevat de volgende (keys) gegevens voor elke tweet:
 * localTime : lokale tijd, zoals weergegeven in de tweet
 * geoHash   : de geoHash waarin deze tweet is gepost
 
-Hiernaast wordt ook een dictionary met idf-waarden aangemaakt. Zowel
-het idf-dictionary en de tweet dictionaries worden opgeslagen in een
-bin-bestand, waarbij ook de bestandsnaam van het bestand met tweets 
-wordt opgeslagen (in het idf-dictionary). Wordt de TweetPreprocessor 
-gedraaid met die bestandsnaam, dan worden de opgeslagen dictionaries
-gebruikt, anders worden ze opnieuw gegenereerd.
+Hiernaast wordt ook een dictionary met idf-waarden aangemaakt.
 """
 
-import sys, re, math, geohash, time, datetime, msgpack
+import re, math, geohash, time, datetime
 from collections import defaultdict
 
 class TweetPreprocessor:
@@ -82,16 +77,7 @@ class TweetPreprocessor:
         
     # Maak de lijst van tweet dictionaries en bereken meteen alle idf-waarden
     def __createTweetDicts(self, tweetFile):
-        
-        # zijn het idf-dictionary en de tweet dictionaries al eerder gemaakt?
-        idf = self.__load_file("idf.bin")
-        tweetDicts = self.__load_file("tweetdicts.bin")
-        
-        if idf and "%FILENAME%:" + tweetFile in idf and tweetDicts:
-            print("Successfully loaded the earlier generated binary files for ", tweetFile, "!", sep = "")
-            return tweetDicts, idf
-        
-        print("Creating new tweet dictionaries and an idf dictionary for ", tweetFile, ".", sep = "")
+        print("Creating tweet dictionaries and an idf dictionary for ", tweetFile, "...", sep = "")
         idf = defaultdict(float)
         tweetDicts = []
 
@@ -123,16 +109,6 @@ class TweetPreprocessor:
         n = len(idf)
         for word in idf:
             idf[word] = math.log10(n / idf[word])
-
-        print("Done! Dumping dictionaries to disk...")
-        with open('idf.bin', 'wb') as f:
-            idf["%FILENAME%:" + tweetFile] = 1
-            msgpack.dump(idf, f)
-        print("* idf.bin is ready...")
-        
-        with open('tweetdicts.bin', 'wb') as f:
-            msgpack.dump(tweetDicts, f)
-        print("* tweetdicts.bin is ready...")
             
         return tweetDicts, idf
     
@@ -141,16 +117,3 @@ class TweetPreprocessor:
         
     def getIdf(self):
         return self.idf
-    
-# DEMO
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("./TweetPreprocessor.py tweetFile")
-        sys.exit()
-    fetcher = TweetPreprocessor(sys.argv[1])
-    tweetDicts = fetcher.getTweetDicts()
-    idf = fetcher.getIdf()
-    for tweet in tweetDicts[:5]:
-        print(tweet)
-        for word in tweet["tokens"]:
-            print(word, idf[word])
