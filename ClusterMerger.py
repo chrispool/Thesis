@@ -26,6 +26,8 @@ class ClusterMerger:
         self.mergedClusters = [] # list om bij te houden welke clusters worden samengevoegd
         self.clusters = clusters
         self.idf = idf
+        # TODO idf nog eens berekenen
+        # TODO toptf-idf toevoegen voor selectie van "whitelist-users" voor een cluster
         # voeg clusters samen
         self.__mergeClusters()
         self.eventCandidates = self.__selectEventCandidates()
@@ -86,9 +88,15 @@ class ClusterMerger:
         nClusters = 0
         eventCandidates = defaultdict(self.__eventCandidatesDic)
         for cluster in self.clusters:
-            for times in self.clusters[cluster]:    
+            for times in self.clusters[cluster]:
+                if len(self.clusters[cluster][times]) > self.N_TWEETS:
+                    eventCandidates[cluster][times] = self.clusters[cluster][times]
+                    nClusters += 1
+                    
+        # Nu hebben we dus de event candidates waarmee we feature selectie ed zouden
+        # moeten uitvoeren!!!
                 
-                userset = set()
+                """userset = set()
                 whiteList = False
                 
                 if len(self.clusters[cluster][times]) > self.N_TWEETS:
@@ -105,7 +113,7 @@ class ClusterMerger:
                 if len(userset) >= self.UNIQUEUSERS or whiteList:
                     eventCandidates[cluster][times] = self.clusters[cluster][times]
                     nClusters += 1
-        
+                """
         print("{} event candidates selected.".format(nClusters))
         return eventCandidates
             
