@@ -73,9 +73,8 @@ class ClusterMerger:
     def __getImportantWords(self, n, cluster):
         result = Counter()
         for tweet in cluster:
-            if "tokens" in tweet:
-                for token in tweet["tokens"]:
-                    result[token] += self.idf[token] 
+            for token in tweet["tokens"]:
+                result[token] += self.idf[token] 
         return(result.most_common(n))
     
     def __eventCandidatesDic(self):

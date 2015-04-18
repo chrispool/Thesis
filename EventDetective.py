@@ -32,15 +32,15 @@ class EventDetective:
         eventCandidates = merger.getEventCandidates()
         
         n = 50
-        print("\n### A selection of", n, "detected events ###\n")
+        print("\n### A selection of events candidates ###\n")
         count = 0
         for geohash in eventCandidates:
             for times in eventCandidates[geohash]:
                 for tweet in eventCandidates[geohash][times]:
-                    print(tweet["text"], tweet["user"])
+                    print(tweet["user"], tweet["localTime"], tweet["text"])
             print()
             count += 1
-            if count == 10:
+            if count == n:
                 break
 
         #self.dataSets = os.listdir('data/')

@@ -33,7 +33,9 @@ class TweetPreprocessor:
         
         # regex pattern voor simpele tokenisatie: alles behalve letters, 
         # cijfers en underscores wordt vervangen door een spatie
-        self.pat = re.compile('[\W]+')
+        #self.pat = re.compile('[\W]+')
+        # alternatief pattern waarbij #'s en @'s worden behouden
+        self.pat = re.compile(r"[^a-zA-Z0-9#@]+")
         # Nederlandse stopwoorden (NLTK stopwoorden plus een lijst op internet)
         self.stoplist = \
         ["aan", "afd", "als", "bij", "ik", "mij", "we", "wij", "jij", "je", "jou", "ons", "jullie", "dat",
@@ -63,7 +65,7 @@ class TweetPreprocessor:
         tokens = text.split()
         # filter links
         for word in tokens[:]:
-            if word.startswith("http:"):
+            if word.startswith("http:") or word.startswith("https:"):
                 tokens.remove(word)
         filterLinkText = ' '.join(tokens)
         # vervang alles behalve letters/cijfers door een spatie
