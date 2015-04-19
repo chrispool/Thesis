@@ -28,7 +28,6 @@ class ClusterMerger:
         self.clusters = clusters
         self.idf = defaultdict(float)
         self.__calculateIdf(self.clusters)
-        # TODO toptf-idf toevoegen voor selectie van "whitelist-users" voor een cluster
         # voeg clusters samen
         self.__mergeClusters()
         self.eventCandidates = self.__selectEventCandidates()
@@ -50,6 +49,27 @@ class ClusterMerger:
                     
         for word in self.idf:
             self.idf[word] = log2(n/self.idf[word])
+    
+    # bereken de top tf-idf woorden voor een cluster. 
+    # TODO Dit kan misschien nog iets mooier
+    # TODO Selectie van "whitelist-users" voor een cluster
+    def __topTfIdf(self, tweetCluster, n = 5):
+        tfIdfDict = defaultdict(float)
+        # bepaal de tf-waarden
+        for tweet in tweetCluster:
+            for word in tweet["tokens"]:
+                tfIdfDict[word] += 1
+        # vermenigvuldig nu tf met idf (dit gedeelte kan ook weggelaten
+        # worden om te testen met alleen tf!)
+        for word in tfIdfDict:
+            tfIdfDict[word] *= self.idf[word]
+        # en geef een set van de top n woorden terug
+        sort = set(sorted(tfIdfDict.items(), key = itemgetter(1), reverse = True)[:n])
+        topTfIdf = set()
+        for word,tfIdf in sort:
+            topTfIdf.add(word)
+        
+        return topTfIdf
                
     # TODO Volgens mij is er bij het mergen een probleem waardoor tijden niet goed worden vergeleken:
     # VOORBEELD:
