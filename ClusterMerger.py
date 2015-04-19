@@ -12,10 +12,11 @@ tijd, inhoud en onderwerp overlappen.
 
 import geohash
 from collections import defaultdict, Counter
+from math import log2
 
 class ClusterMerger:
     
-    def __init__(self, clusters, idf):
+    def __init__(self, clusters):
         # SETTINGS
         self.N_TWEETS = 2     # Min hoeveelheid tweets in candidate cluster
         self.UNIQUEUSERS = 2  # Min hoeveelheid tweets in candidate cluster
@@ -25,13 +26,37 @@ class ClusterMerger:
         
         self.mergedClusters = [] # list om bij te houden welke clusters worden samengevoegd
         self.clusters = clusters
-        self.idf = idf
-        # TODO idf nog eens berekenen
+        self.idf = defaultdict(float)
+        self.__calculateIdf(self.clusters)
         # TODO toptf-idf toevoegen voor selectie van "whitelist-users" voor een cluster
         # voeg clusters samen
         self.__mergeClusters()
         self.eventCandidates = self.__selectEventCandidates()
+        
+    # Bereken de idf-waarden gegeven (event) candidate clusters. Dit kan helaas niet zo heel
+    # efficient in de huidige datastructuur.
+    def __calculateIdf(self, clusters):
+        print("Calculating idf for the candidate clusters...")
+        n = 0
+        for geoHash in clusters:
+            for times in clusters[geoHash].keys():
+                n += 1
+                clusterwords = []
+                for tweet in clusters[geoHash][times]:
+                    for word in tweet["tokens"]:
+                        clusterwords.append(word)
+                for word in set(clusterwords):
+                    self.idf[word] += 1
+                    
+        for word in self.idf:
+            self.idf[word] = log2(n/self.idf[word])
                
+    # TODO Volgens mij is er bij het mergen een probleem waardoor tijden niet goed worden vergeleken:
+    # VOORBEELD:
+    # LudwigBollaerts 2015-03-27 07:51:45 @sp_a ik wil geen werk, ik creëer zelf #werk! Als jullie dat niet kennen? Wel dat fenomeen heet #ondernemen !
+    # LudwigBollaerts 2015-03-27 08:01:39 #E3Harelbeke mijn tiercé #Stannard #Vanmarcke #Wallays #koers
+    # LudwigBollaerts 2015-03-27 11:38:46 @AnnickDeRidder @sp_a niet alles zo #opblazen hé :)
+
     def __mergeClusters(self):
         print("Merging candidate clusters...")
         for geoHash in self.clusters:

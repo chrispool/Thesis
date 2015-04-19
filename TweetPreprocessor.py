@@ -11,15 +11,13 @@ tekst<TAB>lengtegraad breedtegraad<TAB>gebruikersnaam<TAB>tijd
 
 Een tweet-dictionary bevat de volgende (keys) gegevens voor elke tweet:
 * text      : de tekst
-* tokens    : lijst van woorden (grof getokeniseerde tekst)
+* tokens    : lijst van woorden (getokeniseerde tekst)
 * lon       : de lengtegraad
 * lat       : de breedtegraad
 * user      : de gebruikersnaam
 * unixTime  : lokale tijd, geconverteerd naar Unix Time
 * localTime : lokale tijd, zoals weergegeven in de tweet
 * geoHash   : de geoHash waarin deze tweet is gepost
-
-Hiernaast wordt ook een dictionary met idf-waarden aangemaakt.
 """
 
 import re, math, geohash, time, datetime
@@ -31,36 +29,21 @@ class TweetPreprocessor:
         # SETTINGS
         self.HASH_ACCURACY = 7 # precisie van geoHash
         
-        # regex pattern voor simpele tokenisatie: alles behalve letters, 
-        # cijfers en underscores wordt vervangen door een spatie
+        # regex pattern voor simpele tokenisatie: alles behalve letters, cijfers en 
+        # underscores wordt vervangen door een spatie
         #self.pat = re.compile('[\W]+')
         # alternatief pattern waarbij #'s en @'s worden behouden
         self.pat = re.compile(r"[^a-zA-Z0-9#@]+")
-        # Nederlandse stopwoorden (NLTK stopwoorden plus een lijst op internet)
-        self.stoplist = \
-        ["aan", "afd", "als", "bij", "ik", "mij", "we", "wij", "jij", "je", "jou", "ons", "jullie", "dat",
-         "u", "hij", "zij", "hem", "haar", "de", "den", "der", "des", "deze", "die", "dit", "dl", "door",
-         "dr", "ed", "een", "en", "enige", "enkele", "enz", "et", "etc", "het", "hierin", "hoe", "hun",
-         "in", "inzake", "is", "met", "na", "naar", "nabij", "niet", "no", "nu", "of", "om", "onder",
-         "onze", "ook", "oorspr", "op", "over", "pas", "pres", "prof", "publ", "sl", "st", "te", "tegen",
-         "ten", "ter", "tot", "uit", "uitg", "vakgr", "van", "vanaf", "vert", "vol", "voor", "voortgez",
-         "wat", "wie", "zijn", "waar", "wanneer", "was", "had", "er", "maar", "dan", "zou", "mijn", "men",
-         "zo", "ze", "zich", "heb", "daar", "heeft", "hebben", "want", "nog", "zal", "me", "ge", "gij",
-         "geen", "iets", "worden", "toch", "al", "waren", "veel", "meer", "doen", "toen", "moet", "ben",
-         "zonder", "kan", "dus", "alles", "ja", "eens", "hier", "werd", "altijd", "doch", "wordt", "wezen",
-         "kunnen", "zelf", "reeds", "wil", "kon", "niets", "uw", "iemand", "geweest", "andere"]
+        # maak een lijst met Nederlandse stopwoorden
+        self.stoplist = []
+        with open("stopwords.txt") as stopwords:
+            # stopwords.txt: stopwoorden van NLTK + handmatig toegevoegde stopwoorden
+            for stopword in stopwords:
+                self.stoplist.append(stopword.strip())
+        # maak een lijst van tweet dictionaries
+        self.tweetDicts = []
+        self.__createTweetDicts(tweetFile)
         
-        self.tweetDicts, self.idf = self.__createTweetDicts(tweetFile)
-        
-    # Laad een bestand met msgpack
-    def __load_file(self, f):
-        try:
-            with open(f, "rb") as f:
-                d = msgpack.load(f, encoding='utf-8')
-                return d
-        except:
-            return False    
-
     def __tokenize(self, text):
         tokens = text.split()
         # filter links
@@ -77,10 +60,9 @@ class TweetPreprocessor:
         # filter dubbele woorden
         return list(set(tokens))
         
-    # Maak de lijst van tweet dictionaries en bereken meteen alle idf-waarden
+    # Maak de lijst van tweet dictionaries
     def __createTweetDicts(self, tweetFile):
-        print("Creating tweet dictionaries and an idf dictionary for ", tweetFile, "...", sep = "")
-        idf = defaultdict(float)
+        print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")
         tweetDicts = []
 
         with open(tweetFile) as f:
@@ -96,26 +78,14 @@ class TweetPreprocessor:
                 tweetTime = ' '.join(tweetElements[3].split()[:2])
                 unixTime = int(time.mktime(datetime.datetime.strptime(tweetTime, "%Y-%m-%d %H:%M:%S").timetuple()))
                 # zet alle waarden in een tweet dictionary
-                tweetDicts.append({"text"      : text,
-                                   "tokens"    : tokens,
-                                   "lon"       : lon,
-                                   "lat"       : lat,
-                                   "user"      : tweetElements[2],
-                                   "unixTime"  : unixTime,
-                                   "localTime" : tweetTime,
-                                   "geoHash"   : geoHash})
-                for word in tokens:
-                    idf[word] += 1
-
-        # bereken idf-score voor ieder woord
-        n = len(idf)
-        for word in idf:
-            idf[word] = math.log10(n / idf[word])
-            
-        return tweetDicts, idf
+                self.tweetDicts.append({"text"      : text,
+                                        "tokens"    : tokens,
+                                        "lon"       : lon,
+                                        "lat"       : lat,
+                                        "user"      : tweetElements[2],
+                                        "unixTime"  : unixTime,
+                                        "localTime" : tweetTime,
+                                        "geoHash"   : geoHash})
     
     def getTweetDicts(self):
         return self.tweetDicts
-        
-    def getIdf(self):
-        return self.idf

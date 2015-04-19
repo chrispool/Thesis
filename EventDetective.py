@@ -22,13 +22,13 @@ class EventDetective:
         self.__emptyClusterFolder()
         # preprocess tweets in tweetFile
         preprocessor = TweetPreprocessor(tweetFile)
-        idf = preprocessor.getIdf()
+        #idf = preprocessor.getIdf()
         tweetDicts = preprocessor.getTweetDicts()
         # maak candidate clusters
-        creator = ClusterCreator(tweetDicts, idf)
+        creator = ClusterCreator(tweetDicts)
         clusters = creator.getClusters()
         # voeg candidate clusters samen tot event candidates
-        merger = ClusterMerger(clusters, idf)
+        merger = ClusterMerger(clusters)
         eventCandidates = merger.getEventCandidates()
         
         n = 50
@@ -46,6 +46,16 @@ class EventDetective:
         #self.dataSets = os.listdir('data/')
         #self.loadDataSet()
         #self.selectEvents()
+        
+    # Laad een bestand met msgpack, we moeten nog even bepalen of we dit gaan gebruiken
+    def __load_file(self, f):
+        try:
+            with open(f, "rb") as f:
+                d = msgpack.load(f, encoding='utf-8')
+                return d
+        except:
+            return False    
+
         
     def __emptyClusterFolder(self):
         if not os.path.isdir("clusters"): 
@@ -104,7 +114,17 @@ class EventDetective:
         
         with open('tweetdicts.bin', 'wb') as f:
             msgpack.dump(tweetDicts, f)
-        print("* tweetdicts.bin is ready...")"""
+        print("* tweetdicts.bin is ready...")
+        
+        # IDF DUMP
+        for word in tokens:
+            idf[word] += 1
+
+        # bereken idf-score voor ieder woord
+        n = len(idf)
+        for word in idf:
+            idf[word] = math.log10(n / idf[word])
+        """
 
 # DEMO
 if __name__ == "__main__":
