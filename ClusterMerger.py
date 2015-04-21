@@ -10,7 +10,7 @@ de TweetPreprocessor. Clusters worden samengevoegd wanneer ze qua
 tijd, inhoud en onderwerp overlappen.
 """
 
-import geohash
+from modules import geohash
 from collections import defaultdict, Counter
 from math import log2
 

@@ -20,7 +20,8 @@ Een tweet-dictionary bevat de volgende (keys) gegevens voor elke tweet:
 * geoHash   : de geoHash waarin deze tweet is gepost
 """
 
-import re, math, geohash, time, datetime
+import re, math, time, datetime
+from modules import geohash
 from collections import defaultdict
 
 class TweetPreprocessor:
