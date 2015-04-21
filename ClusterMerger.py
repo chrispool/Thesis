@@ -30,7 +30,9 @@ class ClusterMerger:
         self.__calculateIdf(self.clusters)
         # voeg clusters samen
         self.__mergeClusters()
+
         self.eventCandidates = self.__selectEventCandidates()
+        self.createMarkers()
         
     # Bereken de idf-waarden gegeven (event) candidate clusters. Dit kan helaas niet zo heel
     # efficient in de huidige datastructuur.
@@ -71,35 +73,31 @@ class ClusterMerger:
         
         return topTfIdf
                
-    # TODO Volgens mij is er bij het mergen een probleem waardoor tijden niet goed worden vergeleken:
-    # VOORBEELD:
-    # LudwigBollaerts 2015-03-27 07:51:45 @sp_a ik wil geen werk, ik creëer zelf #werk! Als jullie dat niet kennen? Wel dat fenomeen heet #ondernemen !
-    # LudwigBollaerts 2015-03-27 08:01:39 #E3Harelbeke mijn tiercé #Stannard #Vanmarcke #Wallays #koers
-    # LudwigBollaerts 2015-03-27 11:38:46 @AnnickDeRidder @sp_a niet alles zo #opblazen hé :)
 
     def __mergeClusters(self):
-        print("Merging candidate clusters...")
         for geoHash in self.clusters:
             neighbors = geohash.neighbors(geoHash)
             for neighbor in neighbors:
                 if neighbor in self.clusters:
                     for timestamp in self.clusters[geoHash].keys():
                         # er is een neigbor, dus alle timestamps vergelijken of er een neighbor is met dezeflde 
-                        # timestamp plus of min 60 minuten
+                        # timetsamp plus of min 60 minuten
                         for neighborTimestamp in self.clusters[neighbor].keys():
-                            clustersToRemove = []
+                            clustersToAdd = []
                             # Misschien hiervoor samen een betere oplossing verzinnen, 
                             # Nu hou ik een lijst met clusters die we moeten verwijderen bij omdat je 
                             # geen keys mag verwijderen in de loop
                             if abs(timestamp - neighborTimestamp) <= self.MINUTES * 60:
                                 if self.__calculateOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]):
-                                    self.clusters[geoHash][timestamp].extend(self.clusters[neighbor][neighborTimestamp])
-                                    clustersToRemove.append((neighbor, neighborTimestamp))
-                                    self.mergedClusters.append(geoHash+str(timestamp))
-                        # verwijderen van samengevoegde clusters
-                        for c, t in clustersToRemove:
-                            if t in self.clusters[c].keys():
-                                del self.clusters[c][t]
+                                    # is de key al in de lijst te verwijderen clusters dan niet meer gebruiken   
+                                    clustersToAdd.append((neighbor, neighborTimestamp)) 
+                                    self.mergedClusters.append((geoHash,timestamp)) # for display
+
+                        #samenvoegen en verwijderen van samengevoegde clusters
+                        for c, t in clustersToAdd:
+                            self.clusters[geoHash][timestamp].extend(self.clusters[c][t])
+                            del self.clusters[c][t] #delete neighbour
+
                                  
     def __calculateOverlap(self,clusterA, clusterB):      
         wordsClusterA = self.__getImportantWords(10, clusterA)
@@ -134,33 +132,53 @@ class ClusterMerger:
         eventCandidates = defaultdict(self.__eventCandidatesDic)
         for cluster in self.clusters:
             for times in self.clusters[cluster]:
-                if len(self.clusters[cluster][times]) > self.N_TWEETS:
+                if len(self.clusters[cluster][times]) > self.N_TWEETS and self.uniqueUsers(self.clusters[cluster][times]) >= self.UNIQUEUSERS:
                     eventCandidates[cluster][times] = self.clusters[cluster][times]
                     nClusters += 1
                     
-        # Nu hebben we dus de event candidates waarmee we feature selectie ed zouden
-        # moeten uitvoeren!!!
-                
-                """userset = set()
-                whiteList = False
-                
-                if len(self.clusters[cluster][times]) > self.N_TWEETS:
-                    for tweet in self.clusters[cluster][times]:
-                        username = tweet["user"].lower()
-                        whiteListPrefix = ["112", "burgernet", "p2000"]
-                        for prefix in whiteListPrefix:
-                            if username.startswith(prefix):
-                                whiteList = True
-                                break
-                        else:
-                            userset.add(tweet["user"])
-                              
-                if len(userset) >= self.UNIQUEUSERS or whiteList:
-                    eventCandidates[cluster][times] = self.clusters[cluster][times]
-                    nClusters += 1
-                """
+       
         print("{} event candidates selected.".format(nClusters))
         return eventCandidates
             
     def getEventCandidates(self):
         return self.eventCandidates
+
+    def uniqueUsers(self, cluster):
+        users = [tweet['user'] for tweet in cluster]
+        return (len(set(users)))
+
+    def createMarkers(self):
+        print("Create Markers...")
+        
+        js = open('markers.js','w')
+        js.write('var locations = [')
+
+        # loop door clusters om te kijken wat event candidates zijn
+        for hashes in self.eventCandidates:
+            for times in self.eventCandidates[hashes]:   
+                tweets = self.eventCandidates[hashes][times]
+                
+                writableCluster = ''
+                
+                i = 0
+                avgLon = 0
+                avgLat = 0
+                              
+                for tweet in tweets:
+                    i = i + 1
+                    
+                    avgLon += float(tweet["lon"])
+                    avgLat += float(tweet["lat"])
+                    # backslashes voor multiline strings in Javascript
+                    writableCluster += "{} {} {}<br/><br/>".format(tweet['localTime'], tweet['user'], tweet['text'].replace("'", "\\'"))
+                # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
+                # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
+                # Oftewel, we doen even alsof de aarde plat is ;-)
+                
+                avgLon /= i
+                avgLat /= i
+            # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
+            
+                js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
+        js.write('];')
+        js.close()             

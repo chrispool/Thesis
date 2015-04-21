@@ -42,7 +42,7 @@ class EventCandidates:
                 print(self.formatTweets(self.eventCandidates[geohash][timestamp]))
                 print("--------------------------")
                 print()
-                eventTypes = {"geen event":0, "sport":1, "bijeenkomst":2}
+                eventTypes = {"geen event":0, "sport":1, "politiek":2, "bijeenkomst":3, "ongeval":4, "concert":5}
                 # sorteer event types voor weergave
                 sortedEventTypes = sorted(eventTypes, key = eventTypes.get)
                 eventString = "|"
@@ -65,7 +65,7 @@ class EventCandidates:
                     except:
                         print("\nGij zult de annotatie afmaken!")
                 
-                if nCandidates == 10:
+                if nCandidates == 100:
                     print("Total of {} are events of the {} candidates".format(nEvents, nCandidates))
                     return
      
@@ -84,7 +84,7 @@ class EventCandidates:
             json.dump(self.annotatedEvents, outfile)
 
     def formatTweets(self, cluster):
-        text = [tweet['text'] for tweet in cluster]
+        text = [tweet['user'] + ' -> ' + tweet['text'] for tweet in cluster]
         return '\n'.join(text)
 
 if __name__ == "__main__":

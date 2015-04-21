@@ -7,37 +7,26 @@ EventDetective
 Detecteert events gegeven dataset
 """
 import os, sys, msgpack, time, json
+from collections import defaultdict, Counter
+import nltk
+from nltk.stem.snowball import SnowballStemmer
 
 class EventDetective:
 
     def __init__(self):
         #self.__emptyClusterFolder()
+        self.stemmer = SnowballStemmer("dutch", ignore_stopwords=True)
+        self.words = Counter()
         self.dataSets = os.listdir('data/')
         self.annotation = {}
         self.candidates = {}
         self.__loadDataSet()
-        self.selectEvents()
+        self.classifyEvents()
+        #self.selectEvents()
         
-    # Laad een bestand met msgpack, we moeten nog even bepalen of we dit gaan gebruiken
-    def __load_file(self, f):
-        try:
-            with open(f, "rb") as f:
-                d = msgpack.load(f, encoding='utf-8')
-                return d
-        except:
-            return False
-
-    def __emptyClusterFolder(self):
-        if not os.path.isdir("clusters"): 
-            # clustermap bestaat nog niet
-            os.makedirs("clusters")
-            print("Created a new cluster folder.")
-        else:
-            # clustermap bestaat, haal oude clusters weg
-            filelist = [f for f in os.listdir("clusters/") if f.endswith(".txt")]
-            for f in filelist:
-                os.remove('clusters/' + f)
-            print("Emptied the cluster folder.")
+    
+    def eventDic(self):
+        return defaultdict(list)    
 
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -52,16 +41,73 @@ class EventDetective:
         self.candidates = json.load(jsonFile)
 
     def classifyEvents(self):
-        pass
+        self.value = 0.0
+        for i in range(51):
+            
+            self.events = defaultdict(self.eventDic)
+            self.noevents = defaultdict(self.eventDic)
+            for geohash in self.candidates:
+                for timestamp in self.candidates[geohash]:
+                    if self.featureWordOverlap(self.candidates[geohash][timestamp]) >= self.value:
+                        self.events[geohash][timestamp] = self.candidates[geohash][timestamp]
+                    else:
+                        self.noevents[geohash][timestamp] = self.candidates[geohash][timestamp]
+            self.calculatePrecisionRecall()
+            self.value += 0.5
 
     def generateGoogleMap(self):
         pass
 
     def calculatePrecisionRecall(self):
-        pass
+        tp = 0 #true positive
+        fp = 0 #false positive
+        tn = 0 #true negative
+        fn = 0 #false negative
+
+        for geohash in self.events:
+            if geohash in self.annotation:
+                for timestamp in self.events[geohash]:
+                    if timestamp in self.annotation[geohash]:
+                        if self.annotation[geohash][timestamp] > 0: #goed geclassificeerd
+                            tp += 1
+                        else:
+                            fp += 1
+                    
+        for geohash in self.noevents:
+            if geohash in self.annotation:
+                for timestamp in self.noevents[geohash]:
+                    if timestamp in self.annotation[geohash]:
+                        if self.annotation[geohash][timestamp] == 0: #goed geclassificeerd
+                            tn += 1
+                        else:
+                            fn += 1
+
+        
+        nDoc = tp+fp+tn+fn
+        precision = tp / (tp + fp)  #fraction of retrieved documents that are relevant
+        recall = tp / (tp + fn)
+        accuracy = (tp + tn) / (tp + tn + fp + fn)
+        fscore = 2 * ((precision * recall)/(precision + recall))
+        print("Value = {:.1f}, Precision: {:.2f} Recall: {:.2f} accuracy: {:.2f} fscore: {:.2f}".format(self.value, precision, recall, accuracy, fscore))
+       
+
+    def featureWordOverlap(self, candidate):
+        words = Counter()
+        n = len(candidate)
+        for row in candidate:
+            tokens = nltk.word_tokenize(row['text'])
+            tokensL = [self.stemmer.stem(t) for t in tokens]
+            words.update(set(tokens))
+            self.words.update(tokensL)
+            
+          
+        for word in words:
+            words[word] = words[word] - 1 #dat het voor komt in de eigen tweet is niet relevant
+
+        return sum(words.values()) / n
 
     def selectEvents(self):
-        n = 50
+        n = 21
         print("\n### A selection of", n, "detected events ###\n")
         count = 0
         for geoHash in self.candidates:
