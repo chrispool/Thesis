@@ -23,7 +23,6 @@ class EventDetective:
         self.__loadDataSet()
         self.classifyEvents()
         #self.selectEvents()
-        
     
     def eventDic(self):
         return defaultdict(list)    
@@ -42,7 +41,7 @@ class EventDetective:
 
     def classifyEvents(self):
         self.value = 0.0
-        for i in range(51):
+        for i in range(10):
             
             self.events = defaultdict(self.eventDic)
             self.noevents = defaultdict(self.eventDic)
@@ -82,14 +81,12 @@ class EventDetective:
                         else:
                             fn += 1
 
-        
         nDoc = tp+fp+tn+fn
         precision = tp / (tp + fp)  #fraction of retrieved documents that are relevant
         recall = tp / (tp + fn)
         accuracy = (tp + tn) / (tp + tn + fp + fn)
         fscore = 2 * ((precision * recall)/(precision + recall))
         print("Value = {:.1f}, Precision: {:.2f} Recall: {:.2f} accuracy: {:.2f} fscore: {:.2f}".format(self.value, precision, recall, accuracy, fscore))
-       
 
     def featureWordOverlap(self, candidate):
         words = Counter()
