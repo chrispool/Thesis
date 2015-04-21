@@ -11,9 +11,12 @@ import os, sys, msgpack, time, json
 class EventDetective:
 
     def __init__(self):
+        #self.__emptyClusterFolder()
         self.dataSets = os.listdir('data/')
-        self.__emptyClusterFolder()
+        self.annotation = {}
+        self.candidates = {}
         self.__loadDataSet()
+        self.selectEvents()
         
     # Laad een bestand met msgpack, we moeten nog even bepalen of we dit gaan gebruiken
     def __load_file(self, f):
@@ -22,7 +25,7 @@ class EventDetective:
                 d = msgpack.load(f, encoding='utf-8')
                 return d
         except:
-            return False    
+            return False
 
     def __emptyClusterFolder(self):
         if not os.path.isdir("clusters"): 
@@ -58,7 +61,17 @@ class EventDetective:
         pass
 
     def selectEvents(self):
-        pass
+        n = 50
+        print("\n### A selection of", n, "detected events ###\n")
+        count = 0
+        for geoHash in self.candidates:
+            for times in self.candidates[geoHash]:
+                for tweet in self.candidates[geoHash][times]:
+                   print(tweet["localTime"], tweet["user"], tweet["text"])
+            print()
+            count += 1
+            if count == 10:
+                break
 
 # DEMO
 if __name__ == "__main__":
