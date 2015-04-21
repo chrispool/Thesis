@@ -31,7 +31,7 @@ class EventDetective:
         merger = ClusterMerger(clusters)
         eventCandidates = merger.getEventCandidates()
         
-        n = 50
+        """n = 50
         print("\n### A selection of events candidates ###\n")
         count = 0
         for geohash in eventCandidates:
@@ -42,6 +42,7 @@ class EventDetective:
             count += 1
             if count == n:
                 break
+        """
 
         #self.dataSets = os.listdir('data/')
         #self.loadDataSet()
