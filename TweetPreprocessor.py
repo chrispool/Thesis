@@ -36,7 +36,7 @@ class TweetPreprocessor:
         self.pat = re.compile(r"[^a-zA-Z0-9#@]+")
         # maak een lijst met Nederlandse stopwoorden
         self.stoplist = []
-        with open("stopwords.txt") as stopwords:
+        with open("corpus/stopwords.txt") as stopwords:
             # stopwords.txt: stopwoorden van NLTK + handmatig toegevoegde stopwoorden
             for stopword in stopwords:
                 self.stoplist.append(stopword.strip())
