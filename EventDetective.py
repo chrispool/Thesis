@@ -24,7 +24,6 @@ class EventDetective:
         self.calculateIDF()
         self.classifyEvents()
         #self.selectEvents()
-        
     
     def eventDic(self):
         return defaultdict(list)    
@@ -53,6 +52,7 @@ class EventDetective:
     
     def classifyEvents(self):
         self.value = 4.5
+
             
         self.events = defaultdict(self.eventDic)
         self.noevents = defaultdict(self.eventDic)
@@ -94,13 +94,13 @@ class EventDetective:
                             fn += 1
                             self.printTweets(self.noevents[geohash][timestamp], 'False negative')
 
-        
         nDoc = tp+fp+tn+fn
         precision = tp / (tp + fp)  #fraction of retrieved documents that are relevant
         recall = tp / (tp + fn)
         accuracy = (tp + tn) / (tp + tn + fp + fn)
         fscore = 2 * ((precision * recall)/(precision + recall))
         print("Value = {:.1f}, Precision: {:.2f} Recall: {:.2f} accuracy: {:.2f} fscore: {:.2f}".format(self.value, precision, recall, accuracy, fscore))
+
        
     def printTweets(self, cluster, message):
         print()
@@ -108,6 +108,7 @@ class EventDetective:
         for tweet in cluster:
             print(tweet['text'])
         print()
+
 
     def featureWordOverlap(self, candidate):
         words = Counter()

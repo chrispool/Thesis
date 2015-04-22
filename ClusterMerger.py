@@ -72,7 +72,6 @@ class ClusterMerger:
             topTfIdf.add(word)
         
         return topTfIdf
-               
 
     def __mergeClusters(self):
         for geoHash in self.clusters:
@@ -135,7 +134,6 @@ class ClusterMerger:
                 if len(self.clusters[cluster][times]) > self.N_TWEETS and self.uniqueUsers(self.clusters[cluster][times]) >= self.UNIQUEUSERS:
                     eventCandidates[cluster][times] = self.clusters[cluster][times]
                     nClusters += 1
-                    
        
         print("{} event candidates selected.".format(nClusters))
         return eventCandidates
@@ -148,9 +146,9 @@ class ClusterMerger:
         return (len(set(users)))
 
     def createMarkers(self):
-        print("Create Markers...")
+        print("Creating Google Maps markers...")
         
-        js = open('markers.js','w')
+        js = open('vis/map/markers.js','w')
         js.write('var locations = [')
 
         # loop door clusters om te kijken wat event candidates zijn

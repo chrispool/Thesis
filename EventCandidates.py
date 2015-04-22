@@ -42,7 +42,7 @@ class EventCandidates:
                 print(self.formatTweets(self.eventCandidates[geohash][timestamp]))
                 print("--------------------------")
                 print()
-                eventTypes = {"geen event":0, "sport":1, "politiek":2, "bijeenkomst":3, "ongeval":4, "concert":5}
+                eventTypes = {"geen event":0, "sport":1, "politiek":2, "bijeenkomst":3, "ongeval":4, "concert":5, "anders":6}
                 # sorteer event types voor weergave
                 sortedEventTypes = sorted(eventTypes, key = eventTypes.get)
                 eventString = "|"
@@ -65,12 +65,12 @@ class EventCandidates:
                     except:
                         print("\nGij zult de annotatie afmaken!")
                 
-                if nCandidates == 100:
+                if nCandidates == 1:
                     print("Total of {} are events of the {} candidates".format(nEvents, nCandidates))
                     return
      
     def saveDateset(self):
-        print("Save dataset.")
+        print("Geannoteerde data en event candidates opslaan...")
         #create dataset folder
         if not os.path.isdir('data/' + sys.argv[2]):
              os.makedirs('data/' + sys.argv[2])
