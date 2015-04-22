@@ -10,7 +10,7 @@ import os, sys, msgpack, time, json
 from collections import defaultdict, Counter
 import nltk
 from nltk.stem.snowball import SnowballStemmer
-
+from math import log2
 class EventDetective:
 
     def __init__(self):
@@ -21,6 +21,7 @@ class EventDetective:
         self.annotation = {}
         self.candidates = {}
         self.__loadDataSet()
+        self.calculateIDF()
         self.classifyEvents()
         #self.selectEvents()
         
@@ -40,20 +41,29 @@ class EventDetective:
         jsonFile =  open("data/" + self.dataSets[choice] + "/eventCandidates.json")
         self.candidates = json.load(jsonFile)
 
+    def calculateIDF(self):
+        n = 0        
+        for geohash in self.candidates:
+            for timestamp in self.candidates[geohash]:
+                for tweet in self.candidates[geohash][timestamp]:
+                    self.words.update(set(tweet['tokens']))
+                    n += 1
+        for word in self.words:
+            self.words[word] = log2(n/self.words[word])   
+    
     def classifyEvents(self):
-        self.value = 0.0
-        for i in range(51):
+        self.value = 4.5
             
-            self.events = defaultdict(self.eventDic)
-            self.noevents = defaultdict(self.eventDic)
-            for geohash in self.candidates:
-                for timestamp in self.candidates[geohash]:
-                    if self.featureWordOverlap(self.candidates[geohash][timestamp]) >= self.value:
-                        self.events[geohash][timestamp] = self.candidates[geohash][timestamp]
-                    else:
-                        self.noevents[geohash][timestamp] = self.candidates[geohash][timestamp]
-            self.calculatePrecisionRecall()
-            self.value += 0.5
+        self.events = defaultdict(self.eventDic)
+        self.noevents = defaultdict(self.eventDic)
+        for geohash in self.candidates:
+            for timestamp in self.candidates[geohash]:
+                if self.featureWordOverlap(self.candidates[geohash][timestamp]) >= self.value:
+                    self.events[geohash][timestamp] = self.candidates[geohash][timestamp]
+                else:
+                    self.noevents[geohash][timestamp] = self.candidates[geohash][timestamp]
+        self.calculatePrecisionRecall()
+
 
     def generateGoogleMap(self):
         pass
@@ -72,6 +82,7 @@ class EventDetective:
                             tp += 1
                         else:
                             fp += 1
+                            self.printTweets(self.events[geohash][timestamp], 'False positive')
                     
         for geohash in self.noevents:
             if geohash in self.annotation:
@@ -81,6 +92,7 @@ class EventDetective:
                             tn += 1
                         else:
                             fn += 1
+                            self.printTweets(self.noevents[geohash][timestamp], 'False negative')
 
         
         nDoc = tp+fp+tn+fn
@@ -90,20 +102,21 @@ class EventDetective:
         fscore = 2 * ((precision * recall)/(precision + recall))
         print("Value = {:.1f}, Precision: {:.2f} Recall: {:.2f} accuracy: {:.2f} fscore: {:.2f}".format(self.value, precision, recall, accuracy, fscore))
        
+    def printTweets(self, cluster, message):
+        print()
+        print("<------{}-------->".format(message))
+        for tweet in cluster:
+            print(tweet['text'])
+        print()
 
     def featureWordOverlap(self, candidate):
         words = Counter()
         n = len(candidate)
-        for row in candidate:
-            tokens = nltk.word_tokenize(row['text'])
-            tokensL = [self.stemmer.stem(t) for t in tokens]
-            words.update(set(tokens))
-            self.words.update(tokensL)
-            
-          
+        for row in candidate:    
+            words.update(set(row['tokens']))  
         for word in words:
-            words[word] = words[word] - 1 #dat het voor komt in de eigen tweet is niet relevant
-
+            words[word] = (words[word] - 1) * self.words[word] #dat het voor komt in de eigen tweet is niet relevant
+        
         return sum(words.values()) / n
 
     def selectEvents(self):
