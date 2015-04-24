@@ -12,7 +12,7 @@ tijd, inhoud en onderwerp overlappen.
 
 from modules import geohash
 from collections import defaultdict, Counter
-from math import log2
+from math import log2,log
 
 class ClusterMerger:
     
@@ -141,9 +141,8 @@ class ClusterMerger:
     def getEventCandidates(self):
         return self.eventCandidates
 
-    def uniqueUsers(self, cluster):
-        users = [tweet['user'] for tweet in cluster]
-        return (len(set(users)))
+
+    
 
     def createMarkers(self):
         print("Creating Google Maps markers...")
@@ -175,8 +174,42 @@ class ClusterMerger:
                 
                 avgLon /= i
                 avgLat /= i
+                writableCluster += "Word overlap: {}, uniqueUsers: {} ".format(self.featureWordOverlap(tweets),self.uniqueUsers(tweets))
             # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
             
                 js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
         js.write('];')
-        js.close()             
+        js.close() 
+
+    '''onderstaande functies zijn om de informatie te tonen in Google map, 
+    Ik denk dat we pas wat moeten doen met deze informatie in EventDetective.py'''
+
+    def uniqueUsers(self, cluster):
+        users = [tweet['user'] for tweet in cluster]
+        return (len(set(users)))
+
+    def featureWordOverlap(self, candidate):
+        types = Counter()
+        tokens = Counter()
+        n = len(candidate)
+        for row in candidate:    
+            types.update(set(row['tokens']))
+            tokens.update(row['tokens'])  
+        #calculate cluster IDF
+        for token in tokens:
+
+            
+            tokens[token] = log(len(tokens)/tokens[token])  #dat het voor komt in de eigen tweet is niet relevant
+            if token[0] == '#':
+                tokens[token] *= 10
+        maxscore = 0
+        score = 0
+        for t in types:
+            maxscore += n * tokens[t]
+            if types[t] > 1: #ignore if only in one tweet
+                score += types[t] * tokens[t]
+
+     
+        
+        common = [w + "(" + str(tokens[w]) + str(c * types[t]) + ")" for w,c in types.most_common(3)]
+        return "Score: {:.2f} , Overlapping words: {} ".format( score / n, ' '.join(common ))          

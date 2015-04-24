@@ -10,7 +10,7 @@ import os, sys, msgpack, time, json
 from collections import defaultdict, Counter
 import nltk
 from nltk.stem.snowball import SnowballStemmer
-from math import log2
+from math import log
 class EventDetective:
 
     def __init__(self):
@@ -48,7 +48,7 @@ class EventDetective:
                     self.words.update(set(tweet['tokens']))
                     n += 1
         for word in self.words:
-            self.words[word] = log2(n/self.words[word])   
+            self.words[word] = log(n/self.words[word])   
     
     def classifyEvents(self):
         self.value = 4.5
@@ -111,14 +111,28 @@ class EventDetective:
 
 
     def featureWordOverlap(self, candidate):
-        words = Counter()
+        print("calculate Word overlap")
+        types = Counter()
+        tokens = Counter()
         n = len(candidate)
         for row in candidate:    
-            words.update(set(row['tokens']))  
-        for word in words:
-            words[word] = (words[word] - 1) * self.words[word] #dat het voor komt in de eigen tweet is niet relevant
-        
-        return sum(words.values()) / n
+            types.update(set(row['tokens']))
+            tokens.update(row['tokens'])  
+        #calculate cluster IDF
+        for token in tokens:
+            tokens[token] = log(len(tokens)/tokens[token])  #dat het voor komt in de eigen tweet is niet relevant
+            print(tokens[token][0])
+            if tokens[token][0] == '#':
+                print(tokens[token])
+                tokens[token] = tokens[token] * 10 
+        maxscore = 0
+        score = 0
+        for t in types:
+            maxscore += n * tokens[t]
+            if types[t] > 1: #ignore if only in one tweet
+                score += types[t] * tokens[t]
+
+        return score / maxscore
 
     def selectEvents(self):
         n = 21
