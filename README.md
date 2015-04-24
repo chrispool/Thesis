@@ -2,6 +2,8 @@
 
 Interessante links:
 
+- <b>NLTK en Scikit Learn combineren?</b> http://www.quora.com/How-can-I-preprocess-labeled-data-for-use-with-SciKit-Learn
+http://stackoverflow.com/questions/11460115/nltk-multiple-feature-sets-in-one-classifier
 - GeoHash (precision, neighbours): http://www.movable-type.co.uk/scripts/geohash.html
 - Scikit Learn Tutorial: http://scikit-learn.org/stable/tutorial/basic/tutorial.html#loading-an-example-dataset
 - Working with text data: http://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html#exercise-2-sentiment-analysis-on-movie-reviews
