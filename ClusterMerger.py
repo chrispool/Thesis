@@ -13,6 +13,7 @@ import features
 from modules import geohash
 from collections import defaultdict, Counter
 from math import log2,log
+import datetime
 
 class ClusterMerger:
     
@@ -87,7 +88,7 @@ class ClusterMerger:
                             # Misschien hiervoor samen een betere oplossing verzinnen, 
                             # Nu hou ik een lijst met clusters die we moeten verwijderen bij omdat je 
                             # geen keys mag verwijderen in de loop
-                            if abs(timestamp - neighborTimestamp) <= self.MINUTES * 60:
+                            if self.__calculateTimeOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]) == True:
                                 if self.__calculateOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]):
                                     # is de key al in de lijst te verwijderen clusters dan niet meer gebruiken   
                                     clustersToAdd.append((neighbor, neighborTimestamp)) 
@@ -99,6 +100,18 @@ class ClusterMerger:
                             del self.clusters[c][t] #delete neighbour
 
                                  
+    def __calculateTimeOverlap(self, cluster, neighbourCluster):
+        clusterT = sorted([ row['unixTime'] for row in cluster ])
+        neighbourClusterT = sorted([ row['unixTime'] for row in neighbourCluster ])
+        for t in neighbourClusterT: 
+            if clusterT[0] - (self.MINUTES * 60) <= t <= clusterT[-1] - (self.MINUTES * 60):
+                return True
+
+        return False
+
+        
+
+
     def __calculateOverlap(self,clusterA, clusterB):      
         wordsClusterA = self.__getImportantWords(20, clusterA)
         wordsClusterB = self.__getImportantWords(20, clusterB)
@@ -177,8 +190,8 @@ class ClusterMerger:
                 avgLat /= i
                 writableCluster += "Word overlap: {}, uniqueUsers: {} ".format(features.wordOverlapDisplay(tweets),features.uniqueUsers(tweets))
             # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
-                if (hashes, times) in self.mergedClusters:
-                    js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
+                #if (hashes, times) in self.mergedClusters:
+                js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
         js.write('];')
         js.close() 
 
