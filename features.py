@@ -58,6 +58,15 @@ def wordOverlapDisplay(candidate):
         return "Score: {:.2f} , Overlapping words: {} ".format( value, ' '.join(common ))   
         
 
+def atRatio(candidate):
+    #Number of @s relative to the number of posts in the cluster.
+    nAt = 0
+    for tweet in candidate:
+        for word in tweet['text']:
+            if word[0] == '@':
+                nAt += 1
+    return round(nAt / nTweets(candidate), 1)
+
 def uniqueUsers(cluster):
     users = [tweet['user'] for tweet in cluster]
     return (len(set(users)))
