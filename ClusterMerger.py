@@ -22,22 +22,21 @@ class ClusterMerger:
         self.N_TWEETS = 2     # Min hoeveelheid tweets in candidate cluster
         self.UNIQUEUSERS = 2  # Min hoeveelheid tweets in candidate cluster
         self.THRESHOLD = 30   # Word overlap score om clusters samen te voegen
-        self.MINUTES = 60     # Na hoeveel minuten kan een candidate cluster
+        self.MINUTES = 600    # Na hoeveel minuten kan een candidate cluster
                               # niet meer bij een ander candidate cluster horen?
         
         self.mergedClusters = [] # list om bij te houden welke clusters worden samengevoegd
         self.clusters = clusters
         self.idf = defaultdict(float)
-        self.__calculateIdf(self.clusters)
+        self._calculateIdf(self.clusters)
         # voeg clusters samen
-        self.__mergeClusters()
-
-        self.eventCandidates = self.__selectEventCandidates()
+        self._mergeClusters()
+        self.eventCandidates = self._selectEventCandidates()
         self.createMarkers()
         
     # Bereken de idf-waarden gegeven (event) candidate clusters. Dit kan helaas niet zo heel
     # efficient in de huidige datastructuur.
-    def __calculateIdf(self, clusters):
+    def _calculateIdf(self, clusters):
         print("Calculating idf for the candidate clusters...")
         n = 0
         for geoHash in clusters:
@@ -53,48 +52,59 @@ class ClusterMerger:
         for word in self.idf:
             self.idf[word] = log2(n/self.idf[word])
 
-    def __mergeClusters(self):
+    def _mergeClusters(self):
+        print("Merging clusters...")
+        
+        clustersToAdd = []
+        
         for geoHash in self.clusters:
             neighbors = geohash.neighbors(geoHash)
+            # vergelijk ook met tijden in het eigen cluster
+            neighbors.append(geoHash)
+                        
             for neighbor in neighbors:
                 if neighbor in self.clusters:
-                    for timestamp in self.clusters[geoHash].keys():
-                        # er is een neigbor, dus alle timestamps vergelijken of er een neighbor is met dezeflde 
-                        # timetsamp plus of min 60 minuten
-                        for neighborTimestamp in self.clusters[neighbor].keys():
-                            clustersToAdd = []
-                            # Misschien hiervoor samen een betere oplossing verzinnen, 
-                            # Nu hou ik een lijst met clusters die we moeten verwijderen bij omdat je 
-                            # geen keys mag verwijderen in de loop
-                            if self.__calculateTimeOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]) == True:
-                                if self.__calculateOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]):
-                                    # is de key al in de lijst te verwijderen clusters dan niet meer gebruiken   
-                                    clustersToAdd.append((neighbor, neighborTimestamp)) 
-                                    self.mergedClusters.append((geoHash,timestamp)) # for display
-                        #samenvoegen en verwijderen van samengevoegde clusters
-                        for c, t in clustersToAdd:
-                            self.clusters[geoHash][timestamp].extend(self.clusters[c][t])
-                            del self.clusters[c][t] #delete neighbour
-
-    def __calculateTimeOverlap(self, cluster, neighbourCluster):
+                    # er is een neigbor, dus alle timestamps vergelijken of er een neighbor is met dezelfde 
+                    # timestamp plus of min 60 minuten
+                    for timestamp in self.clusters[geoHash]:
+                        for neighborTimestamp in self.clusters[neighbor]:
+                            # geen cluster met zichzelf vergelijken wanneer de huidige neighbor de geoHash is
+                            if neighbor == geoHash and timestamp == neighborTimestamp:
+                                continue
+                            if self._calculateTimeOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]) and \
+                               self._calculateWordOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]):
+                                clustersToAdd.append((geoHash, neighbor, timestamp, neighborTimestamp)) 
+                                self.mergedClusters.append((geoHash,timestamp)) # for display
+        
+        #samenvoegen en verwijderen van samengevoegde clusters
+        for geoHash, neighbor, timestamp, neighborTimestamp in clustersToAdd:
+            self.clusters[geoHash][timestamp].extend(self.clusters[neighbor][neighborTimestamp])
+            del self.clusters[neighbor][neighborTimestamp] #delete neighbour
+        
+    def _calculateTimeOverlap(self, cluster, neighbourCluster):
         clusterT = sorted([ row['unixTime'] for row in cluster ])
         neighbourClusterT = sorted([ row['unixTime'] for row in neighbourCluster ])
-        for t in neighbourClusterT: 
-            if clusterT[0] - (self.MINUTES * 60) <= t <= clusterT[-1] - (self.MINUTES * 60):
-                return True
-
+        for times1 in clusterT:
+            for times2 in neighbourClusterT:
+                # nogal naief, maar volgens mij dekte de eerste check niet alle tijden
+                if abs(times1-times2) <= self.MINUTES * 60:
+                    return True
+        
+        #for t in neighbourClusterT: 
+        #    if clusterT[0] - (self.MINUTES * 60) <= t <= clusterT[-1] - (self.MINUTES * 60):
+        #        return True
+        
         return False
 
-    def __calculateOverlap(self,clusterA, clusterB):      
-        wordsClusterA = self.__getImportantWords(20, clusterA)
-        wordsClusterB = self.__getImportantWords(20, clusterB)
+    def _calculateWordOverlap(self,clusterA, clusterB):      
+        wordsClusterA = self._getImportantWords(20, clusterA)
+        wordsClusterB = self._getImportantWords(20, clusterB)
         result = {}
         
         #intersect the two lists and adding the scores
         for wordA, scoreA in wordsClusterA:
             for wordB, scoreB in wordsClusterB:
                 if wordA == wordB:
-
                     result[wordA] = scoreA + scoreB
                     #nog iets doen met hashtag, if hashtag score is * 2???
                     if wordA[0] == '#':
@@ -106,21 +116,21 @@ class ClusterMerger:
         else:
             return False
     
-    def __getImportantWords(self, n, cluster):
+    def _getImportantWords(self, n, cluster):
         result = Counter()
         for tweet in cluster:
             for token in tweet["tokens"]:
                 result[token] += self.idf[token] 
         return(result.most_common(n))
     
-    def __eventCandidatesDic(self):
+    def _eventCandidatesDic(self):
         return defaultdict(list)
 
-    def __selectEventCandidates(self):
+    def _selectEventCandidates(self):
         print("Selecting event candidates...")
         
         nClusters = 0
-        eventCandidates = defaultdict(self.__eventCandidatesDic)
+        eventCandidates = defaultdict(self._eventCandidatesDic)
         for cluster in self.clusters:
             for times in self.clusters[cluster]:
                 if len(self.clusters[cluster][times]) > self.N_TWEETS and features.uniqueUsers(self.clusters[cluster][times]) >= self.UNIQUEUSERS:

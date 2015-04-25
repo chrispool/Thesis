@@ -25,9 +25,8 @@ class EventCandidates:
         self.eventCandidates = merger.getEventCandidates()
         self.saveDateset() 
         
-    
     def saveDateset(self):
-        print("Event candidates opslaan...")
+        print("Saving event candidates...")
         #create dataset folder
         if not os.path.isdir('data/' + sys.argv[2]):
              os.makedirs('data/' + sys.argv[2])
@@ -36,7 +35,6 @@ class EventCandidates:
 
         with open(filenameEC, 'w') as outfile:
             json.dump(self.eventCandidates, outfile)
-        
 
 if __name__ == "__main__":
     if not len(sys.argv) == 3:
