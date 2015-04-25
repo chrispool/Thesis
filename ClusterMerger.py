@@ -35,7 +35,6 @@ class ClusterMerger:
         self.eventCandidates = self.__selectEventCandidates()
         self.createMarkers()
         
-        
     # Bereken de idf-waarden gegeven (event) candidate clusters. Dit kan helaas niet zo heel
     # efficient in de huidige datastructuur.
     def __calculateIdf(self, clusters):
@@ -53,27 +52,6 @@ class ClusterMerger:
                     
         for word in self.idf:
             self.idf[word] = log2(n/self.idf[word])
-    
-    # bereken de top tf-idf woorden voor een cluster. 
-    # TODO Dit kan misschien nog iets mooier
-    # TODO Selectie van "whitelist-users" voor een cluster
-    def __topTfIdf(self, tweetCluster, n = 5):
-        tfIdfDict = defaultdict(float)
-        # bepaal de tf-waarden
-        for tweet in tweetCluster:
-            for word in tweet["tokens"]:
-                tfIdfDict[word] += 1
-        # vermenigvuldig nu tf met idf (dit gedeelte kan ook weggelaten
-        # worden om te testen met alleen tf!)
-        for word in tfIdfDict:
-            tfIdfDict[word] *= self.idf[word]
-        # en geef een set van de top n woorden terug
-        sort = set(sorted(tfIdfDict.items(), key = itemgetter(1), reverse = True)[:n])
-        topTfIdf = set()
-        for word,tfIdf in sort:
-            topTfIdf.add(word)
-        
-        return topTfIdf
 
     def __mergeClusters(self):
         for geoHash in self.clusters:
@@ -93,13 +71,11 @@ class ClusterMerger:
                                     # is de key al in de lijst te verwijderen clusters dan niet meer gebruiken   
                                     clustersToAdd.append((neighbor, neighborTimestamp)) 
                                     self.mergedClusters.append((geoHash,timestamp)) # for display
-
                         #samenvoegen en verwijderen van samengevoegde clusters
                         for c, t in clustersToAdd:
                             self.clusters[geoHash][timestamp].extend(self.clusters[c][t])
                             del self.clusters[c][t] #delete neighbour
 
-                                 
     def __calculateTimeOverlap(self, cluster, neighbourCluster):
         clusterT = sorted([ row['unixTime'] for row in cluster ])
         neighbourClusterT = sorted([ row['unixTime'] for row in neighbourCluster ])
@@ -108,9 +84,6 @@ class ClusterMerger:
                 return True
 
         return False
-
-        
-
 
     def __calculateOverlap(self,clusterA, clusterB):      
         wordsClusterA = self.__getImportantWords(20, clusterA)
@@ -195,5 +168,4 @@ class ClusterMerger:
                 #if (hashes, times) in self.mergedClusters:
                 js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
         js.write('];')
-        js.close() 
-
+        js.close()
