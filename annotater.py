@@ -88,7 +88,7 @@ class Annotater:
     def formatTweets(self, cluster):
         text = [tweet['user'] + ' -> ' + tweet['text'] for tweet in cluster]
         text.append((" "))
-        text.append(features.wordOverlapDisplay(cluster))
+        text.append(str(features.wordOverlapDisplay(cluster)))
         return '\n'.join(text)
 
 if __name__ == "__main__":

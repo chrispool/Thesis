@@ -29,6 +29,25 @@ def wordOverlap(candidate):
         return round(s * 2) / 2 #round to 0.5
  
 
+def overlapHashtags(candidate):
+    #find all hashtags
+    h = []
+    hashTagsC = Counter()
+    for row in candidate:
+        for token in row['tokens']:
+            if token[0] == '#':
+                h.append(token)
+    hashtags = set(h)
+    
+    for hashtag in hashtags:
+        for row in candidate:
+            if hashtag in row['tokens']:
+                hashTagsC[hashtag] += 1
+
+    return round((sum(hashTagsC.values()) / len(candidate)) * 2 ) / 2
+
+
+
 def wordOverlapDisplay(candidate):
     types = Counter()
     tokens = Counter()

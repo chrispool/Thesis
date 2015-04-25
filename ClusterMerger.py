@@ -20,7 +20,7 @@ class ClusterMerger:
         # SETTINGS
         self.N_TWEETS = 2     # Min hoeveelheid tweets in candidate cluster
         self.UNIQUEUSERS = 2  # Min hoeveelheid tweets in candidate cluster
-        self.THRESHOLD = 55   # Word overlap score om clusters samen te voegen
+        self.THRESHOLD = 30   # Word overlap score om clusters samen te voegen
         self.MINUTES = 60     # Na hoeveel minuten kan een candidate cluster
                               # niet meer bij een ander candidate cluster horen?
         
@@ -33,6 +33,7 @@ class ClusterMerger:
 
         self.eventCandidates = self.__selectEventCandidates()
         self.createMarkers()
+        
         
     # Bereken de idf-waarden gegeven (event) candidate clusters. Dit kan helaas niet zo heel
     # efficient in de huidige datastructuur.
@@ -99,16 +100,19 @@ class ClusterMerger:
 
                                  
     def __calculateOverlap(self,clusterA, clusterB):      
-        wordsClusterA = self.__getImportantWords(10, clusterA)
-        wordsClusterB = self.__getImportantWords(10, clusterB)
+        wordsClusterA = self.__getImportantWords(20, clusterA)
+        wordsClusterB = self.__getImportantWords(20, clusterB)
         result = {}
         
         #intersect the two lists and adding the scores
         for wordA, scoreA in wordsClusterA:
             for wordB, scoreB in wordsClusterB:
                 if wordA == wordB:
-                    result[wordA] = scoreA + scoreB
 
+                    result[wordA] = scoreA + scoreB
+                    #nog iets doen met hashtag, if hashtag score is * 2???
+                    if wordA[0] == '#':
+                        result[wordA] *= 2
         if sum(result.values()) > self.THRESHOLD:
             return True
         else:
@@ -140,9 +144,6 @@ class ClusterMerger:
             
     def getEventCandidates(self):
         return self.eventCandidates
-
-
-    
 
     def createMarkers(self):
         print("Creating Google Maps markers...")
@@ -176,10 +177,8 @@ class ClusterMerger:
                 avgLat /= i
                 writableCluster += "Word overlap: {}, uniqueUsers: {} ".format(features.wordOverlapDisplay(tweets),features.uniqueUsers(tweets))
             # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
-            
-                js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
+                if (hashes, times) in self.mergedClusters:
+                    js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
         js.write('];')
         js.close() 
 
-
-    

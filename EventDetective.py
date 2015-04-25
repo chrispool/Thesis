@@ -61,7 +61,7 @@ class EventDetective:
         #classifier = nltk.MaxentClassifier.train(train)
         #classifier = nltk.DecisionTreeClassifier.train(train)
         
-        print(classifier.show_most_informative_features(5))
+        print(classifier.show_most_informative_features(10))
         
         refsets = defaultdict(set)
         testsets = defaultdict(set)
@@ -88,6 +88,7 @@ class EventDetective:
         featuresDict['nUsers'] = features.uniqueUsers(cluster)
         featuresDict['nTweets'] = features.nTweets(cluster) #zonder deze feature presteert de classifier beter...
         featuresDict['atRatio'] = features.atRatio(cluster) 
+        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster) 
 
         return featuresDict
 
