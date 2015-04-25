@@ -38,17 +38,22 @@ class Annotater:
 
     def annotateCandidates(self):
         self.annotatedEvents = defaultdict(self.__annotationDict)
+        #calculate n of clusters, dit moet makkelijker kunnen :)
+        nClusters = 0
+        for g in self.candidates:
+            nClusters += len(self.candidates[g])
+        
         nEvents = 0
         nCandidates = 0
         for geohash in self.candidates:
             for timestamp in self.candidates[geohash]:
                 nCandidates += 1
                 print()
-                print("--------------------------")
+                print("---------{} van de {}-----------------".format(nCandidates, nClusters))
                 print(self.formatTweets(self.candidates[geohash][timestamp]))
                 print("--------------------------")
                 print()
-                eventTypes = {"geen event":0, "sport":1, "politiek":2, "bijeenkomst":3, "ongeval":4, "concert":5, "anders":6}
+                eventTypes = {"geen event":0, "sport":1, "entertainment":2, "bijeenkomst":3, "112":4, "anders":5}
                 # sorteer event types voor weergave
                 sortedEventTypes = sorted(eventTypes, key = eventTypes.get)
                 eventString = "|"
@@ -82,6 +87,8 @@ class Annotater:
 
     def formatTweets(self, cluster):
         text = [tweet['user'] + ' -> ' + tweet['text'] for tweet in cluster]
+        text.append((" "))
+        text.append(features.wordOverlapDisplay(cluster))
         return '\n'.join(text)
 
 if __name__ == "__main__":

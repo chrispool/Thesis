@@ -58,6 +58,8 @@ class EventDetective:
         train = self.dataset[:50]
         test = self.dataset[50:]
         classifier = nltk.NaiveBayesClassifier.train(train)
+        #classifier = nltk.MaxentClassifier.train(train)
+        #classifier = nltk.DecisionTreeClassifier.train(train)
         
         print(classifier.show_most_informative_features(5))
         
@@ -79,6 +81,7 @@ class EventDetective:
         print ('Recall Non-event:', nltk.metrics.recall(refsets['noEvent'], testsets['noEvent']))
         print ('F-measure Non-event:', nltk.metrics.f_measure(refsets['noEvent'], testsets['noEvent']))
 
+    
     def featureSelector(self, cluster):
         featuresDict = {}
         featuresDict['overlap'] = features.wordOverlap(cluster)
