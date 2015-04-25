@@ -9,11 +9,13 @@ def wordOverlap(candidate):
     for row in candidate:    
         types.update(set(row['tokens']))
         tokens.update(row['tokens'])  
-    #calculate cluster IDF
+    
+    #calculate cluster IDF, hoe waardevol is woord in cluster
     for token in tokens:   
-        tokens[token] = log(len(tokens)/tokens[token])  #dat het voor komt in de eigen tweet is niet relevant
+        tokens[token] = log(len(tokens)/tokens[token])  
         if token[0] == '#':
             tokens[token] *= 5
+    
     maxscore = 0
     score = 0
     for t in types:
