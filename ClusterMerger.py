@@ -109,9 +109,6 @@ class ClusterMerger:
 
         return False
 
-        
-
-
     def __calculateOverlap(self,clusterA, clusterB):      
         wordsClusterA = self.__getImportantWords(20, clusterA)
         wordsClusterB = self.__getImportantWords(20, clusterB)
@@ -128,6 +125,9 @@ class ClusterMerger:
                         result[wordA] *= 2
                     if wordA[0] == '@':
                         result[wordA] *= 2
+                    if wordA[0] == '%':
+                        result[wordA] *= 5
+
         if sum(result.values()) > self.THRESHOLD:
             return True
         else:
