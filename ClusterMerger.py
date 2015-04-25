@@ -126,6 +126,8 @@ class ClusterMerger:
                     #nog iets doen met hashtag, if hashtag score is * 2???
                     if wordA[0] == '#':
                         result[wordA] *= 2
+                    if wordA[0] == '@':
+                        result[wordA] *= 2
         if sum(result.values()) > self.THRESHOLD:
             return True
         else:
