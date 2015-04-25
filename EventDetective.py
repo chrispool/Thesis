@@ -6,28 +6,25 @@ EventDetective
 ##############
 Detecteert events gegeven dataset
 """
-import os, sys, msgpack, time, json
+import features
+import os, sys, json
 from collections import defaultdict, Counter
 import nltk
-from nltk.stem.snowball import SnowballStemmer
-from math import log
+from math import log, log2
+
+
 class EventDetective:
 
     def __init__(self):
-        #self.__emptyClusterFolder()
-        self.stemmer = SnowballStemmer("dutch", ignore_stopwords=True)
-        self.words = Counter()
         self.dataSets = os.listdir('data/')
+        self.words = Counter()
         self.annotation = {}
         self.candidates = {}
         self.__loadDataSet()
         self.calculateIDF()
-        self.classifyEvents()
-        #self.selectEvents()
+        self.classifyNLTK()
     
-    def eventDic(self):
-        return defaultdict(list)    
-
+    
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
@@ -50,102 +47,54 @@ class EventDetective:
         for word in self.words:
             self.words[word] = log(n/self.words[word])   
     
-    def classifyEvents(self):
-        self.value = 4.5
+    def classifyNLTK(self):
+        self.dataset = []
+        for g in self.candidates:
+            if g in self.annotation:
+                for t in self.candidates[g]:
+                    if t in self.annotation[g]:
+                        self.dataset.append( (self.featureSelector(self.candidates[g][t]), self.isEvent(g,t)  ))
+    
+        train = self.dataset[:75]
+        test = self.dataset[75:]
+        classifier = nltk.NaiveBayesClassifier.train(train)
+        
+        print(classifier.show_most_informative_features(5))
+        
+        refsets = defaultdict(set)
+        testsets = defaultdict(set)
 
-            
-        self.events = defaultdict(self.eventDic)
-        self.noevents = defaultdict(self.eventDic)
-        for geohash in self.candidates:
-            for timestamp in self.candidates[geohash]:
-                if self.featureWordOverlap(self.candidates[geohash][timestamp]) >= self.value:
-                    self.events[geohash][timestamp] = self.candidates[geohash][timestamp]
-                else:
-                    self.noevents[geohash][timestamp] = self.candidates[geohash][timestamp]
-        self.calculatePrecisionRecall()
-
-
-    def generateGoogleMap(self):
-        pass
-
-    def calculatePrecisionRecall(self):
-        tp = 0 #true positive
-        fp = 0 #false positive
-        tn = 0 #true negative
-        fn = 0 #false negative
-
-        for geohash in self.events:
-            if geohash in self.annotation:
-                for timestamp in self.events[geohash]:
-                    if timestamp in self.annotation[geohash]:
-                        if self.annotation[geohash][timestamp] > 0: #goed geclassificeerd
-                            tp += 1
-                        else:
-                            fp += 1
-                            self.printTweets(self.events[geohash][timestamp], 'False positive')
-                    
-        for geohash in self.noevents:
-            if geohash in self.annotation:
-                for timestamp in self.noevents[geohash]:
-                    if timestamp in self.annotation[geohash]:
-                        if self.annotation[geohash][timestamp] == 0: #goed geclassificeerd
-                            tn += 1
-                        else:
-                            fn += 1
-                            self.printTweets(self.noevents[geohash][timestamp], 'False negative')
-
-        nDoc = tp+fp+tn+fn
-        precision = tp / (tp + fp)  #fraction of retrieved documents that are relevant
-        recall = tp / (tp + fn)
-        accuracy = (tp + tn) / (tp + tn + fp + fn)
-        fscore = 2 * ((precision * recall)/(precision + recall))
-        print("Value = {:.1f}, Precision: {:.2f} Recall: {:.2f} accuracy: {:.2f} fscore: {:.2f}".format(self.value, precision, recall, accuracy, fscore))
-
-       
-    def printTweets(self, cluster, message):
+        for i, (feats, label) in enumerate(test):
+            refsets[label].add(i)
+            observed = classifier.classify(feats)
+            testsets[observed].add(i)
+        
+        print("accuracy: {}".format(nltk.classify.accuracy(classifier,test)))
         print()
-        print("<------{}-------->".format(message))
-        for tweet in cluster:
-            print(tweet['text'])
+        print ('Precision Event:', nltk.metrics.precision(refsets['event'], testsets['event']))
+        print ('Recall Event:', nltk.metrics.recall(refsets['event'], testsets['event']))
+        print ('F-measure Event:', nltk.metrics.f_measure(refsets['event'], testsets['event']))
         print()
+        print ('Precision Non-event:', nltk.metrics.precision(refsets['noEvent'], testsets['noEvent']))
+        print ('Recall Non-event:', nltk.metrics.recall(refsets['noEvent'], testsets['noEvent']))
+        print ('F-measure Non-event:', nltk.metrics.f_measure(refsets['noEvent'], testsets['noEvent']))
+
+    def featureSelector(self, cluster):
+        featuresDict = {}
+        featuresDict['overlap'] = features.wordOverlap(cluster)
+        featuresDict['nUsers'] = features.uniqueUsers(cluster)
+        featuresDict['nTweets'] = features.nTweets(cluster) #zonder deze feature presteert de classifier beter...
+
+        return featuresDict
 
 
-    def featureWordOverlap(self, candidate):
-        print("calculate Word overlap")
-        types = Counter()
-        tokens = Counter()
-        n = len(candidate)
-        for row in candidate:    
-            types.update(set(row['tokens']))
-            tokens.update(row['tokens'])  
-        #calculate cluster IDF
-        for token in tokens:
-            tokens[token] = log(len(tokens)/tokens[token])  #dat het voor komt in de eigen tweet is niet relevant
-            print(tokens[token][0])
-            if tokens[token][0] == '#':
-                print(tokens[token])
-                tokens[token] = tokens[token] * 10 
-        maxscore = 0
-        score = 0
-        for t in types:
-            maxscore += n * tokens[t]
-            if types[t] > 1: #ignore if only in one tweet
-                score += types[t] * tokens[t]
+    def isEvent(self,geohash,timestamp):
+        if self.annotation[geohash][timestamp] > 0:
+            return 'event'
+        else:
+            return 'noEvent'
 
-        return score / maxscore
-
-    def selectEvents(self):
-        n = 21
-        print("\n### A selection of", n, "detected events ###\n")
-        count = 0
-        for geoHash in self.candidates:
-            for times in self.candidates[geoHash]:
-                for tweet in self.candidates[geoHash][times]:
-                   print(tweet["localTime"], tweet["user"], tweet["text"])
-            print()
-            count += 1
-            if count == 10:
-                break
+    
 
 # DEMO
 if __name__ == "__main__":
