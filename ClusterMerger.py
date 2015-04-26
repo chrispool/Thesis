@@ -79,18 +79,32 @@ class ClusterMerger:
         #samenvoegen en verwijderen van samengevoegde clusters
         for geoHash, neighbor, timestamp, neighborTimestamp in clustersToAdd:
             self.clusters[geoHash][timestamp].extend(self.clusters[neighbor][neighborTimestamp])
-            del self.clusters[neighbor][neighborTimestamp] #delete neighbour
+            del self.clusters[neighbor][neighborTimestamp] # delete neighbor
         
-    def _calculateTimeOverlap(self, cluster, neighbourCluster):
-        clusterT = sorted([ row['unixTime'] for row in cluster ])
-        neighbourClusterT = sorted([ row['unixTime'] for row in neighbourCluster ])
+    def _calculateTimeOverlap(self, cluster, neighborCluster):
+        beginTime = cluster[0]['unixTime']
+        endTime = cluster[-1]['unixTime']
+        neighBeginTime = neighborCluster[0]['unixTime']
+        neighEndTime = neighborCluster[-1]['unixTime']
+        mins = self.MINUTES * 60
+        
+        # begin- of eindtijd van cluster ligt binnen neighborCluster of andersom
+        if neighBeginTime - mins <= beginTime <= neighEndTime + mins or \
+           neighBeginTime - mins <= endTime <= neighEndTime + mins or \
+           beginTime - mins <= neighBeginTime <= endTime + mins or \
+           beginTime - mins <= neighEndTime <= endTime + mins:
+               return True
+           
+        
+        """clusterT = sorted([ row['unixTime'] for row in cluster ])
+        neighborClusterT = sorted([ row['unixTime'] for row in neighborCluster ])
         for times1 in clusterT:
-            for times2 in neighbourClusterT:
+            for times2 in neighborClusterT:
                 # nogal naief, maar volgens mij dekte de eerste check niet alle tijden
                 if abs(times1-times2) <= self.MINUTES * 60:
                     return True
-        
-        #for t in neighbourClusterT: 
+        """
+        #for t in neighborClusterT: 
         #    if clusterT[0] - (self.MINUTES * 60) <= t <= clusterT[-1] - (self.MINUTES * 60):
         #        return True
         

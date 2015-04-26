@@ -6,7 +6,7 @@ eventCandidates
 #############
 Generates eventCandidates and exports dataset to folder
 """
-import sys,pickle,os,json
+import sys,pickle,os,json,time
 from TweetPreprocessor import TweetPreprocessor
 from ClusterCreator import ClusterCreator
 from ClusterMerger import ClusterMerger
@@ -40,4 +40,7 @@ if __name__ == "__main__":
     if not len(sys.argv) == 3:
         print("use: eventCandidates.py tweetfile datasetname")
     else:
+        start = time.time()
         ec = EventCandidates(sys.argv[1])
+        print("Creating event candidates took", time.time() - start, "seconds.")
+        

@@ -2,7 +2,7 @@
 
 """
 #############
-annotater
+Annotator
 #############
 Annotates dataset
 """
@@ -10,19 +10,18 @@ import sys,pickle,os,json
 from collections import defaultdict
 import features
 
-class Annotater:    
+class Annotator:    
     
     def __init__(self, judge):
         self.dataSets = os.listdir('data/')
         self.judge = judge
         self.annotation = {}
         self.candidates = {}
-        self.__loadDataSet()
-        self.annotateCandidates()
-        self.saveAnnotation()
+        self._loadDataSet()
+        self._annotateCandidates()
+        self._saveAnnotation()
 
-        
-    def __loadDataSet(self):
+    def _loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
         choice = int(input("Select dataset: "))
@@ -32,12 +31,11 @@ class Annotater:
         jsonFile =  open("data/" + self.dataSets[choice] + "/eventCandidates.json")
         self.candidates = json.load(jsonFile)
 
-
-    def __annotationDict(self):
+    def _annotationDict(self):
         return defaultdict(list)
 
-    def annotateCandidates(self):
-        self.annotatedEvents = defaultdict(self.__annotationDict)
+    def _annotateCandidates(self):
+        self.annotatedEvents = defaultdict(self._annotationDict)
         #calculate n of clusters, dit moet makkelijker kunnen :)
         nClusters = 0
         for g in self.candidates:
@@ -53,13 +51,13 @@ class Annotater:
                 print(self.formatTweets(self.candidates[geohash][timestamp]))
                 print("--------------------------")
                 print()
-                eventTypes = {"geen event":0, "sport":1, "entertainment":2, "bijeenkomst":3, "112":4, "anders":5}
+                eventTypes = {"geen event":0, "sport":1, "entertainment":2, "bijeenkomst":3, "incident":4, "anders":5}
                 # sorteer event types voor weergave
                 sortedEventTypes = sorted(eventTypes, key = eventTypes.get)
                 eventString = "|"
                 for eventType in sortedEventTypes:
                     eventString += " {}: {} |".format(eventType,eventTypes[eventType])
-                eventString += " "
+                eventString += " ==> "
                 
                 while True:
                     try:
@@ -74,12 +72,12 @@ class Annotater:
                     except ValueError:
                         print("Dit is geen nummer, probeer opnieuw.")
                     
-                if nCandidates == 1000:
-                    print("Total of {} are events of the {} candidates".format(nEvents, nCandidates))
+                if nCandidates == 1:
+                    print("{} out of {} event candidates are events.".format(nEvents, nCandidates))
                     return
      
-    def saveAnnotation(self):
-        print("Geannoteerde data opslaan...")
+    def _saveAnnotation(self):
+        print("Saving annotated data...")
  
         filenameA = 'data/' + self.datasetName + '/annotation_' + self.judge + '.json'
         with open(filenameA, 'w') as outfile:
@@ -93,6 +91,6 @@ class Annotater:
 
 if __name__ == "__main__":
     if not len(sys.argv) == 2:
-        print("use: annotation.py Name-judge")
+        print("use: Annotator.py Name-judge")
     else:
-        a = Annotater(sys.argv[1])
+        a = Annotator(sys.argv[1])
