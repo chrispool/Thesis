@@ -57,12 +57,6 @@ class TweetPreprocessor:
         tokens = self.pat.sub(' ', filterLinkText).lower().split()
         # filter stopwoorden, cijfers en losse karakters
         for word in tokens[:]:
-<<<<<<< HEAD
-            
-=======
-            #if word[0] == '@' or '#':
-            #    tokens.append('%' + word[1:])
->>>>>>> 140974c8253dd9ad5f12e16a997567d6c828f8af
             if word in self.stoplist or word.isdigit() or len(word) < 2:
                 tokens.remove(word)
             else:
