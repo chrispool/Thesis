@@ -6,7 +6,7 @@ eventCandidates
 #############
 Generates eventCandidates and exports dataset to folder
 """
-import sys,pickle,os,json
+import sys,pickle,os,json,time
 from TweetPreprocessor import TweetPreprocessor
 from ClusterCreator import ClusterCreator
 from ClusterMerger import ClusterMerger
@@ -25,9 +25,8 @@ class EventCandidates:
         self.eventCandidates = merger.getEventCandidates()
         self.saveDateset() 
         
-    
     def saveDateset(self):
-        print("Event candidates opslaan...")
+        print("Saving event candidates...")
         #create dataset folder
         if not os.path.isdir('data/' + sys.argv[2]):
              os.makedirs('data/' + sys.argv[2])
@@ -36,10 +35,12 @@ class EventCandidates:
 
         with open(filenameEC, 'w') as outfile:
             json.dump(self.eventCandidates, outfile)
-        
 
 if __name__ == "__main__":
     if not len(sys.argv) == 3:
         print("use: eventCandidates.py tweetfile datasetname")
     else:
+        start = time.time()
         ec = EventCandidates(sys.argv[1])
+        print("Creating event candidates took", time.time() - start, "seconds.")
+        

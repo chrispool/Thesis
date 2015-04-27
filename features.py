@@ -16,37 +16,27 @@ def wordOverlap(candidate):
         if token[0] == '#':
             tokens[token] *= 5
     
-    maxscore = 0
     score = 0
     for t in types:
-        maxscore += n * tokens[t]
         if types[t] > 1: #ignore if only in one tweet
             score += types[t] * tokens[t]
+    
     if score == 0:
         return 0
     else:
         s = log2( (score / n) )
-        return round(s * 2) / 2 #round to 0.5
+        return round(s * 2) / 2 # round to 0.5
  
-
 def overlapHashtags(candidate):
     #find all hashtags
     h = []
     hashTagsC = Counter()
-    for row in candidate:
-        for token in row['tokens']:
+    for tweet in candidate:
+        for token in tweet['tokens']:
             if token[0] == '#':
-                h.append(token)
-    hashtags = set(h)
-    
-    for hashtag in hashtags:
-        for row in candidate:
-            if hashtag in row['tokens']:
-                hashTagsC[hashtag] += 1
+                hashTagsC[token] += 1
 
     return round((sum(hashTagsC.values()) / len(candidate)) * 2 ) / 2
-
-
 
 def wordOverlapDisplay(candidate):
     types = Counter()
@@ -92,3 +82,14 @@ def uniqueUsers(cluster):
 
 def nTweets(cluster):
     return (len(cluster))
+
+def averageTfIdf(candidate, idf):
+    tokens = Counter()
+    for tweet in candidate:
+        tokens.update(tweet['tokens'])
+
+    score = 0
+    for token in tokens:
+        score += tokens[token] * idf[token]
+        
+    return score / len(candidate)
