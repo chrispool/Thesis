@@ -52,6 +52,7 @@ class ClusterMerger:
         for word in self.idf:
             self.idf[word] = log2(n/self.idf[word])
 
+
     def _mergeClusters(self):
         print("Merging clusters...")
         clustersToAdd = []
@@ -104,11 +105,13 @@ class ClusterMerger:
             for wordB, scoreB in wordsClusterB:
                 if wordA == wordB:
                     result[wordA] = scoreA + scoreB
-                    #nog iets doen met hashtag, if hashtag score is * 2???
                     if wordA[0] == '#':
                         result[wordA] *= 2
                     if wordA[0] == '@':
                         result[wordA] *= 2
+                    if wordA[0] == '%':
+                        result[wordA] *= 5
+
         if sum(result.values()) > self.THRESHOLD:
             return True
         else:
@@ -153,27 +156,27 @@ class ClusterMerger:
                 tweets = self.eventCandidates[hashes][times]
                 
                 writableCluster = ''
-                
+                gh = []
                 i = 0
                 avgLon = 0
                 avgLat = 0
                               
                 for tweet in tweets:
                     i = i + 1
-                    
+                    gh.append(tweet['geoHash'])
                     avgLon += float(tweet["lon"])
                     avgLat += float(tweet["lat"])
                     # backslashes voor multiline strings in Javascript
-                    writableCluster += "{} {} {}<br/><br/>".format(tweet['localTime'], tweet['user'], tweet['text'].replace("'", "\\'"))
+                    writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text'].replace("'", "\\'"))
                 # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
                 # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
                 # Oftewel, we doen even alsof de aarde plat is ;-)
                 
                 avgLon /= i
                 avgLat /= i
-                writableCluster += "Word overlap: {}, uniqueUsers: {} ".format(features.wordOverlapDisplay(tweets),features.uniqueUsers(tweets))
+                writableCluster += "Geohashes {}, Word overlap: {}, uniqueUsers: {} ".format(', '.join(list(set(gh))), features.wordOverlapDisplay(tweets),features.uniqueUsers(tweets))
             # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
-                #if (hashes, times) in self.mergedClusters:
+            
                 js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
         js.write('];')
         js.close()

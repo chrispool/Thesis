@@ -47,6 +47,7 @@ class TweetPreprocessor:
         
     def __tokenize(self, text):
         tokens = text.split()
+     
         # filter links
         for word in tokens[:]:
             if word.startswith("http:") or word.startswith("https:"):
@@ -56,12 +57,15 @@ class TweetPreprocessor:
         tokens = self.pat.sub(' ', filterLinkText).lower().split()
         # filter stopwoorden, cijfers en losse karakters
         for word in tokens[:]:
-            #if word[0] == '@' or '#':
-            #    tokens.append('%' + word[1:])
             if word in self.stoplist or word.isdigit() or len(word) < 2:
                 tokens.remove(word)
+            else:
+                if word.startswith("@") or word.startswith("#"):
+                    tokens.append('%' + word[1:])
         # filter dubbele woorden
+        
         return list(set(tokens))
+       
         
     # Maak de lijst van tweet dictionaries
     def __createTweetDicts(self, tweetFile):
