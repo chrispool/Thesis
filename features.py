@@ -1,31 +1,31 @@
 '''functions to extract features'''
-from collections import Counter
+from collections import Counter, defaultdict
 from math import log, log2
 
 def wordOverlap(candidate):
-    types = Counter()
+    types = Counter() #counter with n of tweets this term occurs
     tokens = Counter()
+    idf = defaultdict(float)
     n = len(candidate)
     for row in candidate:    
         types.update(set(row['tokens']))
         tokens.update(row['tokens'])  
-    
     #calculate cluster IDF, hoe waardevol is woord in cluster
-    for token in tokens:   
-        tokens[token] = log(len(tokens)/tokens[token])  
-        if token[0] == '#':
-            tokens[token] *= 5
+    #IDF(t) = log_e(Total number of documents / Number of documents with term t in it).   
+    for t in types:
+        idf[t] += log(n/types[t]) 
+        if t[0] == '#':
+             idf[t] *= 3
     
     score = 0
     for t in types:
         if types[t] > 1: #ignore if only in one tweet
-            score += types[t] * tokens[t]
+            score += types[t] * idf[t]
     
     if score == 0:
         return 0
     else:
-        s = log2( (score / n) )
-        return round(s * 2) / 2 # round to 0.5
+        return round((score / n) * 2) / 2 # round to 0.5
  
 def overlapHashtags(candidate):
     #find all hashtags
@@ -39,31 +39,33 @@ def overlapHashtags(candidate):
     return round((sum(hashTagsC.values()) / len(candidate)) * 2 ) / 2
 
 def wordOverlapDisplay(candidate):
-    types = Counter()
+    types = Counter() #counter with n of tweets this term occurs
     tokens = Counter()
+    idf = defaultdict(float)
     n = len(candidate)
     for row in candidate:    
         types.update(set(row['tokens']))
         tokens.update(row['tokens'])  
     
     #calculate cluster IDF, hoe waardevol is woord in cluster
-    for token in tokens:   
-        tokens[token] = log(len(tokens)/tokens[token])  
-        if token[0] == '#':
-            tokens[token] *= 5
+    #IDF(t) = log_e(Total number of documents / Number of documents with term t in it).
     
+    for t in types:
+        idf[t] += log(n/types[t]) 
+        if t[0] == '#':
+             idf[t] *= 3
     maxscore = 0
     score = 0
     for t in types:
         maxscore += n * tokens[t]
         if types[t] > 1: #ignore if only in one tweet
-            score += types[t] * tokens[t]
+            score += types[t] * idf[t]
     if score == 0 or n == 0:
         return 0
     else:
-        s =  (score / n) 
-        value = round(s * 2) / 2 #round to 0.5
-        common = [w + "(" + str(tokens[w]) + str(c * types[t]) + ")" for w,c in types.most_common(3)]
+        
+        value = round((score / n) * 2) / 2 #round to 0.5
+        common = [w + "(" + str(tokens[w]) + str(c * idf[t]) + ")" for w,c in types.most_common(3)]
         return "Score: {:.2f} , Overlapping words: {} ".format( value, ' '.join(common ))   
         
 
