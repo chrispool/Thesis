@@ -76,28 +76,29 @@ class ClusterMerger:
         return topTfIdf
 
     def __mergeClusters(self):
-        for geoHash in self.clusters:
-            neighbors = geohash.neighbors(geoHash)
-            for neighbor in neighbors:
-                if neighbor in self.clusters:
-                    for timestamp in self.clusters[geoHash].keys():
-                        # er is een neigbor, dus alle timestamps vergelijken of er een neighbor is met dezeflde 
-                        # timetsamp plus of min 60 minuten
-                        for neighborTimestamp in self.clusters[neighbor].keys():
-                            clustersToAdd = []
-                            # Misschien hiervoor samen een betere oplossing verzinnen, 
-                            # Nu hou ik een lijst met clusters die we moeten verwijderen bij omdat je 
-                            # geen keys mag verwijderen in de loop
-                            if self.__calculateTimeOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]) == True:
-                                if self.__calculateOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]):
-                                    # is de key al in de lijst te verwijderen clusters dan niet meer gebruiken   
-                                    clustersToAdd.append((neighbor, neighborTimestamp)) 
-                                    self.mergedClusters.append((geoHash,timestamp)) # for display
+        for i in range(5):
+            for geoHash in self.clusters:
+                neighbors = geohash.neighbors(geoHash)
+                for neighbor in neighbors:
+                    if neighbor in self.clusters:
+                        for timestamp in self.clusters[geoHash].keys():
+                            # er is een neigbor, dus alle timestamps vergelijken of er een neighbor is met dezeflde 
+                            # timetsamp plus of min 60 minuten
+                            for neighborTimestamp in self.clusters[neighbor].keys():
+                                clustersToAdd = []
+                                # Misschien hiervoor samen een betere oplossing verzinnen, 
+                                # Nu hou ik een lijst met clusters die we moeten verwijderen bij omdat je 
+                                # geen keys mag verwijderen in de loop
+                                if self.__calculateTimeOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]) == True:
+                                    if self.__calculateOverlap(self.clusters[geoHash][timestamp], self.clusters[neighbor][neighborTimestamp]):
+                                        # is de key al in de lijst te verwijderen clusters dan niet meer gebruiken   
+                                        clustersToAdd.append((neighbor, neighborTimestamp)) 
+                                        self.mergedClusters.append((geoHash,timestamp)) # for display
 
-                        #samenvoegen en verwijderen van samengevoegde clusters
-                        for c, t in clustersToAdd:
-                            self.clusters[geoHash][timestamp].extend(self.clusters[c][t])
-                            del self.clusters[c][t] #delete neighbour
+                            #samenvoegen en verwijderen van samengevoegde clusters
+                            for c, t in clustersToAdd:
+                                self.clusters[geoHash][timestamp].extend(self.clusters[c][t])
+                                del self.clusters[c][t] #delete neighbour
 
                                  
     def __calculateTimeOverlap(self, cluster, neighbourCluster):
@@ -120,7 +121,6 @@ class ClusterMerger:
                 if wordA == wordB:
 
                     result[wordA] = scoreA + scoreB
-                    #nog iets doen met hashtag, if hashtag score is * 2???
                     if wordA[0] == '#':
                         result[wordA] *= 2
                     if wordA[0] == '@':
@@ -172,27 +172,27 @@ class ClusterMerger:
                 tweets = self.eventCandidates[hashes][times]
                 
                 writableCluster = ''
-                
+                gh = []
                 i = 0
                 avgLon = 0
                 avgLat = 0
                               
                 for tweet in tweets:
                     i = i + 1
-                    
+                    gh.append(tweet['geoHash'])
                     avgLon += float(tweet["lon"])
                     avgLat += float(tweet["lat"])
                     # backslashes voor multiline strings in Javascript
-                    writableCluster += "{} {} {}<br/><br/>".format(tweet['localTime'], tweet['user'], tweet['text'].replace("'", "\\'"))
+                    writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text'].replace("'", "\\'"))
                 # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
                 # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
                 # Oftewel, we doen even alsof de aarde plat is ;-)
                 
                 avgLon /= i
                 avgLat /= i
-                writableCluster += "Word overlap: {}, uniqueUsers: {} ".format(features.wordOverlapDisplay(tweets),features.uniqueUsers(tweets))
+                writableCluster += "Geohashes {}, Word overlap: {}, uniqueUsers: {} ".format(', '.join(list(set(gh))), features.wordOverlapDisplay(tweets),features.uniqueUsers(tweets))
             # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
-                #if (hashes, times) in self.mergedClusters:
+            
                 js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
         js.write('];')
         js.close() 
