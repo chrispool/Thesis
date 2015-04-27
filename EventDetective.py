@@ -11,6 +11,9 @@ import os, sys, json
 from collections import defaultdict, Counter
 import nltk
 from math import log, log2
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC
+from nltk.classify.scikitlearn import SklearnClassifier
 
 class EventDetective:
 
@@ -28,7 +31,7 @@ class EventDetective:
             print("{}: {}".format(i, dataset))
         choice = int(input("Select dataset: "))
         
-        with open("data/" + self.dataSets[choice] + "/annotation.json") as jsonFile:
+        with open("data/" + self.dataSets[choice] + "/annotation_David.json") as jsonFile:
             self.annotation = json.load(jsonFile)
 
         with open("data/" + self.dataSets[choice] + "/eventCandidates.json") as jsonFile:
@@ -55,8 +58,10 @@ class EventDetective:
                         if t in self.annotation[g]:
                             self.dataset.append( (self.featureSelector(self.candidates[g][t]), self.isEvent(g,t)  ))
         
-            train = self.dataset[:75]
-            test = self.dataset[75:]
+            dataLen = len(self.dataset)
+            trainSplit = int(0.8 * dataLen)
+            train = self.dataset[:trainSplit]
+            test = self.dataset[trainSplit:]
             classifier = nltk.NaiveBayesClassifier.train(train)
             #classifier = nltk.MaxentClassifier.train(train)
             #classifier = nltk.DecisionTreeClassifier.train(train)
@@ -87,10 +92,10 @@ class EventDetective:
     def featureSelector(self, cluster):
         featuresDict = {}
         featuresDict['overlap'] = features.wordOverlap(cluster)
-        #featuresDict['nUsers'] = features.uniqueUsers(cluster)
-        #featuresDict['nTweets'] = features.nTweets(cluster) #zonder deze feature presteert de classifier beter...
-        #featuresDict['atRatio'] = features.atRatio(cluster) 
-        #featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
+        featuresDict['nUsers'] = features.uniqueUsers(cluster)
+        featuresDict['nTweets'] = features.nTweets(cluster)
+        featuresDict['atRatio'] = features.atRatio(cluster) 
+        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
         #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
 
         return featuresDict
