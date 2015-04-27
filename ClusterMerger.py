@@ -109,8 +109,6 @@ class ClusterMerger:
                         result[wordA] *= 2
                     if wordA[0] == '@':
                         result[wordA] *= 2
-                    if wordA[0] == '%':
-                        result[wordA] *= 5
 
         if sum(result.values()) > self.THRESHOLD:
             return True
