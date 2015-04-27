@@ -24,7 +24,11 @@ class EventCandidates:
         merger = ClusterMerger(clusters)
         self.eventCandidates = merger.getEventCandidates()
         self.saveDateset() 
-        
+    
+
+    def _eventCandidatesDic(self):
+        return defaultdict(list)
+
     def saveDateset(self):
         print("Saving event candidates...")
         #create dataset folder
@@ -32,9 +36,19 @@ class EventCandidates:
              os.makedirs('data/' + sys.argv[2])
         
         filenameEC = 'data/' + sys.argv[2] + '/eventCandidates.json'
+        i = 0
+
+        events = defaultdict(self._eventCandidatesDic)
+        for geohash in self.eventCandidates:
+            for timestamp in self.eventCandidates[geohash]:
+                i += 1
+                if i <= 1250:
+                    events[geohash][timestamp] = self.eventCandidates[geohash][timestamp]
+                else:
+                    break
 
         with open(filenameEC, 'w') as outfile:
-            json.dump(self.eventCandidates, outfile)
+            json.dump(events, outfile)
 
 if __name__ == "__main__":
     if not len(sys.argv) == 3:
