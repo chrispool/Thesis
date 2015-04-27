@@ -94,20 +94,7 @@ class ClusterMerger:
            beginTime - mins <= neighBeginTime <= endTime + mins or \
            beginTime - mins <= neighEndTime <= endTime + mins:
                return True
-           
-        
-        """clusterT = sorted([ row['unixTime'] for row in cluster ])
-        neighborClusterT = sorted([ row['unixTime'] for row in neighborCluster ])
-        for times1 in clusterT:
-            for times2 in neighborClusterT:
-                # nogal naief, maar volgens mij dekte de eerste check niet alle tijden
-                if abs(times1-times2) <= self.MINUTES * 60:
-                    return True
-        """
-        #for t in neighborClusterT: 
-        #    if clusterT[0] - (self.MINUTES * 60) <= t <= clusterT[-1] - (self.MINUTES * 60):
-        #        return True
-        
+
         return False
 
     def _calculateWordOverlap(self,clusterA, clusterB):      
