@@ -55,8 +55,8 @@ class EventDetective:
                         if t in self.annotation[g]:
                             self.dataset.append( (self.featureSelector(self.candidates[g][t]), self.isEvent(g,t)  ))
         
-            train = self.dataset[:50]
-            test = self.dataset[50:]
+            train = self.dataset[:75]
+            test = self.dataset[75:]
             classifier = nltk.NaiveBayesClassifier.train(train)
             #classifier = nltk.MaxentClassifier.train(train)
             #classifier = nltk.DecisionTreeClassifier.train(train)
@@ -87,10 +87,10 @@ class EventDetective:
     def featureSelector(self, cluster):
         featuresDict = {}
         featuresDict['overlap'] = features.wordOverlap(cluster)
-        featuresDict['nUsers'] = features.uniqueUsers(cluster)
-        featuresDict['nTweets'] = features.nTweets(cluster) #zonder deze feature presteert de classifier beter...
-        featuresDict['atRatio'] = features.atRatio(cluster) 
-        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
+        #featuresDict['nUsers'] = features.uniqueUsers(cluster)
+        #featuresDict['nTweets'] = features.nTweets(cluster) #zonder deze feature presteert de classifier beter...
+        #featuresDict['atRatio'] = features.atRatio(cluster) 
+        #featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
         #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
 
         return featuresDict
