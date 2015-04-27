@@ -28,12 +28,11 @@ class EventDetective:
             print("{}: {}".format(i, dataset))
         choice = int(input("Select dataset: "))
         
-        #todo, wat als je verkeerde dataset opgeeft..		
-        jsonFile =  open("data/" + self.dataSets[choice] + "/annotation.json")
-        self.annotation = json.load(jsonFile)
+        with open("data/" + self.dataSets[choice] + "/annotation.json") as jsonFile:
+            self.annotation = json.load(jsonFile)
 
-        jsonFile =  open("data/" + self.dataSets[choice] + "/eventCandidates.json")
-        self.candidates = json.load(jsonFile)
+        with open("data/" + self.dataSets[choice] + "/eventCandidates.json") as jsonFile:
+            self.candidates = json.load(jsonFile)
 
     def calculateIDF(self):
         n = 0        
