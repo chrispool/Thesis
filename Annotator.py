@@ -72,10 +72,8 @@ class Annotator:
                     except ValueError:
                         print("Dit is geen nummer, probeer opnieuw.")
                     
-                if nCandidates == 1:
-                    print("{} out of {} event candidates are events.".format(nEvents, nCandidates))
-                    return
-     
+        print("{} out of {} event candidates are events.".format(nEvents, nCandidates))
+
     def _saveAnnotation(self):
         print("Saving annotated data...")
  
