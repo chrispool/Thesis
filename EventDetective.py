@@ -12,18 +12,16 @@ from collections import defaultdict, Counter
 import nltk
 from math import log, log2
 
-
 class EventDetective:
 
     def __init__(self):
         self.dataSets = os.listdir('data/')
-        self.words = Counter()
+        self.idf = Counter()
         self.annotation = {}
         self.candidates = {}
         self.__loadDataSet()
         self.calculateIDF()
         self.classifyNLTK()
-    
     
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -41,11 +39,12 @@ class EventDetective:
         n = 0        
         for geohash in self.candidates:
             for timestamp in self.candidates[geohash]:
+                # een tweet is een document (niet een cluster)
                 for tweet in self.candidates[geohash][timestamp]:
-                    self.words.update(set(tweet['tokens']))
+                    self.idf.update(set(tweet['tokens']))
                     n += 1
-        for word in self.words:
-            self.words[word] = log(n/self.words[word])   
+        for word in self.idf:
+            self.idf[word] = log(n/self.idf[word])   
     
     def classifyNLTK(self):
         accuracy = 0
@@ -92,18 +91,17 @@ class EventDetective:
         featuresDict['nUsers'] = features.uniqueUsers(cluster)
         featuresDict['nTweets'] = features.nTweets(cluster) #zonder deze feature presteert de classifier beter...
         featuresDict['atRatio'] = features.atRatio(cluster) 
-        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster) 
+        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
+        #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
 
         return featuresDict
 
-
     def isEvent(self,geohash,timestamp):
-        if self.annotation[geohash][timestamp] > 0:
+        # waarden groter/kleiner dan 0 zijn True, gelijk aan 0 is False
+        if self.annotation[geohash][timestamp]:
             return 'event'
         else:
             return 'noEvent'
-
-    
 
 # DEMO
 if __name__ == "__main__":
