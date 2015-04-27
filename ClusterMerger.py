@@ -54,14 +54,9 @@ class ClusterMerger:
 
     def _mergeClusters(self):
         print("Merging clusters...")
-        
         clustersToAdd = []
-        
         for geoHash in self.clusters:
             neighbors = geohash.neighbors(geoHash)
-            # vergelijk ook met tijden in het eigen cluster
-            neighbors.append(geoHash)
-                        
             for neighbor in neighbors:
                 if neighbor in self.clusters:
                     # er is een neigbor, dus alle timestamps vergelijken of er een neighbor is met dezelfde 
@@ -82,6 +77,8 @@ class ClusterMerger:
             del self.clusters[neighbor][neighborTimestamp] # delete neighbor
         
     def _calculateTimeOverlap(self, cluster, neighborCluster):
+        if not cluster or not neighborCluster:
+            return False
         beginTime = cluster[0]['unixTime']
         endTime = cluster[-1]['unixTime']
         neighBeginTime = neighborCluster[0]['unixTime']
@@ -98,8 +95,8 @@ class ClusterMerger:
         return False
 
     def _calculateWordOverlap(self,clusterA, clusterB):      
-        wordsClusterA = self._getImportantWords(20, clusterA)
-        wordsClusterB = self._getImportantWords(20, clusterB)
+        wordsClusterA = self._getImportantWords(10, clusterA)
+        wordsClusterB = self._getImportantWords(10, clusterB)
         result = {}
         
         #intersect the two lists and adding the scores
