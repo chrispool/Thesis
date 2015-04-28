@@ -2,6 +2,27 @@
 from collections import Counter, defaultdict
 from math import log, log2
 
+def wordOverlapUser(candidate):
+    '''Calculate the overlap of features among users, high score when high idf types are in each tweet'''
+    userTypes = defaultdict(list)
+    types = Counter()
+
+    for row in candidate:
+        userTypes[row['user']].extend(set(row['tokens']))
+    for user in userTypes:
+        types.update(userTypes[user])
+    score = 0
+    for t in types:
+        if types[t] > 1: #ignore if only in one tweet
+            score += 1
+    if score > 1:
+        s = log(float(score) / float(len(userTypes.keys()) ))
+        return round((score * 2) / len(userTypes.keys()))
+        #return round(s * 2) /2
+    else:
+        return 0.0
+
+
 def wordOverlap(candidate):
     types = Counter() #counter with n of tweets this term occurs
     tokens = Counter()

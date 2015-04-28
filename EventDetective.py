@@ -14,6 +14,8 @@ from math import log, log2
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from nltk.classify.scikitlearn import SklearnClassifier
+import random
+from tabulate import tabulate
 
 class EventDetective:
 
@@ -50,6 +52,8 @@ class EventDetective:
     
     def classifyNLTK(self):
         accuracy = 0
+        baselineAvg = 0
+        table = []
         for i in range(10):
             self.dataset = []
             for g in self.candidates:
@@ -57,7 +61,10 @@ class EventDetective:
                     for t in self.candidates[g]:
                         if t in self.annotation[g]:
                             self.dataset.append( (self.featureSelector(self.candidates[g][t]), self.isEvent(g,t)  ))
-        
+            
+
+            random.shuffle(self.dataset) #shuffle dataset
+
             dataLen = len(self.dataset)
             trainSplit = int(0.8 * dataLen)
             train = self.dataset[:trainSplit]
@@ -66,37 +73,47 @@ class EventDetective:
             #classifier = nltk.MaxentClassifier.train(train)
             #classifier = nltk.DecisionTreeClassifier.train(train)
             
-            print(classifier.show_most_informative_features(10))
+            #print(classifier.show_most_informative_features(2))
             
             refsets = defaultdict(set)
             testsets = defaultdict(set)
+            baseline = defaultdict(set)
 
-            for i, (feats, label) in enumerate(test):
-                refsets[label].add(i)
+            for n, (feats, label) in enumerate(test):
+                refsets[label].add(n)
                 observed = classifier.classify(feats)
-                testsets[observed].add(i)
+                testsets[observed].add(n)
+                baseline['event'].add(n)
+
             a = nltk.classify.accuracy(classifier,test)
             accuracy += a
-            print("accuracy: {}".format(a))
-            print()
-            print ('Precision Event:', nltk.metrics.precision(refsets['event'], testsets['event']))
-            print ('Recall Event:', nltk.metrics.recall(refsets['event'], testsets['event']))
-            print ('F-measure Event:', nltk.metrics.f_measure(refsets['event'], testsets['event']))
-            print()
-            print ('Precision Non-event:', nltk.metrics.precision(refsets['noEvent'], testsets['noEvent']))
-            print ('Recall Non-event:', nltk.metrics.recall(refsets['noEvent'], testsets['noEvent']))
-            print ('F-measure Non-event:', nltk.metrics.f_measure(refsets['noEvent'], testsets['noEvent']))
 
-        print(accuracy / 10)
-    
+            baseL = nltk.metrics.precision(refsets['event'], baseline['event']) #precision event
+            baselineAvg += baseL
+            
+            pEvent = nltk.metrics.precision(refsets['event'], testsets['event']) #precision event
+            rEvent = nltk.metrics.recall(refsets['event'], testsets['event']) #recall event
+            fEvent = nltk.metrics.f_measure(refsets['event'], testsets['event']) #f score
+
+            pNoEvent = nltk.metrics.precision(refsets['noEvent'], testsets['noEvent']) #precision no event
+            rNoEvent = nltk.metrics.recall(refsets['noEvent'], testsets['noEvent']) #recall no event
+            fNoEvent = nltk.metrics.f_measure(refsets['noEvent'], testsets['noEvent']) #f score no event
+
+            table.append([i,round(baseL, 2), round(a, 2), round(pEvent,2), round(rEvent,2),round(fEvent,2),round(pNoEvent,2), round(rNoEvent,2), round(fNoEvent,2)])
+
+        print (tabulate(table, headers=['#', 'Baseline', 'Accuracy', 'Pre. Event','Rec. Event','F. Event','Pre. No-event','Rec No-event','F. no_event']))
+        print("Avg accuracy = {}".format(round(accuracy / (i + 1) , 2)))
+        print("Avg baseline accuracy (everything is an event)= {}".format(round(baselineAvg / (i + 1) , 2)))
+        
     def featureSelector(self, cluster):
         featuresDict = {}
         featuresDict['overlap'] = features.wordOverlap(cluster)
+        featuresDict['overlapUser'] = features.wordOverlapUser(cluster)
         featuresDict['nUsers'] = features.uniqueUsers(cluster)
         featuresDict['nTweets'] = features.nTweets(cluster)
         featuresDict['atRatio'] = features.atRatio(cluster) 
         featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
-        #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
+        featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
 
         return featuresDict
 
