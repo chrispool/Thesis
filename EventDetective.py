@@ -15,7 +15,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
-from tabulate import tabulate
+from modules import tabulate
 
 class EventDetective:
 
@@ -101,7 +101,7 @@ class EventDetective:
 
             table.append([i,round(baseL, 2), round(a, 2), round(pEvent,2), round(rEvent,2),round(fEvent,2),round(pNoEvent,2), round(rNoEvent,2), round(fNoEvent,2)])
 
-        print (tabulate(table, headers=['#', 'Baseline', 'Accuracy', 'Pre. Event','Rec. Event','F. Event','Pre. No-event','Rec No-event','F. no_event']))
+        print (tabulate.tabulate(table, headers=['#', 'Baseline', 'Accuracy', 'Pre. Event','Rec. Event','F. Event','Pre. No-event','Rec. No-event','F. No_Event']))
         print("Avg accuracy = {}".format(round(accuracy / (i + 1) , 2)))
         print("Avg baseline accuracy (everything is an event)= {}".format(round(baselineAvg / (i + 1) , 2)))
         
