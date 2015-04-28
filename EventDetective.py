@@ -107,13 +107,14 @@ class EventDetective:
         
     def featureSelector(self, cluster):
         featuresDict = {}
-        featuresDict['overlap'] = features.wordOverlap(cluster)
-        featuresDict['overlapUser'] = features.wordOverlapUser(cluster)
+        #featuresDict['overlap'] = features.wordOverlap(cluster)
+        featuresDict['overlapSimple'] = features.wordOverlapSimple(cluster)
+        #featuresDict['overlapUser'] = features.wordOverlapUser(cluster)
         featuresDict['nUsers'] = features.uniqueUsers(cluster)
-        featuresDict['nTweets'] = features.nTweets(cluster)
+        #featuresDict['nTweets'] = features.nTweets(cluster)
         featuresDict['atRatio'] = features.atRatio(cluster) 
-        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
-        featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
+        #featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
+        #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
 
         return featuresDict
 

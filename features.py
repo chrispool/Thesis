@@ -22,6 +22,22 @@ def wordOverlapUser(candidate):
     else:
         return 0.0
 
+def wordOverlapSimple(candidate):
+    types = Counter()
+    for row in candidate:
+        types.update(set(row['tokens']))
+    score = 0
+    for t in types:
+        if types[t] > 1:
+            if t[0] == '#':
+                score += (types[t] * 2)
+            else:
+                score += types[t]
+
+
+    return round((score / len(candidate)) * 2) / 2
+
+
 
 def wordOverlap(candidate):
     types = Counter() #counter with n of tweets this term occurs
@@ -101,7 +117,7 @@ def atRatio(candidate):
 
 def uniqueUsers(cluster):
     users = [tweet['user'] for tweet in cluster]
-    return (len(set(users)))
+    return round( log2( len( set( users))), 2 )
 
 def nTweets(cluster):
     return (len(cluster))
