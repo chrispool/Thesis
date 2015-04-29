@@ -34,10 +34,10 @@ class EventDetective:
             print("{}: {}".format(i, dataset))
         choice = int(input("Select dataset: "))
         
-        with open("data/" + self.dataSets[choice] + "/annotation_chris.json") as jsonFile:
+        with open("data/" + self.dataSets[choice] + "/sanitizedAnnotation.json") as jsonFile:
             self.annotation = json.load(jsonFile)
 
-        with open("data/" + self.dataSets[choice] + "/eventCandidates.json") as jsonFile:
+        with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates.json") as jsonFile:
             self.candidates = json.load(jsonFile)
 
     def calculateIDF(self):
@@ -130,7 +130,7 @@ class EventDetective:
         #generate markers True positives, true negatives, false positives and false negatives
         print("Creating Google Maps markers...")
         
-        js = open('vis/map/events.js','w')
+        js = open('vis/map/markers.js','w')
         js.write('var locations = [')
 
         # loop door clusters om te kijken wat event candidates zijn

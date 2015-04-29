@@ -12,6 +12,7 @@ class AnnotationEvaluation:
     def __init__(self):
         self.dataSets = os.listdir('data/')
         # voor het gemak gaan we uit van twee annotators
+        self.choice = -1
         self.annotation1 = {}
         self.annotation2 = {}
         self._loadAnnotations()
@@ -106,10 +107,17 @@ class AnnotationEvaluation:
         return kappa
         
     def _makeAnnotationLists(self):
+        eventsToRemove = []
+        nEvents = 0
         for geoHash in self.annotation1:
             for times in self.annotation1[geoHash]:
                 anno1 = self.annotation1[geoHash][times]
                 anno2 = self.annotation2[geoHash][times]
+                
+                if anno1 != anno2:
+                    eventsToRemove.append((geoHash,times))
+                else:
+                    nEvents += 1
                 
                 self.categoryEval[0].append(anno1)
                 if anno1:
@@ -123,16 +131,31 @@ class AnnotationEvaluation:
                 else:
                     self.eventEval[1].append(0)
         
+        # filter de events waarover de judges het niet eens waren
+        for geoHash,times in eventsToRemove:
+            del self.annotation1[geoHash][times]
+            del self.candidates[geoHash][times]
+            
+        print("Writing", nEvents, "sanitized event candidates and annotations...")
+            
+        filenameSEC = 'data/' + self.dataSets[self.choice] + '/sanitizedEventCandidates.json'
+        with open(filenameSEC, 'w') as outfile:
+            json.dump(self.candidates, outfile)
+            
+        filenameSAN = 'data/' + self.dataSets[self.choice] + '/sanitizedAnnotation.json'
+        with open(filenameSAN, 'w') as outfile:
+            json.dump(self.annotation1, outfile)
+        
     def _loadAnnotations(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
-        choice = int(input("Select dataset: "))
+        self.choice = int(input("Select dataset: "))
         
-        self.datasetName = self.dataSets[choice]
+        self.datasetName = self.dataSets[self.choice]
         
         fnames = []
         # kijk of bestanden in data/gekozenDataSet beginnen met /annotation_
-        for f in os.listdir("data/" + self.dataSets[choice]):
+        for f in os.listdir("data/" + self.dataSets[self.choice]):
             if f.startswith("annotation_"):
                 fnames.append(f)
                 
@@ -140,13 +163,13 @@ class AnnotationEvaluation:
             print("Sorry, this script will only work for two annotators.")
             sys.exit()
 
-        with open("data/" + self.dataSets[choice] + "/" + fnames[0]) as jsonFile:
+        with open("data/" + self.dataSets[self.choice] + "/" + fnames[0]) as jsonFile:
             self.annotation1 = json.load(jsonFile)
         
-        with open("data/" + self.dataSets[choice] + "/" + fnames[1]) as jsonFile:
+        with open("data/" + self.dataSets[self.choice] + "/" + fnames[1]) as jsonFile:
             self.annotation2 = json.load(jsonFile)
         
-        with open("data/" + self.dataSets[choice] + "/eventCandidates.json") as jsonFile:
+        with open("data/" + self.dataSets[self.choice] + "/eventCandidates.json") as jsonFile:
             self.candidates = json.load(jsonFile)
         
 if __name__ == "__main__":
