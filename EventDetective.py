@@ -26,10 +26,10 @@ class EventDetective:
         self.candidates = {}
         self.__loadDataSet()
         self.calculateIDF()
-        self.classifyNLTK()
+        #self.classifyNLTK()
         self.createFeatureTypes()
         self.categorizeNLTK()
-        self.generateMarkers()
+        #self.generateMarkers()
     
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -118,9 +118,9 @@ class EventDetective:
         for g in self.candidates:
             for t in self.candidates[g]:
                 candidate = self.candidates[g][t]
-                if self.classifier.classify(self.featureSelector(candidate)) == 'event':
-                    for row in candidate:
-                        featureTypes.update(row['tokens'])
+                #if self.classifier.classify(self.featureSelector(candidate)) == 'event':
+                for row in candidate:
+                    featureTypes.update(row['tokens'])
         
         
         for f in featureTypes:
@@ -147,9 +147,9 @@ class EventDetective:
         for g in self.candidates:
             for t in self.candidates[g]:
                 candidate = self.candidates[g][t]
-                if self.classifier.classify(self.featureSelector(candidate)) == 'event':
-                    candidateFeatures = self.wordFeatureSelector(candidate)
-                    dataset.append((candidateFeatures, self.eventType(g,t)))
+                #if self.classifier.classify(self.featureSelector(candidate)) == 'event':
+                candidateFeatures = self.wordFeatureSelector(candidate)
+                dataset.append((candidateFeatures, self.eventType(g,t)))
 
         dataLen = len(dataset)
         trainSplit = int(0.8 * dataLen)
