@@ -5,7 +5,7 @@
  their event candidates) about which the annotators agree.
 """
 
-import os,sys
+import os,sys,json
 
 class AnnotationEvaluation:
     
@@ -23,8 +23,8 @@ class AnnotationEvaluation:
         self.eventKappa = self._calculateKappa(self.eventEval)
         self.categoryKappa = self._calculateKappa(self.categoryEval)
         # TODO presentatie resultaten
-        print("eventKappa:", eventKappa)
-        print("categoryKappa:", categoryKappa)
+        print("eventKappa:", self.eventKappa)
+        print("categoryKappa:", self.categoryKappa)
         
         ###
         # Kappa evaluatie
@@ -43,7 +43,7 @@ class AnnotationEvaluation:
         # Substantial agreement: 0.61 – 0.80
         # Almost perfect agreement: 0.81 – 1.00
         
-    def _calculateKappa(judgeArray):
+    def _calculateKappa(self, judgeArray):
         judgeDicts = []
         judgeAmount = len(judgeArray)   # totale aantal judges
         judgeTotal = len(judgeArray[0]) # totale aantal judgements voor 1 judge
@@ -121,7 +121,7 @@ class AnnotationEvaluation:
                 if anno2:
                     self.eventEval[1].append(1)
                 else:
-                    self.EventEval[1].append(0)
+                    self.eventEval[1].append(0)
         
     def _loadAnnotations(self):
         for i, dataset in enumerate(self.dataSets):
@@ -133,16 +133,21 @@ class AnnotationEvaluation:
         fnames = []
         # kijk of bestanden in data/gekozenDataSet beginnen met /annotation_
         for f in os.listdir("data/" + self.dataSets[choice]):
-            if f.startswith("/annotation_"):
+            if f.startswith("annotation_"):
                 fnames.append(f)
                 
         if len(fnames) != 2:
             print("Sorry, this script will only work for two annotators.")
             sys.exit()
+
+        with open("data/" + self.dataSets[choice] + "/" + fnames[0]) as jsonFile:
+            self.annotation1 = json.load(jsonFile)
         
-        self.annotation1 = open("data/" + self.dataSets[choice] + fname[0])
-        self.annotation2 = open("data/" + self.dataSets[choice] + fname[0])
-        self.candidates = json.load(jsonFile)
+        with open("data/" + self.dataSets[choice] + "/" + fnames[1]) as jsonFile:
+            self.annotation2 = json.load(jsonFile)
+        
+        with open("data/" + self.dataSets[choice] + "/eventCandidates.json") as jsonFile:
+            self.candidates = json.load(jsonFile)
         
 if __name__ == "__main__":
     AnnotationEvaluation()
