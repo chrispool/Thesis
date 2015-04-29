@@ -29,6 +29,11 @@ def wordOverlapUser(candidate):
     else:
         return 0.0
 
+
+
+
+
+
 def wordOverlapSimple(candidate):
     types = Counter()
     for row in candidate:
@@ -40,7 +45,6 @@ def wordOverlapSimple(candidate):
                 score += (types[t] * 2)
             else:
                 score += types[t]
-
 
     return round((score / len(candidate)) * 2) / 2
 
