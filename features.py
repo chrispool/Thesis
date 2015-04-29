@@ -8,17 +8,24 @@ def wordOverlapUser(candidate):
     types = Counter()
 
     for row in candidate:
-        userTypes[row['user']].extend(set(row['tokens']))
+        userTypes[row['user']].extend(row['tokens'])
+    
     for user in userTypes:
-        types.update(userTypes[user])
+        types.update(set(userTypes[user]))
+    
+
     score = 0
     for t in types:
         if types[t] > 1: #ignore if only in one tweet
-            score += 1
+            if t[0] == '#':
+                score += (types[t] * 2)
+            else:
+                score += types[t]
+
     if score > 1:
-        s = log(float(score) / float(len(userTypes.keys()) ))
-        return round((score * 2) / len(userTypes.keys()))
-        #return round(s * 2) /2
+        s = log(float(score) * float(len(userTypes.keys()) )) 
+        #return round((score * 2) / len(candidate))
+        return round((s / len(candidate) )* 2 ) /2 
     else:
         return 0.0
 
@@ -75,6 +82,11 @@ def overlapHashtags(candidate):
 
     return round((sum(hashTagsC.values()) / len(candidate)) * 2 ) / 2
 
+def retweets(candidate):
+    #feature to negative score retweet clusters
+    pass
+
+
 def wordOverlapDisplay(candidate):
     types = Counter() #counter with n of tweets this term occurs
     tokens = Counter()
@@ -113,11 +125,11 @@ def atRatio(candidate):
         for word in tweet['text']:
             if word[0] == '@':
                 nAt += 1
-    return round(nAt / nTweets(candidate), 1)
+    return round(nAt / nTweets(candidate), 2)
 
 def uniqueUsers(cluster):
     users = [tweet['user'] for tweet in cluster]
-    return round( log2( len( set( users))), 2 )
+    return round(  len( set( users)) , 1 )
 
 def nTweets(cluster):
     return (len(cluster))

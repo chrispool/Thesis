@@ -27,13 +27,14 @@ class EventDetective:
         self.__loadDataSet()
         self.calculateIDF()
         self.classifyNLTK()
+        self.generateMarkers()
     
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
         choice = int(input("Select dataset: "))
         
-        with open("data/" + self.dataSets[choice] + "/annotation_David.json") as jsonFile:
+        with open("data/" + self.dataSets[choice] + "/annotation_chris.json") as jsonFile:
             self.annotation = json.load(jsonFile)
 
         with open("data/" + self.dataSets[choice] + "/eventCandidates.json") as jsonFile:
@@ -54,26 +55,25 @@ class EventDetective:
         accuracy = 0
         baselineAvg = 0
         table = []
-        for i in range(10):
+        for i in range(5):
             self.dataset = []
             for g in self.candidates:
                 if g in self.annotation:
                     for t in self.candidates[g]:
                         if t in self.annotation[g]:
-                            self.dataset.append( (self.featureSelector(self.candidates[g][t]), self.isEvent(g,t)  ))
+                            self.dataset.append( (self.featureSelector(self.candidates[g][t]), self.isEvent(g,t)  ))          
             
-
             random.shuffle(self.dataset) #shuffle dataset
 
             dataLen = len(self.dataset)
             trainSplit = int(0.8 * dataLen)
-            train = self.dataset[:trainSplit]
+            train = self.dataset[:trainSplit] 
             test = self.dataset[trainSplit:]
-            classifier = nltk.NaiveBayesClassifier.train(train)
-            #classifier = nltk.MaxentClassifier.train(train)
-            #classifier = nltk.DecisionTreeClassifier.train(train)
+            self.classifier = nltk.NaiveBayesClassifier.train(train)
+            #self.classifier = nltk.MaxentClassifier.train(train)
             
-            #print(classifier.show_most_informative_features(2))
+            
+            #print(self.classifier.show_most_informative_features(2))
             
             refsets = defaultdict(set)
             testsets = defaultdict(set)
@@ -81,13 +81,13 @@ class EventDetective:
 
             for n, (feats, label) in enumerate(test):
                 refsets[label].add(n)
-                observed = classifier.classify(feats)
+                observed = self.classifier.classify(feats)
                 testsets[observed].add(n)
                 baseline['event'].add(n)
 
-            a = nltk.classify.accuracy(classifier,test)
+            a = nltk.classify.accuracy(self.classifier,test)
             accuracy += a
-
+            
             baseL = nltk.metrics.precision(refsets['event'], baseline['event']) #precision event
             baselineAvg += baseL
             
@@ -100,7 +100,7 @@ class EventDetective:
             fNoEvent = nltk.metrics.f_measure(refsets['noEvent'], testsets['noEvent']) #f score no event
 
             table.append([i,round(baseL, 2), round(a, 2), round(pEvent,2), round(rEvent,2),round(fEvent,2),round(pNoEvent,2), round(rNoEvent,2), round(fNoEvent,2)])
-
+            
         print (tabulate.tabulate(table, headers=['#', 'Baseline', 'Accuracy', 'Pre. Event','Rec. Event','F. Event','Pre. No-event','Rec. No-event','F. No_Event']))
         print("Avg accuracy = {}".format(round(accuracy / (i + 1) , 2)))
         print("Avg baseline accuracy (everything is an event)= {}".format(round(baselineAvg / (i + 1) , 2)))
@@ -108,15 +108,16 @@ class EventDetective:
     def featureSelector(self, cluster):
         featuresDict = {}
         #featuresDict['overlap'] = features.wordOverlap(cluster)
-        featuresDict['overlapSimple'] = features.wordOverlapSimple(cluster)
-        #featuresDict['overlapUser'] = features.wordOverlapUser(cluster)
-        featuresDict['nUsers'] = features.uniqueUsers(cluster)
-        #featuresDict['nTweets'] = features.nTweets(cluster)
+        #featuresDict['overlapSimple'] = features.wordOverlapSimple(cluster)
+        featuresDict['overlapUser'] = features.wordOverlapUser(cluster)
+        #featuresDict['nUsers'] = features.uniqueUsers(cluster)
+        featuresDict['nTweets'] = features.nTweets(cluster)
         featuresDict['atRatio'] = features.atRatio(cluster) 
-        #featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
+        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
         #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
 
         return featuresDict
+
 
     def isEvent(self,geohash,timestamp):
         # waarden groter/kleiner dan 0 zijn True, gelijk aan 0 is False
@@ -124,6 +125,51 @@ class EventDetective:
             return 'event'
         else:
             return 'noEvent'
+
+    def generateMarkers(self):
+        #generate markers True positives, true negatives, false positives and false negatives
+        print("Creating Google Maps markers...")
+        
+        js = open('vis/map/events.js','w')
+        js.write('var locations = [')
+
+        # loop door clusters om te kijken wat event candidates zijn
+        for geohash in self.candidates:
+            for timestamp in self.candidates[geohash]:   
+                tweets = self.candidates[geohash][timestamp]
+                
+                writableCluster = ''
+                gh = []
+                i = 0
+                avgLon = 0
+                avgLat = 0
+                              
+                for tweet in tweets:
+                    i = i + 1
+                    gh.append(tweet['geoHash'])
+                    avgLon += float(tweet["lon"])
+                    avgLat += float(tweet["lat"])
+                    # backslashes voor multiline strings in Javascript
+                    writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text'].replace("'", "\\'"))
+                # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
+                # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
+                # Oftewel, we doen even alsof de aarde plat is ;-)
+                
+                avgLon /= i
+                avgLat /= i
+                features = self.featureSelector(self.candidates[geohash][timestamp])
+                featureString = ''
+                for key in features:
+                    featureString += " {} - {} |".format(key, features[key])
+                writableCluster += featureString
+                # JS file maken voor Google maps
+                result = self.classifier.classify(features)
+                if result == 'event':
+                    js.write("['{}', {}, {}, '{}', '{}'],".format(writableCluster, avgLat,avgLon, result,self.isEvent(geohash, timestamp)))
+        js.write('];')
+        js.close()
+
+
 
 # DEMO
 if __name__ == "__main__":
