@@ -26,9 +26,11 @@ class EventDetective:
         self.candidates = {}
         self.__loadDataSet()
         self.calculateIDF()
-        #self.classifyNLTK()
         self.createFeatureTypes()
-        self.categorizeNLTK()
+        
+        self.classifyNLTK()
+        
+        #self.categorizeNLTK()
         #self.generateMarkers()
     
     def __loadDataSet(self):
@@ -42,6 +44,7 @@ class EventDetective:
         with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates.json") as jsonFile:
             self.candidates = json.load(jsonFile)
 
+
     def calculateIDF(self):
         n = 0        
         for geohash in self.candidates:
@@ -53,44 +56,81 @@ class EventDetective:
         for word in self.idf:
             self.idf[word] = log(n/self.idf[word])   
     
+    
+    def selectDataset(self):
+        dataset = []
+        for h in self.candidates:
+            if h in self.annotation:
+                for t in self.candidates[h]:
+                    if t in self.annotation[h]:
+                        dataset.append( (self.candidates[h][t],self.isEvent(h,t), self.eventType(h,t) ) )
+        
+        random.shuffle(dataset)
+        trainSplit = int(0.8 * len(dataset))
+        self.trainData = dataset[:trainSplit]
+        self.testData = dataset[trainSplit:]
+
+
     def classifyNLTK(self):
+        print("Classify events")
         accuracy = 0
         baselineAvg = 0
-        table = []
+        table = [] 
+        
         for i in range(5):
-            dataset = []
-            for g in self.candidates:
-                if g in self.annotation:
-                    for t in self.candidates[g]:
-                        if t in self.annotation[g]:
-                            features = self.featureSelector(self.candidates[g][t])
-                            featureKeys = features.keys()
-                            dataset.append( (features, self.isEvent(g,t)  ))          
-                            
-                            
-            random.shuffle(dataset) #shuffle dataset
+            print("Iteration {}".format(i))
+            self.selectDataset()
+            testCat = []
+            trainCat = []
+            testBi = []
+            trainBi = []
+            
+            #first train category classifier
+            for candidate, event, label in self.testData:
+                featuresCat = self.wordFeatureSelector(candidate)
+                testCat.append((featuresCat, label))         
+            
+            for candidate, event, label in self.trainData:
+                featuresCat = self.wordFeatureSelector(candidate)
+                trainCat.append((featuresCat, label))
 
-            dataLen = len(dataset)
-            trainSplit = int(0.8 * dataLen)
-            train = dataset[:trainSplit] 
-            test = dataset[trainSplit:]
-            self.classifier = nltk.NaiveBayesClassifier.train(train)
-            #self.classifier = nltk.MaxentClassifier.train(train)
+            self.classifierCat = nltk.NaiveBayesClassifier.train(trainCat) 
             
+            '''ConfusionMatrix
+            ref = []
+            tagged =[]
+            for f, e in testCat:
+                ref.append(self.classifierCat.classify(f))
+                tagged.append(e)
             
-            #print(self.classifier.show_most_informative_features(5))
+            cm = nltk.ConfusionMatrix(ref, tagged)
+            print(cm)
+            '''
+            #second step train the event/no event classifier
+            for candidate, event, label in self.testData:
+                featuresBi = self.featureSelector(candidate)   
+                featureKeys = featuresBi.keys()
+                testBi.append((featuresBi, event)) 
+        
             
+            for candidate, event, label in self.trainData:
+                featuresBi = self.featureSelector(candidate)
+                featureKeys = featuresBi.keys()
+                trainBi.append((featuresBi, event))
+
+            self.classifierBi = nltk.NaiveBayesClassifier.train(trainBi)
+
             refsets = defaultdict(set)
             testsets = defaultdict(set)
             baseline = defaultdict(set)
 
-            for n, (feats, label) in enumerate(test):
+            for n, (feats, label) in enumerate(testBi):
                 refsets[label].add(n)
-                observed = self.classifier.classify(feats)
+                observed = self.classifierBi.classify(feats)
                 testsets[observed].add(n)
                 baseline['event'].add(n)
 
-            a = nltk.classify.accuracy(self.classifier,test)
+            a = nltk.classify.accuracy(self.classifierBi,testBi)
             accuracy += a
             
             baseL = nltk.metrics.precision(refsets['event'], baseline['event']) #precision event
@@ -106,12 +146,14 @@ class EventDetective:
 
             table.append([i,round(baseL, 2), round(a, 2), round(pEvent,2), round(rEvent,2),round(fEvent,2),round(pNoEvent,2), round(rNoEvent,2), round(fNoEvent,2)])
         print()
-        print("Classification using features: {} | training set size: {} & test set size: {} ".format(", ".join(featureKeys),len(train), len(test)))  
+        print("Classification using features: {} | training set size: {} & test set size: {} ".format(", ".join(featureKeys),len(trainBi), len(testBi)))  
         print()
         print (tabulate.tabulate(table, headers=['#', 'Baseline', 'Accuracy', 'Pre. Event','Rec. Event','F. Event','Pre. No-event','Rec. No-event','F. No_Event']))
         print("Avg accuracy = {}".format(round(accuracy / (i + 1) , 2)))
         print("Avg baseline accuracy (everything is an event)= {}".format(round(baselineAvg / (i + 1) , 2)))
-        
+        print()
+
+
     def createFeatureTypes(self):
         '''get all possible word features'''
         featureTypes = Counter()
@@ -126,7 +168,7 @@ class EventDetective:
         for f in featureTypes:
             featureTypes[f] = featureTypes[f] * self.idf[f]
 
-        self.features = [word for word, n in featureTypes.most_common(1000)]
+        self.features = [word for word, n in featureTypes.most_common(800)]
 
     
     def wordFeatureSelector(self, candidate):
@@ -140,35 +182,6 @@ class EventDetective:
                         candidateFeatures[feature] = False 
         return candidateFeatures     
 
-    def categorizeNLTK(self):
-        dataset = []
-
-        '''create features'''
-        for g in self.candidates:
-            for t in self.candidates[g]:
-                candidate = self.candidates[g][t]
-                #if self.classifier.classify(self.featureSelector(candidate)) == 'event':
-                candidateFeatures = self.wordFeatureSelector(candidate)
-                dataset.append((candidateFeatures, self.eventType(g,t)))
-
-        dataLen = len(dataset)
-        trainSplit = int(0.8 * dataLen)
-        train = dataset[:trainSplit] 
-        test = dataset[trainSplit:]
-        classifierCat = nltk.NaiveBayesClassifier.train(train)
-        print()
-        print("------------Category--------")
-        print(nltk.classify.accuracy(classifierCat,test))
-       
-
-        ref = []
-        tagged =[]
-        for f, e in test:
-            ref.append(classifierCat.classify(f))
-            tagged.append(e)
-        
-        cm = nltk.ConfusionMatrix(ref, tagged)
-        print(cm)
 
     def featureSelector(self, cluster):
         featuresDict = {}
@@ -180,7 +193,7 @@ class EventDetective:
         featuresDict['atRatio'] = features.atRatio(cluster) 
         featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
         #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
-
+        featuresDict['category'] = self.classifierCat.classify(self.wordFeatureSelector(cluster))
         return featuresDict
     
     def eventType(self,geohash,timestamp):
