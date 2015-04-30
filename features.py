@@ -1,6 +1,7 @@
 '''functions to extract features'''
 from collections import Counter, defaultdict
 from math import log, log2
+from modules import geohash
 
 def wordOverlapUser(candidate):
     '''Calculate the overlap of features among users, high score when high idf types are in each tweet'''
@@ -130,6 +131,21 @@ def atRatio(candidate):
             if word[0] == '@':
                 nAt += 1
     return round(nAt / nTweets(candidate), 2)
+
+# Bepaal de gemiddelde locatie (lengte- en breedtegraad, omgezet
+# naar geohash) van alle gebruikers in een cluster
+def location(candidate):
+    avgLon = 0
+    avgLat = 0
+    
+    for tweet in candidate:
+        avgLon += float(tweet["lon"])
+        avgLat += float(tweet["lat"])
+        
+    avgLon /= len(candidate)
+    avgLat /= len(candidate)
+    
+    return geohash.encode(avgLat, avgLon, 6)
 
 def uniqueUsers(cluster):
     users = [tweet['user'] for tweet in cluster]

@@ -11,8 +11,9 @@ import os, sys, json
 from collections import defaultdict, Counter
 import nltk
 from math import log, log2
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import SVC
+from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
+from sklearn.svm import LinearSVC, SVC, NuSVC
+from sklearn.linear_model import SGDClassifier
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
@@ -31,7 +32,7 @@ class EventDetective:
         self.classifyNLTK()
         
         #self.categorizeNLTK()
-        #self.generateMarkers()
+        self.generateMarkers()
     
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -60,10 +61,8 @@ class EventDetective:
     def selectDataset(self):
         dataset = []
         for h in self.candidates:
-            if h in self.annotation:
-                for t in self.candidates[h]:
-                    if t in self.annotation[h]:
-                        dataset.append( (self.candidates[h][t],self.isEvent(h,t), self.eventType(h,t) ) )
+            for t in self.candidates[h]:
+                dataset.append( (self.candidates[h][t],self.isEvent(h,t), self.eventType(h,t) ) )
         
         random.shuffle(dataset)
         trainSplit = int(0.8 * len(dataset))
@@ -94,7 +93,8 @@ class EventDetective:
                 featuresCat = self.wordFeatureSelector(candidate)
                 trainCat.append((featuresCat, label))
 
-            self.classifierCat = nltk.NaiveBayesClassifier.train(trainCat) 
+            # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
+            self.classifierCat = SklearnClassifier(MultinomialNB()).train(trainCat)
             
             '''ConfusionMatrix
             ref = []
@@ -118,7 +118,7 @@ class EventDetective:
                 featureKeys = featuresBi.keys()
                 trainBi.append((featuresBi, event))
 
-            self.classifierBi = nltk.NaiveBayesClassifier.train(trainBi)
+            self.classifierBi = nltk.NaiveBayesClassifier.train(trainBi) #SklearnClassifier(LinearSVC()).train(trainBi)
 
             refsets = defaultdict(set)
             testsets = defaultdict(set)
@@ -186,14 +186,15 @@ class EventDetective:
     def featureSelector(self, cluster):
         featuresDict = {}
         #featuresDict['overlap'] = features.wordOverlap(cluster)
-        featuresDict['overlapSimple'] = features.wordOverlapSimple(cluster)
+        #featuresDict['overlapSimple'] = features.wordOverlapSimple(cluster)
         featuresDict['overlapUser'] = features.wordOverlapUser(cluster)
         #featuresDict['nUsers'] = features.uniqueUsers(cluster)
         #featuresDict['nTweets'] = features.nTweets(cluster)
-        featuresDict['atRatio'] = features.atRatio(cluster) 
+        #featuresDict['atRatio'] = features.atRatio(cluster) 
         featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
         #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
         featuresDict['category'] = self.classifierCat.classify(self.wordFeatureSelector(cluster))
+        featuresDict['location'] = features.location(cluster) # locatie maakt niet heel veel uit
         return featuresDict
     
     def eventType(self,geohash,timestamp):
@@ -202,7 +203,6 @@ class EventDetective:
          
         return eventTypes[self.annotation[geohash][timestamp]]
         
-
     def isEvent(self,geohash,timestamp):
         # waarden groter/kleiner dan 0 zijn True, gelijk aan 0 is False
         if self.annotation[geohash][timestamp]:
@@ -247,7 +247,7 @@ class EventDetective:
                     featureString += " {} - {} |".format(key, features[key])
                 writableCluster += featureString
                 # JS file maken voor Google maps
-                result = self.classifier.classify(features)
+                result = self.classifierBi.classify(features)
                 if result == 'event':
                     js.write("['{}', {}, {}, '{}', '{}'],".format(writableCluster, avgLat,avgLon, result,self.isEvent(geohash, timestamp)))
         js.write('];')
