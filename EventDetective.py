@@ -42,7 +42,7 @@ class EventDetective:
         with open("data/" + self.dataSets[choice] + "/sanitizedAnnotation.json") as jsonFile:
             self.annotation = json.load(jsonFile)
 
-        with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates.json") as jsonFile:
+        with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates_cleaned.json") as jsonFile:
             self.candidates = json.load(jsonFile)
 
 
