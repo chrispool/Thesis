@@ -11,8 +11,8 @@ import os, sys, json
 from collections import defaultdict, Counter
 import nltk
 from math import log, log2
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
+
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
@@ -27,10 +27,7 @@ class EventDetective:
         self.__loadDataSet()
         self.calculateIDF()
         self.createFeatureTypes()
-        
         self.classifyNLTK()
-        
-        #self.categorizeNLTK()
         #self.generateMarkers()
     
     def __loadDataSet(self):
@@ -95,8 +92,7 @@ class EventDetective:
                 trainCat.append((featuresCat, label))
 
             self.classifierCat = nltk.NaiveBayesClassifier.train(trainCat) 
-            
-            '''ConfusionMatrix
+            '''
             ref = []
             tagged =[]
             for f, e in testCat:
@@ -106,6 +102,7 @@ class EventDetective:
             cm = nltk.ConfusionMatrix(ref, tagged)
             print(cm)
             '''
+
             #second step train the event/no event classifier
             for candidate, event, label in self.testData:
                 featuresBi = self.featureSelector(candidate)   
@@ -119,7 +116,7 @@ class EventDetective:
                 trainBi.append((featuresBi, event))
 
             self.classifierBi = nltk.NaiveBayesClassifier.train(trainBi)
-
+            #self.classifierBi = nltk.SklearnClassifier(SVC())
             refsets = defaultdict(set)
             testsets = defaultdict(set)
             baseline = defaultdict(set)
@@ -163,7 +160,6 @@ class EventDetective:
                 #if self.classifier.classify(self.featureSelector(candidate)) == 'event':
                 for row in candidate:
                     featureTypes.update(row['tokens'])
-        
         
         for f in featureTypes:
             featureTypes[f] = featureTypes[f] * self.idf[f]
