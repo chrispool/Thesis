@@ -58,10 +58,8 @@ class EventDetective2:
         
         # TODO 
         # 1. Annotate a test set from april (or last year?) and find a way to test with ClassifierCreator
-        # 2. Throw stuff in Google Map.
         
     def _generateMarkers(self):
-        #generate markers True positives, true negatives, false positives and false negatives
         print("Creating Google Maps markers...")
         
         js = open('vis/map/markers.js','w')
@@ -80,13 +78,13 @@ class EventDetective2:
                 avgLon += float(tweet["lon"])
                 avgLat += float(tweet["lat"])
                 # backslashes voor multiline strings in Javascript
-                writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text']).replace("'", "\\'").replace("\\","\\\\")
-                # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
-                # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
-                # Oftewel, we doen even alsof de aarde plat is ;-)
-                avgLon /= i
-                avgLat /= i
-            js.write("['{}', {}, {}, '{}'],".format(writableCluster, avgLat,avgLon,label))
+                writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text']).replace("'", "\\'")
+            # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
+            # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
+            # Oftewel, we doen even alsof de aarde plat is ;-)
+            avgLon /= i
+            avgLat /= i
+            js.write("['{}', {}, {}, '{}'],".format(writableCluster,avgLat,avgLon,label))
         js.write('];')
         js.close()
         

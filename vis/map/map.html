@@ -28,30 +28,45 @@ html, body { height: 100%; margin:0;}
       pixelOffset: new google.maps.Size(-7,0)
     });
 
-    var marker, i;
+    var marker, i, markerIcon;
     
-    var pinIcon = new google.maps.MarkerImage(
-    'img/sportMarker.png',
-    null, /* size is determined at runtime */
-    null, /* origin is 0,0 */
-    null, /* anchor is bottom center of the scaled image */
-    new google.maps.Size(40, 35)
-    );
+    var incidentMarker      = new google.maps.MarkerImage('img/incidentMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var meetingMarker       = new google.maps.MarkerImage('img/meetingMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var entertainmentMarker = new google.maps.MarkerImage('img/entertainmentMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var sportMarker         = new google.maps.MarkerImage('img/sportMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var otherMarker         = new google.maps.MarkerImage('img/otherMarker.png',null,null,null,new google.maps.Size(40, 35));
 
     for (i = 0; i < locations.length; i++) {  
-      var image = 'images/' + locations[i][3]
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-        map: map,
-        icon: pinIcon
-      });
-
-      google.maps.event.addListener(marker, 'click', (function(marker, i) {
-        return function() {
-          infowindow.setContent(locations[i][0]);
-          infowindow.open(map, marker);
+        
+        switch(locations[i][3]) {
+            case "sport":
+                markerIcon = sportMarker;
+                break;
+            case "bijeenkomst":
+                markerIcon = meetingMarker;
+                break;
+            case "entertainment":
+                markerIcon = entertainmentMarker;
+                break;
+            case "incident":
+                markerIcon = incidentMarker;
+                break;
+            default:
+                markerIcon = otherMarker;
         }
-      })(marker, i));
+                
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+            map: map,
+            icon: markerIcon
+        });
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infowindow.setContent(locations[i][0]);
+                infowindow.open(map, marker);
+            }
+        })(marker, i));
     }
   </script>
 </body>
