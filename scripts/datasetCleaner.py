@@ -4,12 +4,12 @@ import sys, os, json
 forbidden_words = ['http']
 
 def main():
-	dataSets = os.listdir('data/')
+	dataSets = os.listdir('../data/')
 	for i, dataset in enumerate(dataSets):
 		print("{}: {}".format(i, dataset))
 	choice = int(input("Select dataset: "))
     
-	with open("data/" + dataSets[choice] + "/sanitizedEventCandidates.json") as jsonFile:
+	with open("../data/" + dataSets[choice] + "/sanitizedEventCandidates.json") as jsonFile:
 		candidates = json.load(jsonFile)
 
 
@@ -21,7 +21,7 @@ def main():
 				candidates[geohash][timestamp][i]['tokens'] = tokens 
     
 	
-	with open("data/" + dataSets[choice] + "/sanitizedEventCandidates_cleaned.json", 'w') as jsonFile:
+	with open("../data/" + dataSets[choice] + "/sanitizedEventCandidates_cleaned.json", 'w') as jsonFile:
 		json.dump(candidates, jsonFile)
 
 				

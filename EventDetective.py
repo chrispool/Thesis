@@ -38,7 +38,8 @@ class EventDetective:
         self.createFeatureTypes()
         self.classifyNLTK()
         self.generateMarkers()
-    
+
+
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
@@ -214,7 +215,7 @@ class EventDetective:
         featuresDict['category'] = self.classifierCat.classify(self.wordFeatureSelector(cluster))
         featuresDict['location'] = features.location(cluster) # locatie maakt niet heel veel uit
         return featuresDict
-    
+
     def eventType(self,geohash,timestamp):
         # return values {strings gebruiken?}
         eventTypes = {0:"geen event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
@@ -259,17 +260,18 @@ class EventDetective:
                 
                 avgLon /= i
                 avgLat /= i
-                features = self.featureSelector(self.candidates[geohash][timestamp])
-                featureString = ''
-                for key in features:
-                    featureString += " {} - {} |".format(key, features[key])
-                writableCluster += featureString
+                #features = self.featureSelector(self.candidates[geohash][timestamp])
+                #featureString = ''
+                #for key in features:
+                #    featureString += " {} - {} |".format(key, features[key])
+                #writableCluster += featureString
                 # JS file maken voor Google maps
-                result = self.classifierBi.classify(features)
-                if result == 'event':
-                    js.write("['{}', {}, {}, '{}', '{}'],".format(writableCluster, avgLat,avgLon, result,self.isEvent(geohash, timestamp)))
+                #result = self.classifierBi.classify(features)
+                #if result == 'event':
+                #    js.write("['{}', {}, {}, '{}', '{}'],".format(writableCluster, avgLat,avgLon, result,self.isEvent(geohash, timestamp)))
         js.write('];')
         js.close()
+
 
 # DEMO
 if __name__ == "__main__":
