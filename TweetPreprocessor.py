@@ -50,7 +50,7 @@ class TweetPreprocessor:
      
         # filter links
         for word in tokens[:]:
-            if word.startswith("http:") or word.startswith("https:"):
+            if word.startswith("http") or word.startswith("https"):
                 tokens.remove(word)
         filterLinkText = ' '.join(tokens)
         # vervang alles behalve letters/cijfers door een spatie
@@ -59,14 +59,9 @@ class TweetPreprocessor:
         for word in tokens[:]:
             if word in self.stoplist or word.isdigit() or len(word) < 2:
                 tokens.remove(word)
-            else:
-                if word.startswith("@") or word.startswith("#"):
-                    tokens.append('%' + word[1:])
-        # filter dubbele woorden
-        
-        return list(set(tokens))
+
+        return list(set(tokens)) # filter dubbele woorden
        
-        
     # Maak de lijst van tweet dictionaries
     def __createTweetDicts(self, tweetFile):
         print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")

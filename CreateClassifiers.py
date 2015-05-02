@@ -4,7 +4,7 @@
 #################
 CreateClassifiers
 #################
-Creates classifiers given a dataset
+Creates category & event/no-event classifier given a dataset
 """
 import features
 import os, sys, json, pickle
@@ -18,20 +18,29 @@ from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
 
-class EventDetective:
+class CreateClassifiers:
 
     def __init__(self):
+        self.ITERATIONS = 1
         self.dataSets = os.listdir('data/')
         self.idf = Counter()
         self.annotation = {}
         self.candidates = {}
-        self._loadDataSet()
+        self.table = []
+        self.cm = []
+        self.mostInformativeBi = []
+        self.mostInformativeCat = []
+        self.accBi  = 0.0
+        self.accCat = 0.0
+        self.baselineBi = 0.0
+        self.choice = 0
+        self.__loadDataSet()
         self.calculateIDF()
         self.createFeatureTypes()
         self.classifyNLTK()
         self._saveClassifiers()
-    
-    def _loadDataSet(self):
+
+    def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
         self.choice = int(input("Select dataset: "))
@@ -62,7 +71,6 @@ class EventDetective:
         for word in self.idf:
             self.idf[word] = log(n/self.idf[word])   
     
-    
     def selectDataset(self):
         dataset = []
         for h in self.candidates:
@@ -74,90 +82,108 @@ class EventDetective:
         self.trainData = dataset[:trainSplit]
         self.testData = dataset[trainSplit:]
 
-
     def classifyNLTK(self):
         print("\nClassifying events...\n")
-        accuracy = 0
-        baselineAvg = 0
-        table = [] 
-        
-        for i in range(2):
+        for i in range(self.ITERATIONS):
             print("Iteration {}".format(i+1))
             print("###########")
             self.selectDataset()
-            testCat = []
-            trainCat = []
-            testBi = []
-            trainBi = []
-            
+            self.testCat = []
+            self.trainCat = []
+            self.testBi = []
+            self.trainBi = []
+        
             #first train category classifier
+            print("### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###")
             for candidate, event, label in self.testData:
                 featuresCat = self.wordFeatureSelector(candidate)
-                testCat.append((featuresCat, label))         
+                self.testCat.append((featuresCat, label))         
             
             for candidate, event, label in self.trainData:
                 featuresCat = self.wordFeatureSelector(candidate)
-                trainCat.append((featuresCat, label))
+                self.trainCat.append((featuresCat, label))
 
             # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
-            self.classifierCat = SklearnClassifier(MultinomialNB()).train(trainCat)
-            
-            # confusion matrix
-            ref = []
-            tagged =[]
-            for f, e in testCat:
-                ref.append(self.classifierCat.classify(f))
-                tagged.append(e)
-            
-            cm = nltk.ConfusionMatrix(ref, tagged)
-            print("\n### Naive Bayes with word features (category classifier) confusion matrix ###\n")
-            print(cm)
-            
+            self.classifierCat = SklearnClassifier(MultinomialNB()).train(self.trainCat)
+                
+            print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
             #second step train the event/no event classifier
             for candidate, event, label in self.testData:
                 featuresBi = self.featureSelector(candidate)   
-                featureKeys = featuresBi.keys()
-                testBi.append((featuresBi, event)) 
-        
+                self.featureKeys = featuresBi.keys()
+                self.testBi.append((featuresBi, event)) 
             
             for candidate, event, label in self.trainData:
                 featuresBi = self.featureSelector(candidate)
-                featureKeys = featuresBi.keys()
-                trainBi.append((featuresBi, event))
+                self.featureKeys = featuresBi.keys()
+                self.trainBi.append((featuresBi, event))
 
-            self.classifierBi = nltk.NaiveBayesClassifier.train(trainBi) #SklearnClassifier(LinearSVC()).train(trainBi)
-
-            refsets = defaultdict(set)
-            testsets = defaultdict(set)
-            baseline = defaultdict(set)
-
-            for n, (feats, label) in enumerate(testBi):
-                refsets[label].add(n)
-                observed = self.classifierBi.classify(feats)
-                testsets[observed].add(n)
-                baseline['event'].add(n)
-
-            a = nltk.classify.accuracy(self.classifierBi,testBi)
-            accuracy += a
+            self.classifierBi = nltk.NaiveBayesClassifier.train(self.trainBi) #SklearnClassifier(LinearSVC()).train(trainBi)
+            self.calculateStats(i)
+            print("###########")
             
-            baseL = nltk.metrics.precision(refsets['event'], baseline['event']) #precision event
-            baselineAvg += baseL
-            
-            pEvent = nltk.metrics.precision(refsets['event'], testsets['event']) #precision event
-            rEvent = nltk.metrics.recall(refsets['event'], testsets['event']) #recall event
-            fEvent = nltk.metrics.f_measure(refsets['event'], testsets['event']) #f score
+        self.printStats()
 
-            pNoEvent = nltk.metrics.precision(refsets['noEvent'], testsets['noEvent']) #precision no event
-            rNoEvent = nltk.metrics.recall(refsets['noEvent'], testsets['noEvent']) #recall no event
-            fNoEvent = nltk.metrics.f_measure(refsets['noEvent'], testsets['noEvent']) #f score no event
+    def calculateStats(self, i):
+        '''Function to calculate all stats'''
+        #self.table is for binary classifier
+        #self.cm is for category classifier
+        #self.mostInformativeBi is for binary
+        #self.mostInformativeCat is for category
+        #self.accBi  is accuracy for binary
+        #self.accCat is accuracy for category
+        # TODO meer stats voor cat?
 
-            table.append([i,round(baseL, 2), round(a, 2), round(pEvent,2), round(rEvent,2),round(fEvent,2),round(pNoEvent,2), round(rNoEvent,2), round(fNoEvent,2)])
-        print("### Naive Bayes event/non-event classification performance during the iterations ###")
-        print("Using features: {} | training set size: {} & test set size: {}\n".format(", ".join(featureKeys),len(trainBi), len(testBi)))
-        print(tabulate.tabulate(table, headers=['#', 'Baseline', 'Accuracy', 'Pre. Event','Rec. Event','F. Event','Pre. Non-event','Rec. Non-event','F. Non-Event']))
-        print("Avg accuracy = {}".format(round(accuracy / (i + 1) , 2)))
-        print("Avg baseline accuracy (everything is an event)= {}\n".format(round(baselineAvg / (i + 1) , 2)))
+        #calculate cm for this iteration
+        ref = []
+        tagged =[]
+        for f, e in self.testCat:
+            ref.append(self.classifierCat.classify(f))
+            tagged.append(e)
 
+        cm = nltk.ConfusionMatrix(ref, tagged)
+        self.cm.append(cm)
+        aCat = nltk.classify.accuracy(self.classifierCat,self.testCat)
+        self.accCat += aCat
+
+        #calculate precision and recall for this iteration
+        refsets = defaultdict(set)
+        testsets = defaultdict(set)
+        baseline = defaultdict(set)
+
+        for n, (feats, label) in enumerate(self.testBi):
+            refsets[label].add(n)
+            observed = self.classifierBi.classify(feats)
+            testsets[observed].add(n)
+            baseline['event'].add(n)
+
+        aBi = nltk.classify.accuracy(self.classifierBi,self.testBi)
+        self.accBi += aBi
+
+        baseL = nltk.metrics.precision(refsets['event'], baseline['event']) #precision event
+        self.baselineBi += baseL
+
+        pEvent = nltk.metrics.precision(refsets['event'], testsets['event']) #precision event
+        rEvent = nltk.metrics.recall(refsets['event'], testsets['event']) #recall event
+        fEvent = nltk.metrics.f_measure(refsets['event'], testsets['event']) #f score
+
+        pNoEvent = nltk.metrics.precision(refsets['noEvent'], testsets['noEvent']) #precision no event
+        rNoEvent = nltk.metrics.recall(refsets['noEvent'], testsets['noEvent']) #recall no event
+        fNoEvent = nltk.metrics.f_measure(refsets['noEvent'], testsets['noEvent']) #f score no event
+
+        self.table.append([i+1,round(baseL, 2), round(aBi, 2), round(aCat, 2),round(pEvent,2), round(rEvent,2),round(fEvent,2),round(pNoEvent,2), round(rNoEvent,2), round(fNoEvent,2)])
+
+    def printStats(self):
+        it = self.ITERATIONS
+        print("\n### EVALUATION STEP 1: Confusion matrices for the category classifier:\n")
+        for i in range(it):
+            print("Iteration {}".format(i+1))
+            print("###########")
+            print(self.cm[i])
+        print("### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainBi), len(self.testBi)))
+        print(tabulate.tabulate(self.table, headers=['#', 'Baseline', 'Accuracy Bi', 'Accuracy Cat', 'Pre. Event','Rec. Event','F. Event','Pre. Non-event','Rec. Non-event','F. Non-Event']))
+        print("Avg accuracy = {}".format(round(self.accBi / (it) , 2)))
+        print("Avg baseline accuracy (everything is an event)= {}\n".format(round(self.baselineBi / (it) , 2)))
 
     def createFeatureTypes(self):
         '''get all possible word features'''
@@ -165,16 +191,13 @@ class EventDetective:
         for g in self.candidates:
             for t in self.candidates[g]:
                 candidate = self.candidates[g][t]
-                #if self.classifier.classify(self.featureSelector(candidate)) == 'event':
                 for row in candidate:
                     featureTypes.update(row['tokens'])
-        
         
         for f in featureTypes:
             featureTypes[f] = featureTypes[f] * self.idf[f]
 
         self.features = [word for word, n in featureTypes.most_common(800)]
-
     
     def wordFeatureSelector(self, candidate):
         candidateFeatures = {}
@@ -186,7 +209,6 @@ class EventDetective:
                     if feature not in candidateFeatures:
                         candidateFeatures[feature] = False 
         return candidateFeatures     
-
 
     def featureSelector(self, cluster):
         featuresDict = {}
@@ -201,15 +223,12 @@ class EventDetective:
         featuresDict['category'] = self.classifierCat.classify(self.wordFeatureSelector(cluster))
         featuresDict['location'] = features.location(cluster) # locatie maakt niet heel veel uit
         return featuresDict
-    
-    
+
     def eventType(self,geohash,timestamp):
         # return values {strings gebruiken?}
         eventTypes = {0:"geen event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
-         
         return eventTypes[self.annotation[geohash][timestamp]]
         
-    
     def isEvent(self,geohash,timestamp):
         # waarden groter/kleiner dan 0 zijn True, gelijk aan 0 is False
         if self.annotation[geohash][timestamp]:
@@ -217,7 +236,6 @@ class EventDetective:
         else:
             return 'noEvent'
 
-
 # DEMO
 if __name__ == "__main__":
-    detective = EventDetective()
+    detective = CreateClassifiers()
