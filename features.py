@@ -13,8 +13,6 @@ def wordOverlapUser(candidate):
     
     for user in userTypes:
         types.update(set(userTypes[user]))
-    
-
     score = 0
     for t in types:
         if types[t] > 1: #ignore if only in one tweet
@@ -29,11 +27,6 @@ def wordOverlapUser(candidate):
         return round((s / len(candidate) )* 2 ) /2 
     else:
         return 0.0
-
-
-
-
-
 
 def wordOverlapSimple(candidate):
     types = Counter()
