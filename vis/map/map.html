@@ -11,32 +11,39 @@ html, body { height: 100%; margin:0;}
 
 </style>
 
-
 </head> 
 <body>
   <div id="map" style="width: 100%; height: 100%;"></div>
  <script src="markers.js"></script>
   <script type="text/javascript">
   
-
-  
-
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 8,
       center: new google.maps.LatLng(52.32, 5.85),
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
-    var infowindow = new google.maps.InfoWindow();
+    var infowindow = new google.maps.InfoWindow({
+      /* compenseer voor breedte custom markers door schaduw */
+      pixelOffset: new google.maps.Size(-7,0)
+    });
 
     var marker, i;
+    
+    var pinIcon = new google.maps.MarkerImage(
+    'img/sportMarker.png',
+    null, /* size is determined at runtime */
+    null, /* origin is 0,0 */
+    null, /* anchor is bottom center of the scaled image */
+    new google.maps.Size(40, 35)
+    );
 
     for (i = 0; i < locations.length; i++) {  
       var image = 'images/' + locations[i][3]
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(locations[i][1], locations[i][2]),
         map: map,
-        //icon: image
+        icon: pinIcon
       });
 
       google.maps.event.addListener(marker, 'click', (function(marker, i) {
