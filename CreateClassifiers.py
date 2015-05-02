@@ -17,6 +17,7 @@ from sklearn.linear_model import SGDClassifier
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
+import features
 
 class CreateClassifiers:
 

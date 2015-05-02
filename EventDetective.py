@@ -6,7 +6,6 @@ EventDetective
 ##############
 Detecteert events gegeven dataset
 """
-import features
 import os, sys, json
 from collections import defaultdict, Counter
 import nltk
@@ -17,6 +16,7 @@ from sklearn.linear_model import SGDClassifier
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
+import Features
 
 class EventDetective:
 
@@ -34,8 +34,8 @@ class EventDetective:
         self.accCat = 0.0
         self.baselineBi = 0.0
         self.__loadDataSet()
+        self.featureModule = Features.Features(self.candidates)
         self.calculateIDF()
-        self.createFeatureTypes()
         self.classifyNLTK()
         self.generateMarkers()
 
@@ -88,24 +88,28 @@ class EventDetective:
         
             #first train category classifier
             for candidate, event, label in self.testData:
-                featuresCat = self.wordFeatureSelector(candidate)
+                featuresCat = self.featureModule.getFeatures(candidate, ['wordFeatures'])
                 self.testCat.append((featuresCat, label))         
             
             for candidate, event, label in self.trainData:
-                featuresCat = self.wordFeatureSelector(candidate)
+                featuresCat = self.featureModule.getFeatures(candidate, ['wordFeatures'])
                 self.trainCat.append((featuresCat, label))
 
             # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
             self.classifierCat = SklearnClassifier(MultinomialNB()).train(self.trainCat)
-                
+            
+            self.featureModule.addCategoryClassifier(self.classifierCat) #sends the classifier to the featuresModule
+
+
+
             #second step train the event/no event classifier
             for candidate, event, label in self.testData:
-                featuresBi = self.featureSelector(candidate)   
+                featuresBi = self.featureModule.getFeatures(candidate, ['category', 'wordOverlap'])   
                 self.featureKeys = featuresBi.keys()
                 self.testBi.append((featuresBi, event)) 
             
             for candidate, event, label in self.trainData:
-                featuresBi = self.featureSelector(candidate)
+                featuresBi = self.featureModule.getFeatures(candidate, ['category', 'wordOverlap'])
                 self.featureKeys = featuresBi.keys()
                 self.trainBi.append((featuresBi, event))
 
@@ -173,33 +177,7 @@ class EventDetective:
         print()
         
 
-    def createFeatureTypes(self):
-        '''get all possible word features'''
-        featureTypes = Counter()
-        for g in self.candidates:
-            for t in self.candidates[g]:
-                candidate = self.candidates[g][t]
-                #if self.classifier.classify(self.featureSelector(candidate)) == 'event':
-                for row in candidate:
-                    featureTypes.update(row['tokens'])
-        
-        
-        for f in featureTypes:
-            featureTypes[f] = featureTypes[f] * self.idf[f]
-
-        self.features = [word for word, n in featureTypes.most_common(800)]
-
-    
-    def wordFeatureSelector(self, candidate):
-        candidateFeatures = {}
-        for row in candidate:
-            for feature in self.features:
-                if feature in row['tokens']:
-                    candidateFeatures[feature] = True
-                else:
-                    if feature not in candidateFeatures:
-                        candidateFeatures[feature] = False 
-        return candidateFeatures     
+      
 
 
     def featureSelector(self, cluster):
