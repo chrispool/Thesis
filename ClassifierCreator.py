@@ -17,26 +17,27 @@ from sklearn.linear_model import SGDClassifier
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
+from FeatureSelector import FeatureSelector
 
 class ClassifierCreator:
 
     def __init__(self):
         self.ITERATIONS = 1
         self.dataSets = os.listdir('data/')
-        self.idf = Counter()
+        
         self.annotation = {}
         self.candidates = {}
         self.table = []
         self.cm = []
         self.mostInformativeBi = []
         self.mostInformativeCat = []
-        self.accBi  = 0.0
-        self.accCat = 0.0
-        self.baselineBi = 0.0
+        self.accBi  = 0
+        self.accCat = 0
+        self.baselineBi = 0
         self.choice = 0
+        
         self.__loadDataSet()
-        self.calculateIDF()
-        self.createFeatureTypes()
+        self.featureSelector = FeatureSelector(self.candidates)
         self.classifyNLTK()
         self._saveClassifiers()
 
@@ -59,17 +60,6 @@ class ClassifierCreator:
             
         with open("data/" + self.dataSets[self.choice] + "/eventClassifier.bin", "wb") as f:
             pickle.dump(self.classifierBi,f)
-
-    def calculateIDF(self):
-        n = 0        
-        for geohash in self.candidates:
-            for timestamp in self.candidates[geohash]:
-                # een tweet is een document (niet een cluster)
-                for tweet in self.candidates[geohash][timestamp]:
-                    self.idf.update(set(tweet['tokens']))
-                    n += 1
-        for word in self.idf:
-            self.idf[word] = log(n/self.idf[word])   
     
     def selectDataset(self):
         dataset = []
@@ -96,11 +86,11 @@ class ClassifierCreator:
             #first train category classifier
             print("### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###")
             for candidate, event, label in self.testData:
-                featuresCat = self.wordFeatureSelector(candidate)
+                featuresCat = self.featureSelector.wordFeatureSelector(candidate)
                 self.testCat.append((featuresCat, label))         
             
             for candidate, event, label in self.trainData:
-                featuresCat = self.wordFeatureSelector(candidate)
+                featuresCat = self.featureSelector.wordFeatureSelector(candidate)
                 self.trainCat.append((featuresCat, label))
 
             # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
@@ -109,12 +99,12 @@ class ClassifierCreator:
             print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
             #second step train the event/no event classifier
             for candidate, event, label in self.testData:
-                featuresBi = self.featureSelector(candidate)   
+                featuresBi = self.featureSelector.featureSelector(candidate,self.classifierCat)   
                 self.featureKeys = featuresBi.keys()
                 self.testBi.append((featuresBi, event)) 
             
             for candidate, event, label in self.trainData:
-                featuresBi = self.featureSelector(candidate)
+                featuresBi = self.featureSelector.featureSelector(candidate,self.classifierCat)
                 self.featureKeys = featuresBi.keys()
                 self.trainBi.append((featuresBi, event))
 
@@ -173,57 +163,6 @@ class ClassifierCreator:
 
         self.table.append([i+1,round(baseL, 2), round(aBi, 2), round(aCat, 2),round(pEvent,2), round(rEvent,2),round(fEvent,2),round(pNoEvent,2), round(rNoEvent,2), round(fNoEvent,2)])
 
-    def printStats(self):
-        it = self.ITERATIONS
-        print("\n### EVALUATION STEP 1: Confusion matrices for the category classifier:\n")
-        for i in range(it):
-            print("Iteration {}".format(i+1))
-            print("###########")
-            print(self.cm[i])
-        print("### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainBi), len(self.testBi)))
-        print(tabulate.tabulate(self.table, headers=['#', 'Baseline', 'Accuracy Bi', 'Accuracy Cat', 'Pre. Event','Rec. Event','F. Event','Pre. Non-event','Rec. Non-event','F. Non-Event']))
-        print("Avg accuracy = {}".format(round(self.accBi / (it) , 2)))
-        print("Avg baseline accuracy (everything is an event)= {}\n".format(round(self.baselineBi / (it) , 2)))
-
-    def createFeatureTypes(self):
-        '''get all possible word features'''
-        featureTypes = Counter()
-        for g in self.candidates:
-            for t in self.candidates[g]:
-                candidate = self.candidates[g][t]
-                for row in candidate:
-                    featureTypes.update(row['tokens'])
-        
-        for f in featureTypes:
-            featureTypes[f] = featureTypes[f] * self.idf[f]
-
-        self.features = [word for word, n in featureTypes.most_common(800)]
-    
-    def wordFeatureSelector(self, candidate):
-        candidateFeatures = {}
-        for row in candidate:
-            for feature in self.features:
-                if feature in row['tokens']:
-                    candidateFeatures[feature] = True
-                else:
-                    if feature not in candidateFeatures:
-                        candidateFeatures[feature] = False 
-        return candidateFeatures     
-
-    def featureSelector(self, cluster):
-        featuresDict = {}
-        #featuresDict['overlap'] = features.wordOverlap(cluster)
-        #featuresDict['overlapSimple'] = features.wordOverlapSimple(cluster)
-        featuresDict['overlapUser'] = features.wordOverlapUser(cluster)
-        #featuresDict['nUsers'] = features.uniqueUsers(cluster)
-        #featuresDict['nTweets'] = features.nTweets(cluster)
-        #featuresDict['atRatio'] = features.atRatio(cluster) 
-        featuresDict['overlapHashtags'] = features.overlapHashtags(cluster)
-        #featuresDict['averageTfIdf'] = features.averageTfIdf(cluster, self.idf)
-        featuresDict['category'] = self.classifierCat.classify(self.wordFeatureSelector(cluster))
-        featuresDict['location'] = features.location(cluster) # locatie maakt niet heel veel uit
-        return featuresDict
-
     def eventType(self,geohash,timestamp):
         # return values {strings gebruiken?}
         eventTypes = {0:"geen event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
@@ -235,6 +174,18 @@ class ClassifierCreator:
             return 'event'
         else:
             return 'noEvent'
+
+    def printStats(self):
+        it = self.ITERATIONS
+        print("\n### EVALUATION STEP 1: Confusion matrices for the category classifier:\n")
+        for i in range(it):
+            print("Iteration {}".format(i+1))
+            print("###########")
+            print(self.cm[i])
+        print("### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainBi), len(self.testBi)))
+        print(tabulate.tabulate(self.table, headers=['#', 'Baseline', 'Accuracy Bi', 'Accuracy Cat', 'Pre. Event','Rec. Event','F. Event','Pre. Non-event','Rec. Non-event','F. Non-Event']))
+        print("Avg accuracy = {}".format(round(self.accBi / (it) , 2)))
+        print("Avg baseline accuracy (everything is an event)= {}\n".format(round(self.baselineBi / (it) , 2)))
 
 # DEMO
 if __name__ == "__main__":

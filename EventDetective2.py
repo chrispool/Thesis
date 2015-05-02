@@ -11,12 +11,11 @@ import os, sys, json, pickle
 from collections import defaultdict, Counter
 import nltk
 from math import log, log2
-from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
-from sklearn.svm import LinearSVC, SVC, NuSVC
-from sklearn.linear_model import SGDClassifier
+from sklearn.naive_bayes import MultinomialNB
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
+from FeatureSelector import FeatureSelector
 
 class EventDetective2:
 
@@ -24,6 +23,16 @@ class EventDetective2:
         self.dataSets = os.listdir('data/')
         self.candidates = {}
         self._loadDataSet()
+        featureSelector = FeatureSelector(self.candidates)
+        #self.featuresCat = []
+        #self.featuresBi = []
+        
+        for h in self.candidates:
+            for t in self.candidates[h]:
+                candidate = self.candidates[h][t] 
+                featuresCat = featureSelector.wordFeatureSelector(candidate)
+                label = self.classifierCat.classify(featuresCat)
+                #featuresBi = featureSelector.featureSelector(candidate,self.classifierCat)
         
     def _loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
