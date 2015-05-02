@@ -2,7 +2,7 @@
 
 """
 #################
-CreateClassifiers
+ClassifierCreator
 #################
 Creates category & event/no-event classifier given a dataset
 """
@@ -18,7 +18,7 @@ from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
 
-class CreateClassifiers:
+class ClassifierCreator:
 
     def __init__(self):
         self.ITERATIONS = 1
@@ -238,4 +238,4 @@ class CreateClassifiers:
 
 # DEMO
 if __name__ == "__main__":
-    detective = CreateClassifiers()
+    classifierCreator = ClassifierCreator()
