@@ -9,7 +9,6 @@ gegenereerd door de ClusterCreator en idf-waarden gegenereerd door
 de TweetPreprocessor. Clusters worden samengevoegd wanneer ze qua 
 tijd, inhoud en onderwerp overlappen.
 """
-import features
 from modules import geohash
 from collections import defaultdict, Counter
 from math import log2,log
@@ -32,7 +31,6 @@ class ClusterMerger:
         # voeg clusters samen
         self._mergeClusters()
         self.eventCandidates = self._selectEventCandidates()
-        self.createMarkers()
         
     # Bereken de idf-waarden gegeven (event) candidate clusters. Dit kan helaas niet zo heel
     # efficient in de huidige datastructuur.
@@ -51,7 +49,6 @@ class ClusterMerger:
                     
         for word in self.idf:
             self.idf[word] = log2(n/self.idf[word])
-
 
     def _mergeClusters(self):
         print("Merging clusters...")
@@ -132,7 +129,8 @@ class ClusterMerger:
         eventCandidates = defaultdict(self._eventCandidatesDic)
         for cluster in self.clusters:
             for times in self.clusters[cluster]:
-                if len(self.clusters[cluster][times]) > self.N_TWEETS and features.uniqueUsers(self.clusters[cluster][times]) >= self.UNIQUEUSERS:
+                userAmount = len(set([tweet['user'] for tweet in self.clusters[cluster][times]]))
+                if len(self.clusters[cluster][times]) > self.N_TWEETS and userAmount >= self.UNIQUEUSERS:
                     eventCandidates[cluster][times] = self.clusters[cluster][times]
                     nClusters += 1
        
@@ -141,40 +139,3 @@ class ClusterMerger:
             
     def getEventCandidates(self):
         return self.eventCandidates
-
-    def createMarkers(self):
-        print("Creating Google Maps markers...")
-        
-        js = open('vis/map/markers.js','w')
-        js.write('var locations = [')
-
-        # loop door clusters om te kijken wat event candidates zijn
-        for hashes in self.eventCandidates:
-            for times in self.eventCandidates[hashes]:   
-                tweets = self.eventCandidates[hashes][times]
-                
-                writableCluster = ''
-                gh = []
-                i = 0
-                avgLon = 0
-                avgLat = 0
-                              
-                for tweet in tweets:
-                    i = i + 1
-                    gh.append(tweet['geoHash'])
-                    avgLon += float(tweet["lon"])
-                    avgLat += float(tweet["lat"])
-                    # backslashes voor multiline strings in Javascript
-                    writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text'].replace("'", "\\'"))
-                # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
-                # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
-                # Oftewel, we doen even alsof de aarde plat is ;-)
-                
-                avgLon /= i
-                avgLat /= i
-                writableCluster += "Geohashes {}, Word overlap: {}, uniqueUsers: {} ".format(', '.join(list(set(gh))), features.wordOverlapDisplay(tweets),features.uniqueUsers(tweets))
-            # textfiles maken van alle afzonderlijke clusters en JS file maken voor Google maps
-            
-                js.write("['{}', {}, {}],".format(writableCluster, avgLat,avgLon))
-        js.write('];')
-        js.close()
