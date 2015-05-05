@@ -17,7 +17,7 @@ class FeatureSelector:
         self.candidates = eventCandidates
         self.idf = Counter()
         self.calculateIDF()
-        self.createFeatureTypes()
+        self._createFeatureTypes()
         
     def calculateIDF(self):
         n = 0        
@@ -30,7 +30,7 @@ class FeatureSelector:
         for word in self.idf:
             self.idf[word] = log(n/self.idf[word])   
         
-    def createFeatureTypes(self):
+    def _createFeatureTypes(self):
         '''get all possible word features'''
         featureTypes = Counter()
         for g in self.candidates:
@@ -44,7 +44,7 @@ class FeatureSelector:
 
         self.features = [word for word, n in featureTypes.most_common(800)]
     
-    def wordFeatureSelector(self, candidate):
+    def _wordFeatureSelector(self, candidate):
         candidateFeatures = {}
         for tweet in candidate:
             for feature in self.features:
@@ -54,21 +54,38 @@ class FeatureSelector:
                     if feature not in candidateFeatures:
                         candidateFeatures[feature] = False
                         
-        return candidateFeatures     
+        return candidateFeatures
+    
+    def addCategoryClassifier(self, classifierCat):
+        self.classifierCat = classifierCat
 
     # de categorie classifier is nodig voor de category feature
-    def featureSelector(self, cluster, classifierCat):
+    def getFeatures(self, cluster,featureList):
         featuresDict = {}
-        #featuresDict['overlap'] = self._wordOverlap(cluster)
-        #featuresDict['overlapSimple'] = self._wordOverlapSimple(cluster)
-        featuresDict['overlapUser'] = self._wordOverlapUser(cluster)
-        #featuresDict['nUsers'] = self._uniqueUsers(cluster)
-        #featuresDict['nTweets'] = self._nTweets(cluster)
-        #featuresDict['atRatio'] = self._atRatio(cluster) 
-        featuresDict['overlapHashtags'] = self._overlapHashtags(cluster)
-        #featuresDict['averageTfIdf'] = self._averageTfIdf(cluster, self.idf)
-        featuresDict['category'] = classifierCat.classify(self.wordFeatureSelector(cluster))
-        featuresDict['location'] = self._location(cluster) # locatie maakt niet heel veel uit
+        for feature in featureList:
+            
+            if feature == 'wordFeatures':
+                return self._wordFeatureSelector(cluster)
+            elif feature == 'wordOverlapUser':
+                featuresDict['wordOverlapUser'] = self._wordOverlapUser(cluster)
+            elif feature == 'overlapHashtags':
+                featuresDict['overlapHashtags'] = self._overlapHashtags(cluster)
+            elif feature == 'category':
+                featuresDict['category'] = self.classifierCat.classify(self._wordFeatureSelector(cluster))
+            elif feature == 'location':
+                featuresDict['location'] = self._location(cluster)
+            elif feature == 'wordOverlap':
+                featuresDict['wordOverlap'] = self._wordOverlap(cluster)
+            elif feature == 'wordOverlapSimple':
+                featuresDict['overlapSimple'] = self._wordOverlapSimple(cluster)
+            elif feature == 'uniqueUsers':
+                featuresDict['uniqueUsers'] = self._uniqueUsers(cluster)
+            elif feature == 'nTweets':
+                featuresDict['nTweets'] = self._nTweets(cluster)
+            elif feature == 'atRatio':
+                featuresDict['atRatio'] = self._atRatio(cluster) 
+            elif feature == 'averageTfIdf':
+                featuresDict['averageTfIdf'] = self._averageTfIdf(cluster, self.idf)
         
         return featuresDict
 

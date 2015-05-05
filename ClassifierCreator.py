@@ -26,7 +26,7 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-        self.ITERATIONS = 1
+        self.ITERATIONS = 5
         self.dataSets = os.listdir('data/')
         
         self.annotation = {}
@@ -43,7 +43,7 @@ class ClassifierCreator:
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
         self.classifyNLTK()
-        self._saveClassifiers()
+        #self._saveClassifiers()
 
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -90,25 +90,27 @@ class ClassifierCreator:
             #first train category classifier
             print("### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###")
             for candidate, event, label in self.testData:
-                featuresCat = self.featureSelector.wordFeatureSelector(candidate)
+                featuresCat = self.featureSelector.getFeatures(candidate, ['wordFeatures'])
                 self.testCat.append((featuresCat, label))         
             
             for candidate, event, label in self.trainData:
-                featuresCat = self.featureSelector.wordFeatureSelector(candidate)
+                featuresCat = self.featureSelector.getFeatures(candidate, ['wordFeatures'])
                 self.trainCat.append((featuresCat, label))
 
             # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
             self.classifierCat = SklearnClassifier(MultinomialNB()).train(self.trainCat)
+            #sends the category classifier to the featureSelector
+            self.featureSelector.addCategoryClassifier(self.classifierCat)
                 
             print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
             #second step train the event/no event classifier
             for candidate, event, label in self.testData:
-                featuresBi = self.featureSelector.featureSelector(candidate,self.classifierCat)   
+                featuresBi = self.featureSelector.getFeatures(candidate, ['category', 'location', 'wordOverlapUser', 'overlapHashtags'])   
                 self.featureKeys = featuresBi.keys()
                 self.testBi.append((featuresBi, event)) 
             
             for candidate, event, label in self.trainData:
-                featuresBi = self.featureSelector.featureSelector(candidate,self.classifierCat)
+                featuresBi = self.featureSelector.getFeatures(candidate, ['category', 'location', 'wordOverlapUser', 'overlapHashtags'])
                 self.featureKeys = featuresBi.keys()
                 self.trainBi.append((featuresBi, event))
 
