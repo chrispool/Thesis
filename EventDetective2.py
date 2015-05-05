@@ -70,6 +70,7 @@ class EventDetective2:
         js.write('var locations = [')
 
         #events = self.wiki.getWiki()
+        events = self.events()
         for tweets,label,ngrams in events:
             writableCluster = ''
             gh = []
