@@ -14,6 +14,18 @@ from nltk.classify.scikitlearn import SklearnClassifier
 class FeatureSelector:
     
     def __init__(self, eventCandidates):
+        self.featureTypes = ['wordOverlapUser', 
+                            'wordOverlapSimple',
+                            'wordOverlap',
+                            'overlapHashtags', 
+                            'atRatio', 
+                            'location', 
+                            'uniqueUsers',
+                            'nTweets',
+                            'averageTfIdf',
+                            'wordFeatures',
+                            'category' ]
+        
         self.candidates = eventCandidates
         self.idf = Counter()
         self.calculateIDF()
@@ -44,7 +56,7 @@ class FeatureSelector:
 
         self.features = [word for word, n in featureTypes.most_common(800)]
     
-    def _wordFeatureSelector(self, candidate):
+    def _wordFeatures(self, candidate):
         candidateFeatures = {}
         for tweet in candidate:
             for feature in self.features:
@@ -59,35 +71,22 @@ class FeatureSelector:
     def addCategoryClassifier(self, classifierCat):
         self.classifierCat = classifierCat
 
-    # de categorie classifier is nodig voor de category feature
-    def getFeatures(self, cluster,featureList):
-        featuresDict = {}
-        for feature in featureList:
-            
-            if feature == 'wordFeatures':
-                return self._wordFeatureSelector(cluster)
-            elif feature == 'wordOverlapUser':
-                featuresDict['wordOverlapUser'] = self._wordOverlapUser(cluster)
-            elif feature == 'overlapHashtags':
-                featuresDict['overlapHashtags'] = self._overlapHashtags(cluster)
-            elif feature == 'category':
-                featuresDict['category'] = self.classifierCat.classify(self._wordFeatureSelector(cluster))
-            elif feature == 'location':
-                featuresDict['location'] = self._location(cluster)
-            elif feature == 'wordOverlap':
-                featuresDict['wordOverlap'] = self._wordOverlap(cluster)
-            elif feature == 'wordOverlapSimple':
-                featuresDict['wordOverlapSimple'] = self._wordOverlapSimple(cluster)
-            elif feature == 'uniqueUsers':
-                featuresDict['uniqueUsers'] = self._uniqueUsers(cluster)
-            elif feature == 'nTweets':
-                featuresDict['nTweets'] = self._nTweets(cluster)
-            elif feature == 'atRatio':
-                featuresDict['atRatio'] = self._atRatio(cluster) 
-            elif feature == 'averageTfIdf':
-                featuresDict['averageTfIdf'] = self._averageTfIdf(cluster, self.idf)
-        
-        return featuresDict
+    def getFeatures(self, candidate, features):
+        returnFeatures = {}
+        for feature in features:
+            if feature in self.featureTypes:
+                method = getattr(self, "_" + feature)
+                if feature == 'wordFeatures':
+                    wordFeatures = method(candidate)
+                    #add word features to dictionary to be able to combine features
+                    for key in wordFeatures:
+                        returnFeatures[key] = wordFeatures[key]
+                else:
+                    returnFeatures[feature] = method(candidate)
+            else:
+                print("The feature", feature, "is not available.")
+
+        return returnFeatures
 
     def _wordOverlapUser(self, candidate):
         '''Calculate the overlap of features among users, high score when high idf types are in each tweet'''
@@ -228,6 +227,9 @@ class FeatureSelector:
 
     def _nTweets(self, cluster):
         return (len(cluster))
+    
+    def _category(self, candidate):
+        return self.classifierCat.classify(self._wordFeatures(candidate))
 
     def _averageTfIdf(self, candidate, idf):
         tokens = Counter()
