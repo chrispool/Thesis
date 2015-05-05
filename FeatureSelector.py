@@ -77,7 +77,7 @@ class FeatureSelector:
             elif feature == 'wordOverlap':
                 featuresDict['wordOverlap'] = self._wordOverlap(cluster)
             elif feature == 'wordOverlapSimple':
-                featuresDict['overlapSimple'] = self._wordOverlapSimple(cluster)
+                featuresDict['wordOverlapSimple'] = self._wordOverlapSimple(cluster)
             elif feature == 'uniqueUsers':
                 featuresDict['uniqueUsers'] = self._uniqueUsers(cluster)
             elif feature == 'nTweets':
