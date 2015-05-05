@@ -69,7 +69,7 @@ class EventDetective2:
         js = open('vis/map/markers.js','w')
         js.write('var locations = [')
 
-        events = self.wiki.getWiki()
+        #events = self.wiki.getWiki()
         for tweets,label,ngrams in events:
             writableCluster = ''
             gh = []
