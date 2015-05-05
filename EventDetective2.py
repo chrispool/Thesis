@@ -6,7 +6,7 @@ EventDetective2
 ##############
 Detecteert events gegeven dataset
 """
-import features
+
 import os, sys, json, pickle
 from collections import defaultdict, Counter
 import nltk
@@ -16,6 +16,7 @@ from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
 from FeatureSelector import FeatureSelector
+from Wikification import Wikification
 
 class EventDetective2:
 
@@ -36,8 +37,9 @@ class EventDetective2:
                 label = self.classifierCat.classify(featuresCat)
                 featuresBi = featureSelector.featureSelector(candidate,self.classifierCat)
                 if self.classifierBi.classify(featuresBi) == "event":
-                    self.events.append((candidate,label))
-                    
+                    self.events.append((candidate,label))                           
+        
+        self.wiki = Wikification(self.events) #adds wikification to events
         self._generateMarkers()
         
     def _loadDataSet(self):
@@ -60,12 +62,13 @@ class EventDetective2:
         # 1. Annotate a test set from april (or last year?) and find a way to test with ClassifierCreator
         
     def _generateMarkers(self):
-        print("Creating Google Maps markers...")
+        print("Creating Google Maps markers & add WIKI links...")
         
         js = open('vis/map/markers.js','w')
         js.write('var locations = [')
 
-        for tweets,label in self.events:
+        events = self.wiki.getWiki()
+        for tweets,label,ngrams in events:
             writableCluster = ''
             gh = []
             i = 0
@@ -84,6 +87,7 @@ class EventDetective2:
             # Oftewel, we doen even alsof de aarde plat is ;-)
             avgLon /= i
             avgLat /= i
+            writableCluster += "</br>" + str(ngrams).replace("'", "\\'")
             js.write("['{}', {}, {}, '{}'],".format(writableCluster,avgLat,avgLon,label))
         js.write('];')
         js.close()
