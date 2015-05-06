@@ -35,9 +35,10 @@ class EventDetective2:
         for h in self.candidates:
             for t in self.candidates[h]:
                 candidate = self.candidates[h][t] 
-                featuresCat = featureSelector.wordFeatureSelector(candidate)
+                featuresCat = featureSelector.getFeatures(candidate, ['wordFeatures'])
+                featureSelector.addCategoryClassifier(self.classifierCat)
                 label = self.classifierCat.classify(featuresCat)
-                featuresBi = featureSelector.featureSelector(candidate,self.classifierCat)
+                featuresBi = featureSelector.getFeatures(candidate,['category', 'wordOverlapUser'])
                 if self.classifierBi.classify(featuresBi) == "event":
                     self.events.append((candidate,label))                           
         
@@ -69,8 +70,8 @@ class EventDetective2:
         js = open('vis/map/markers.js','w')
         js.write('var locations = [')
 
-        #events = self.wiki.getWiki()
-        events = self.events()
+        events = self.wiki.getWiki()
+        
         for tweets,label,ngrams in events:
             writableCluster = ''
             gh = []

@@ -33,10 +33,11 @@ class Wikification:
 
 	def prepareTokens(self, tweet):
 		returnList = []
+
 		tweet = re.sub(r"(\w)([A-Z])", r"\1 \2", tweet)
 		tweet = re.sub('[!@#$.,?]', '', tweet)
 		tweet = re.sub(r'^https?:\/\/.*[\r\n]*', '', tweet, flags=re.MULTILINE)
 
-		for token in tweet.split():
-			returnList.append(token)
+	
+			
 		return returnList
