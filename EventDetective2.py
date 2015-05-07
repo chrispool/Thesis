@@ -78,7 +78,7 @@ class EventDetective2:
             i = 0
             avgLon = 0
             avgLat = 0
-            tweets = sorted(tweets, key=itemgetter('unixTime'));
+            #tweets = sorted(tweets, key=itemgetter('unixTime'));
                               
             for tweet in tweets:
                 i = i + 1

@@ -35,15 +35,15 @@ class EventDetective:
         for h in self.candidates:
             for t in self.candidates[h]:
                 candidate = self.candidates[h][t] 
-                featuresCat = featureSelector.wordFeatureSelector(candidate)
+                featuresCat = featureSelector.getFeatures(candidate, ['wordFeatures'])
+                featureSelector.addCategoryClassifier(self.classifierCat)
                 label = self.classifierCat.classify(featuresCat)
-                featuresBi = featureSelector.featureSelector(candidate,self.classifierCat)
+                featuresBi = featureSelector.getFeatures(candidate,['category', 'wordOverlapUser'])
                 if self.classifierBi.classify(featuresBi) == "event":
                     self.events.append((candidate,label))                           
         
         self.wiki = Wikification(self.events) #adds wikification to events
         self._generateMarkers()
-        
     def _loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
@@ -69,15 +69,17 @@ class EventDetective:
         js = open('vis/map/markers.js','w')
         js.write('var locations = [')
 
-        #events = self.wiki.getWiki()
-        events = self.events()
+        events = self.wiki.getWiki()
+        #events = self.events()
+        #ngrams = [] #if wiki is off
+        
         for tweets,label,ngrams in events:
             writableCluster = ''
             gh = []
             i = 0
             avgLon = 0
             avgLat = 0
-            tweets = sorted(tweets, key=itemgetter('unixTime'));
+            tweets = sorted(list(tweets), key=itemgetter('unixTime'));
                               
             for tweet in tweets:
                 i = i + 1

@@ -6,7 +6,9 @@
 """
 
 import os,sys,json
-
+from nltk import ConfusionMatrix
+from nltk.metrics import *
+from collections import defaultdict
 class AnnotationEvaluation:
     
     def __init__(self):
@@ -26,7 +28,11 @@ class AnnotationEvaluation:
         # TODO presentatie resultaten
         print("eventKappa:", self.eventKappa)
         print("categoryKappa:", self.categoryKappa)
+        print(ConfusionMatrix(self.judge1, self.judge2))
+        print("Accuracy", accuracy(self.judge1, self.judge2))
         
+        
+
         ###
         # Kappa evaluatie
         ###
@@ -43,7 +49,9 @@ class AnnotationEvaluation:
         # Moderate agreement: 0.41 – 0.60
         # Substantial agreement: 0.61 – 0.80
         # Almost perfect agreement: 0.81 – 1.00
-        
+    
+
+
     def _calculateKappa(self, judgeArray):
         judgeDicts = []
         judgeAmount = len(judgeArray)   # totale aantal judges
@@ -105,15 +113,24 @@ class AnnotationEvaluation:
             return None
         
         return kappa
-        
+    
+
+    def eventType(self, key):
+        eventTypes = {0:"geen event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
+        return eventTypes[key]
+
     def _makeAnnotationLists(self):
         eventsToRemove = []
+        self.judge1 = []
+        self.judge2 = []
         nEvents = 0
         for geoHash in self.annotation1:
             for times in self.annotation1[geoHash]:
+
                 anno1 = self.annotation1[geoHash][times]
                 anno2 = self.annotation2[geoHash][times]
-                
+                self.judge1.append(self.eventType(anno1))
+                self.judge2.append(self.eventType(anno2))
                 if anno1 != anno2:
                     eventsToRemove.append((geoHash,times))
                 else:
