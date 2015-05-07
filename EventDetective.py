@@ -19,7 +19,6 @@ from FeatureSelector import FeatureSelector
 from Wikification import Wikification
 from operator import itemgetter
 
-
 class EventDetective:
 
     def __init__(self):
@@ -44,6 +43,7 @@ class EventDetective:
         
         self.wiki = Wikification(self.events) #adds wikification to events
         self._generateMarkers()
+        
     def _loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
@@ -70,8 +70,6 @@ class EventDetective:
         js.write('var locations = [')
 
         events = self.wiki.getWiki()
-        #events = self.events()
-        #ngrams = [] #if wiki is off
         
         for tweets,label,ngrams in events:
             writableCluster = ''
@@ -79,7 +77,7 @@ class EventDetective:
             i = 0
             avgLon = 0
             avgLat = 0
-            tweets = sorted(list(tweets), key=itemgetter('unixTime'));
+            #tweets = sorted(tweets, key=itemgetter('unixTime'));
                               
             for tweet in tweets:
                 i = i + 1
