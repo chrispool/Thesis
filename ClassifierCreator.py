@@ -36,10 +36,20 @@ class ClassifierCreator:
         self.baselineBi = 0
         self.choice = 0
         
+        # real test or dev test?
+        self.realTest = False
+        if len(sys.argv) == 2:
+            if sys.argv[1] == "-test":
+                self.realTest = True
+        
+        if self.realTest:
+            print("\nThe system is running in TEST mode.\n")
+        else:
+            print("\nThe system is running in DEVTEST mode.\n")
+        
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
-        self._trainDevTestClassifiers()
-        #self._trainTestClassifiers()
+        self._trainClassifiers()
         #self._saveClassifiers()
 
     def __loadDataSet(self):
@@ -52,6 +62,15 @@ class ClassifierCreator:
 
         with open("data/" + self.dataSets[self.choice] + "/sanitizedEventCandidates_cleaned.json") as jsonFile:
             self.candidates = json.load(jsonFile)
+         
+        if self.realTest:
+            print()
+            for i, dataset in enumerate(self.dataSets):
+                print("{}: {}".format(i, dataset))
+            choice = int(input("Please select an annotated test dataset: "))
+                
+            with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates_cleaned.json") as jsonFile:
+                self.testCandidates = json.load(jsonFile)
 
     def _saveClassifiers(self):
         print("Saving the category and event classifier...")
@@ -67,17 +86,33 @@ class ClassifierCreator:
         for h in self.candidates:
             for t in self.candidates[h]:
                 dataset.append( (self.candidates[h][t],self.isEvent(h,t), self.eventType(h,t) ) )
+                
+        if self.realTest:
+            # use all of the annotated train data to train
+            self.trainData = dataset
+            
+            dataset = []
+            for h in self.testCandidates:
+                for t in self.testCandidates[h]:
+                    dataset.append( (self.testCandidates[h][t],self.isEvent(h,t), self.eventType(h,t) ) )
+                    
+            self.testData = dataset
+        else:
+            random.shuffle(dataset)
+            # random dataset splits for cross validation
+            trainSplit = int(0.8 * len(dataset))
+            self.trainData = dataset[:trainSplit]
+            self.testData = dataset[trainSplit:]
         
-        random.shuffle(dataset)
-        trainSplit = int(0.8 * len(dataset))
-        self.trainData = dataset[:trainSplit]
-        self.testData = dataset[trainSplit:]
-
-    def _trainDevTestClassifiers(self):
-        print("\n *** DEVTEST: Classifying events ***\n")
+    def _trainClassifiers(self):
+        print("\nClassifying events...\n")
         for i in range(self.ITERATIONS):
-            print("Iteration {}".format(i+1))
-            print("###########")
+            if self.realTest:
+                testMode = "TEST"
+            else:
+                testMode = "DEVTEST"
+            print("### {} {}".format(testMode,i+1))
+            print("#############")
             self._selectDataset()
             self.testCat = []
             self.trainCat = []
@@ -96,11 +131,11 @@ class ClassifierCreator:
 
             # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
             self.classifierCat = SklearnClassifier(MultinomialNB()).train(self.trainCat)
-            #sends the category classifier to the featureSelector
+            # sends the category classifier to the featureSelector
             self.featureSelector.addCategoryClassifier(self.classifierCat)
                 
             print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
-            #second step train the event/no event classifier
+            # second step train the event/no event classifier
             for candidate, event, label in self.testData:
                 featuresBi = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])   
                 self.featureKeys = featuresBi.keys()
@@ -185,8 +220,12 @@ class ClassifierCreator:
         it = self.ITERATIONS
         print("\n### EVALUATION STEP 1: Confusion matrices for the category classifier:\n")
         for i in range(it):
-            print("Iteration {}".format(i+1))
-            print("###########")
+            if self.realTest:
+                testMode = "TEST"
+            else:
+                testMode = "DEVTEST"
+            print("### {} {}".format(testMode,i+1))
+            print("#############")
             print(self.cm[i])
         print("### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainBi), len(self.testBi)))
         print(tabulate.tabulate(self.table, headers=['#', 'Baseline', 'Accuracy Bi', 'Accuracy Cat', 'Pre. Event','Rec. Event','F. Event','Pre. Non-event','Rec. Non-event','F. Non-Event']))
