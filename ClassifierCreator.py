@@ -17,10 +17,7 @@ from sklearn.linear_model import SGDClassifier
 from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
-
-
 from FeatureSelector import FeatureSelector
-
 
 class ClassifierCreator:
 
@@ -41,7 +38,8 @@ class ClassifierCreator:
         
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
-        self.classifyNLTK()
+        self._trainDevTestClassifiers()
+        #self._trainTestClassifiers()
         #self._saveClassifiers()
 
     def __loadDataSet(self):
@@ -64,7 +62,7 @@ class ClassifierCreator:
         with open("data/" + self.dataSets[self.choice] + "/eventClassifier.bin", "wb") as f:
             pickle.dump(self.classifierBi,f)
     
-    def selectDataset(self):
+    def _selectDataset(self):
         dataset = []
         for h in self.candidates:
             for t in self.candidates[h]:
@@ -75,12 +73,12 @@ class ClassifierCreator:
         self.trainData = dataset[:trainSplit]
         self.testData = dataset[trainSplit:]
 
-    def classifyNLTK(self):
-        print("\nClassifying events...\n")
+    def _trainDevTestClassifiers(self):
+        print("\n *** DEVTEST: Classifying events ***\n")
         for i in range(self.ITERATIONS):
             print("Iteration {}".format(i+1))
             print("###########")
-            self.selectDataset()
+            self._selectDataset()
             self.testCat = []
             self.trainCat = []
             self.testBi = []
@@ -104,16 +102,19 @@ class ClassifierCreator:
             print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
             #second step train the event/no event classifier
             for candidate, event, label in self.testData:
-                featuresBi = self.featureSelector.getFeatures(candidate, ['category', 'location', 'wordOverlapUser', 'overlapHashtags'])   
+                featuresBi = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])   
                 self.featureKeys = featuresBi.keys()
                 self.testBi.append((featuresBi, event)) 
             
             for candidate, event, label in self.trainData:
-                featuresBi = self.featureSelector.getFeatures(candidate, ['category', 'location', 'wordOverlapUser', 'overlapHashtags'])
+                featuresBi = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])
                 self.featureKeys = featuresBi.keys()
                 self.trainBi.append((featuresBi, event))
 
-            self.classifierBi = nltk.NaiveBayesClassifier.train(self.trainBi) #SklearnClassifier(LinearSVC()).train(trainBi)
+            self.classifierBi = nltk.NaiveBayesClassifier.train(self.trainBi)
+            print()
+            self.classifierBi.show_most_informative_features(10)
+            print()
             self.calculateStats(i)
             print("###########")
             
