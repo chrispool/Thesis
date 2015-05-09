@@ -50,7 +50,7 @@ class TweetPreprocessor:
      
         # filter links
         for word in tokens[:]:
-            if word.startswith("http") or word.startswith("https"):
+            if "http" in word:
                 tokens.remove(word)
         filterLinkText = ' '.join(tokens)
         # vervang alles behalve letters/cijfers door een spatie
