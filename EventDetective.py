@@ -38,8 +38,8 @@ class EventDetective:
                 featureSelector.addCategoryClassifier(self.classifierCat)
                 label = self.classifierCat.classify(featuresCat)
                 featuresBi = featureSelector.getFeatures(candidate,['category', 'wordOverlapUser'])
-                if self.classifierBi.classify(featuresBi) == "event":
-                    self.events.append((candidate,label))                           
+                if self.classifierBi.classify(featuresBi) != "geen_event":
+                    self.events.append((candidate,label))                          
         
         self.wiki = Wikification(self.events) #adds wikification to events
         self._generateMarkers()
