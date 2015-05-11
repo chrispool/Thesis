@@ -37,12 +37,12 @@ class EventDetective:
                 featuresCat = featureSelector.getFeatures(candidate, ['wordFeatures'])
                 featureSelector.addCategoryClassifier(self.classifierCat)
                 label = self.classifierCat.classify(featuresCat)
+
                 featuresBi = featureSelector.getFeatures(candidate,['category', 'wordOverlapUser'])
                 if self.classifierBi.classify(featuresBi) != "geen_event":
                     self.events.append((candidate,label))                          
         
         self.wiki = Wikification(self.events) #adds wikification to events
-        self._generateMarkers()
         
     def _loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -60,10 +60,7 @@ class EventDetective:
         with open("data/" + self.dataSets[choice] + "/eventCandidates.json") as jsonFile:
             self.candidates = json.load(jsonFile)
         
-        # TODO 
-        # 1. Annotate a test set from april (or last year?) and find a way to test with ClassifierCreator
-        
-    def _generateMarkers(self):
+    def generateMarkers(self):
         print("Creating Google Maps markers & add WIKI links...")
         
         js = open('vis/map/js/markers.js','w')
@@ -99,3 +96,4 @@ class EventDetective:
 # DEMO
 if __name__ == "__main__":
     detective = EventDetective()
+    detective.generateMarkers()
