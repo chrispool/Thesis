@@ -147,9 +147,6 @@ class ClassifierCreator:
 
             self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
 
-            
-           
-
             self.calculateStats(i)
             print("###########")
             
@@ -198,13 +195,7 @@ class ClassifierCreator:
         eventTypes = {0:"geen_event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
         return eventTypes[self.annotation[geohash][timestamp]]
         
-    def isEvent(self,geohash,timestamp):
-        # waarden groter/kleiner dan 0 zijn True, gelijk aan 0 is False
-        if self.annotation[geohash][timestamp]:
-            return 'event'
-        else:
-            return self.categories[0]
-
+        
     def printStats(self):
         it = self.ITERATIONS
         print("\n### EVALUATION STEP 1: Detailed statistics for the classifier:\n")
