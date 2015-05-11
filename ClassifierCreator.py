@@ -25,6 +25,8 @@ class ClassifierCreator:
         self.ITERATIONS = 10
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
+        self.classifierAFeatures = ['wordFeatures']
+        self.classifierBFeatures = ['category','location','wordOverlapSimple','wordOverlapUser']
         self.annotation = {}
         self.candidates = {}
         self.result = defaultdict(self.resultDictionary)
@@ -119,11 +121,11 @@ class ClassifierCreator:
             #first train category classifier
             print("### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###")
             for candidate, event, label in self.testData:
-                featuresA = self.featureSelector.getFeatures(candidate, ['wordFeatures'])
+                featuresA = self.featureSelector.getFeatures(candidate, self.classifierAFeatures)
                 self.testA.append((featuresA, label))         
             
             for candidate, event, label in self.trainData:
-                featuresA = self.featureSelector.getFeatures(candidate, ['wordFeatures'])
+                featuresA = self.featureSelector.getFeatures(candidate, self.classifierAFeatures)
                 self.trainA.append((featuresA, label))
 
             # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
@@ -134,12 +136,12 @@ class ClassifierCreator:
             print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
             # second step train the event/no event classifier
             for candidate, event, label in self.testData:
-                featuresB = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])   
+                featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures )   
                 self.featureKeys = featuresB.keys()
                 self.testB.append((featuresB, label)) 
             
             for candidate, event, label in self.trainData:
-                featuresB = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])
+                featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures)
                 self.featureKeys = featuresB.keys()
                 self.trainB.append((featuresB, label))
 
