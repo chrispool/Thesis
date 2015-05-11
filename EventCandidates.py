@@ -42,7 +42,7 @@ class EventCandidates:
         for geohash in self.eventCandidates:
             for timestamp in self.eventCandidates[geohash]:
                 i += 1
-                if i <= 1250:
+                if i <= 500:
                     events[geohash][timestamp] = self.eventCandidates[geohash][timestamp]
                 else:
                     break

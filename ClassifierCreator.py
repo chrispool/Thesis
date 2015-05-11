@@ -26,7 +26,7 @@ class ClassifierCreator:
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.classifierAFeatures = ['wordFeatures']
-        self.classifierBFeatures = ['category','location','wordOverlapSimple','wordOverlapUser']
+        self.classifierBFeatures = ['category', 'location','wordOverlapSimple','wordOverlapUser']
         self.annotation = {}
         self.candidates = {}
         self.result = defaultdict(self.resultDictionary)
@@ -84,7 +84,7 @@ class ClassifierCreator:
         dataset = []
         for h in self.candidates:
             for t in self.candidates[h]:
-                dataset.append( (self.candidates[h][t],self.isEvent(h,t), self.eventType(h,t) ) )
+                dataset.append( (self.candidates[h][t], self.eventType(h,t) ) )
                 
         if self.realTest:
             # use all of the annotated train data to train
@@ -120,11 +120,11 @@ class ClassifierCreator:
            
             #first train category classifier
             print("### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###")
-            for candidate, event, label in self.testData:
+            for candidate, label in self.testData:
                 featuresA = self.featureSelector.getFeatures(candidate, self.classifierAFeatures)
                 self.testA.append((featuresA, label))         
             
-            for candidate, event, label in self.trainData:
+            for candidate, label in self.trainData:
                 featuresA = self.featureSelector.getFeatures(candidate, self.classifierAFeatures)
                 self.trainA.append((featuresA, label))
 
@@ -135,12 +135,12 @@ class ClassifierCreator:
                 
             print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
             # second step train the event/no event classifier
-            for candidate, event, label in self.testData:
+            for candidate, label in self.testData:
                 featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures )   
                 self.featureKeys = featuresB.keys()
                 self.testB.append((featuresB, label)) 
             
-            for candidate, event, label in self.trainData:
+            for candidate, label in self.trainData:
                 featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures)
                 self.featureKeys = featuresB.keys()
                 self.trainB.append((featuresB, label))
@@ -195,7 +195,7 @@ class ClassifierCreator:
         eventTypes = {0:"geen_event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
         return eventTypes[self.annotation[geohash][timestamp]]
         
-        
+
     def printStats(self):
         it = self.ITERATIONS
         print("\n### EVALUATION STEP 1: Detailed statistics for the classifier:\n")
