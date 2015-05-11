@@ -22,17 +22,15 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-        self.ITERATIONS = 5
+        self.ITERATIONS = 10
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.annotation = {}
         self.candidates = {}
         self.result = defaultdict(self.resultDictionary)
         self.cm = []
-        self.mostInformativeBi = []
-        self.mostInformativeCat = []
-        self.acc  = 0
-        self.baselineBi = 0
+        self.informativeFeatures = []
+        self.accuracy  = []
         self.choice = 0
         
         # real test or dev test?
@@ -117,9 +115,7 @@ class ClassifierCreator:
             self.trainA = []
             self.testB = []
             self.trainB = []
-            self.testC =[]
-            self.trainC = []
-        
+           
             #first train category classifier
             print("### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###")
             for candidate, event, label in self.testData:
@@ -140,34 +136,17 @@ class ClassifierCreator:
             for candidate, event, label in self.testData:
                 featuresB = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])   
                 self.featureKeys = featuresB.keys()
-                self.testB.append((featuresB, event)) 
+                self.testB.append((featuresB, label)) 
             
             for candidate, event, label in self.trainData:
                 featuresB = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])
                 self.featureKeys = featuresB.keys()
-                self.trainB.append((featuresB, event))
+                self.trainB.append((featuresB, label))
 
             self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
 
             
-            print("### TRAINING STEP 3: Training final classifier (Final classifier) ###")
-            for candidate, event, label in self.testData:
-                featuresC = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])
-                if self.classifierB.classify(featuresC) == 'event':
-                    featuresC = self.featureSelector.getFeatures(candidate, ['wordFeatures'])
-                    self.testC.append((featuresC, label))
-                else:
-                   self.testC.append((featuresC, self.categories[0]))      
-            
-            for candidate, event, label in self.trainData:
-                featuresC = self.featureSelector.getFeatures(candidate, ['category','location','wordOverlapSimple','wordOverlapUser'])
-                if self.classifierB.classify(featuresC) == 'event':
-                    featuresC = self.featureSelector.getFeatures(candidate, ['wordFeatures'])
-                    self.trainC.append((featuresC, label))
-                else:
-                   self.trainC.append((featuresC, self.categories[0]))  
-            # MultinomialNB lijkt hier net zo goed als de nltk naive bayes classifier, maar is wel wat sneller
-            self.classifierC = SklearnClassifier(MultinomialNB()).train(self.trainC)
+           
 
             self.calculateStats(i)
             print("###########")
@@ -179,37 +158,26 @@ class ClassifierCreator:
 
     def calculateStats(self, i):
         '''Function to calculate all stats'''
-        #self.table is for binary classifier
-        #self.cm is for category classifier
-        #self.mostInformativeBi is for binary
-        #self.mostInformativeCat is for category
-        #self.accBi  is accuracy for binary
-        #self.accCat is accuracy for category
-        # TODO meer stats voor cat?
-
         #calculate cm for this iteration
         ref = []
         tagged =[]
-        for f, e in self.testA:
-            ref.append(self.classifierA.classify(f))
+        for f, e in self.testB:
+            ref.append(self.classifierB.classify(f))
             tagged.append(e)
 
-        cm = nltk.ConfusionMatrix(ref, tagged)
-        self.cm.append(cm)
-       
+        self.cm.append(nltk.ConfusionMatrix(ref, tagged))
+        self.informativeFeatures.append(self.classifierB.show_most_informative_features(5))
         #calculate precision and recall for this iteration for each category
         refsets = defaultdict(set)
         testsets = defaultdict(set)
         
 
-        for n, (feats, label) in enumerate(self.testC):
+        for n, (feats, label) in enumerate(self.testB):
             refsets[label].add(n)
-            observed = self.classifierC.classify(feats)
+            observed = self.classifierB.classify(feats)
             testsets[observed].add(n)
         
-
-        accuracy = nltk.classify.accuracy(self.classifierC,self.testC)
-        self.acc += accuracy
+        self.accuracy.append(nltk.classify.accuracy(self.classifierB,self.testB))
         
         #for elke category precision and recall berekenen.
         for category in self.categories:
@@ -218,9 +186,9 @@ class ClassifierCreator:
                 self.result[category]["r"].append(nltk.metrics.recall(refsets[category], testsets[category]))
                 self.result[category]["f"].append(nltk.metrics.f_measure(refsets[category], testsets[category]))
             else:
-                self.result[category]["p"].append(0)
-                self.result[category]["r"].append(0)
-                self.result[category]["f"].append(0)
+                self.result[category]["p"].append(float(0))
+                self.result[category]["r"].append(float(0))
+                self.result[category]["f"].append(float(0))
 
         
     def eventType(self,geohash,timestamp):
@@ -237,7 +205,7 @@ class ClassifierCreator:
 
     def printStats(self):
         it = self.ITERATIONS
-        print("\n### EVALUATION STEP 1: Confusion matrices for the category classifier:\n")
+        print("\n### EVALUATION STEP 1: Detailed statistics for the classifier:\n")
         for i in range(it):
             if self.realTest:
                 testMode = "TEST"
@@ -246,17 +214,46 @@ class ClassifierCreator:
             print("### {} {}".format(testMode,i+1))
             print("#############")
             print(self.cm[i])
-        print("### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainC), len(self.testC)))
+            print(self.informativeFeatures[i])
+        print("### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainB), len(self.testB)))
+        headers = ['#', 'accuracy'] + self.categories
+        
+        prf = "P    R    F"
+        table = [ ['', '', prf, prf,prf,prf,prf,prf]]
+        for i in range(it):
+            row = [i + 1, round(self.accuracy[i],2)]
+            for category in self.categories:
+                value = "{:.2f} {:.2f} {:.2f}".format(self.customRound(self.result[category]["p"][i],2), self.customRound(self.result[category]["r"][i],2), self.customRound(self.result[category]["f"][i],2))
+                row.extend( [value] )
+            table.append(row)
+        
+        #averages
+        row = ["Avg.", round(sum(self.accuracy) / len(self.accuracy),2)]
         for category in self.categories:
-            table = []
-            print("stats for", category)
-            for i in range(it):
-                table.append([str(i), round(self.result[category]["p"][i],2), round(self.result[category]["r"][i],2), round(self.result[category]["f"][i],2) ])
-            print(tabulate.tabulate(table, headers=['#', 'P.', 'R', 'F']))
-        print("Avg accuracy = {}".format(round(self.acc / (it) , 2)))
-        #print("Avg baseline accuracy (everything is an event)= {}\n".format(round(self.baselineBi / (it) , 2)))
+            value = "{:.2f} {:.2f} {:.2f}".format(self.customAvg(self.result[category]["p"]), self.customAvg(self.result[category]["r"]), self.customAvg(self.result[category]["f"]))
+            row.extend( [value] )
+        table.append(row)
 
-        #print(self.result)
+        print(tabulate.tabulate(table, headers=headers))
+        print("\nLATEX table\n")
+        print(tabulate.tabulate(table, headers=headers, tablefmt="latex"))
+
+    def customAvg(self, l):
+        try:
+            returnValue = round(sum(l) / len(l),2)
+        except TypeError:
+            returnValue = 0.0
+        return returnValue
+
+
+    def customRound(self,n, d):
+        try:
+            returnValue = round(n,d)
+        except TypeError:
+            returnValue = 0.0
+
+        return returnValue
+
 
 # DEMO
 if __name__ == "__main__":
