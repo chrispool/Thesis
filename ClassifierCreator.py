@@ -22,7 +22,7 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-        self.ITERATIONS = 10
+        self.ITERATIONS = 2
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.classifierAFeatures = ['wordFeatures']
@@ -169,11 +169,11 @@ class ClassifierCreator:
             tagged.append(e)
 
         self.cm.append(nltk.ConfusionMatrix(ref, tagged))
-        self.informativeFeatures.append(self.classifierB.show_most_informative_features(5))
+        self.informativeFeatures.append(self.classifierB.most_informative_features(10))
+        print()
         #calculate precision and recall for this iteration for each category
         refsets = defaultdict(set)
         testsets = defaultdict(set)
-        
 
         for n, (feats, label) in enumerate(self.testB):
             refsets[label].add(n)
@@ -193,7 +193,6 @@ class ClassifierCreator:
                 self.result[category]["r"].append(float(0))
                 self.result[category]["f"].append(float(0))
 
-        
     def eventType(self,geohash,timestamp):
         # return values {strings gebruiken?}
         eventTypes = {0:"geen_event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
@@ -204,20 +203,20 @@ class ClassifierCreator:
 
         return returnValue
 
-
     def printStats(self):
         it = self.ITERATIONS
-        print("\n### EVALUATION STEP 1: Detailed statistics for the classifier:\n")
+        print("\n### EVALUATION STEP 1: Detailed statistics for the classifier:")
         for i in range(it):
             if self.realTest:
                 testMode = "TEST"
             else:
                 testMode = "DEVTEST"
-            print("### {} {}".format(testMode,i+1))
+            print("\n### {} {}".format(testMode,i+1))
             print("#############")
             print(self.cm[i])
+            print("Most informative features")
             print(self.informativeFeatures[i])
-        print("### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainB), len(self.testB)))
+        print("\n### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainB), len(self.testB)))
         headers = ['#', 'accuracy'] + self.categories
         
         prf = "P    R    F"
@@ -247,7 +246,6 @@ class ClassifierCreator:
             returnValue = 0.0
         return returnValue
 
-
     def customRound(self,n, d):
         try:
             returnValue = round(n,d)
@@ -255,7 +253,6 @@ class ClassifierCreator:
             returnValue = 0.0
 
         return returnValue
-
 
 # DEMO
 if __name__ == "__main__":
