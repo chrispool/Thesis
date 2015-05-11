@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="css/style.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/highcharts.js"></script>
+<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+<title>Google Maps Multiple Markers</title> 
+</head> 
+
+<body>
+<div id="map"></div>
+<script src="js/markers.js"></script>
+<script type="text/javascript">
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 8,
+    center: new google.maps.LatLng(52.32, 5.85),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow({
+    /* compenseer voor breedte custom markers door schaduw */
+     pixelOffset: new google.maps.Size(-7,0),
+    });
+    
+    // highcharts CEST timezone
+    Highcharts.setOptions({
+        global: {
+            timezoneOffset: -2 * 60
+        }
+    });
+
+    var marker, i, markerIcon;
+    
+    var incidentMarker      = new google.maps.MarkerImage('img/incidentMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var meetingMarker       = new google.maps.MarkerImage('img/meetingMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var entertainmentMarker = new google.maps.MarkerImage('img/entertainmentMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var sportMarker         = new google.maps.MarkerImage('img/sportMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var otherMarker         = new google.maps.MarkerImage('img/otherMarker.png',null,null,null,new google.maps.Size(40, 35));
+    var plotData = "";
+
+    for (i = 0; i < locations.length; i++) {  
+    
+        switch(locations[i][3]) {
+            case "sport":
+                markerIcon = sportMarker;
+                break;
+            case "bijeenkomst":
+                markerIcon = meetingMarker;
+                break;
+            case "entertainment":
+                markerIcon = entertainmentMarker;
+                break;
+            case "incident":
+                markerIcon = incidentMarker;
+                break;
+            default:
+                markerIcon = otherMarker;
+        }
+                
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+            map: map,
+            icon: markerIcon
+        });
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infowindow.setContent(locations[i][0]);
+                infowindow.open(map, marker);
+                
+                $(function () {
+                    $('#graph').highcharts({
+                        chart: {
+                        type:'column',
+                            zoomType: 'x'
+                        },
+                        title: {
+                            text: 'Event Chart'
+                        },
+                        /*subtitle: {
+                            text: 'Source: WorldClimate.com', // TODO string met dag en important words
+                            x: -20
+                        },*/
+                        xAxis: {
+                            title: {
+                                text: 'time',
+                            },
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                millisecond: '%H:%M',
+                                second: '%H:%M',
+                                minute: '%H:%M',
+                                hour: '%H:%M'
+                            },
+                        },
+                        yAxis: {
+                            min:0,
+                            title: {
+                                text: 'n tweets',
+                            },
+                            tickInterval:1,
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            formatter: function () {
+                                if (this.point.tweetData) {
+                                    return this.point.tweetData;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Event tweets (click and drag in the plot area to zoom in)', data: locations[i][4] 
+                        }]
+                    });
+                });
+            }
+        })(marker, i));
+    }
+    
+</script>
+<div id="graph"></div>
+
+</div>
+</body>
+</html>
