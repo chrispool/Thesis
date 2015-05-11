@@ -66,7 +66,7 @@ class EventDetective:
     def _generateMarkers(self):
         print("Creating Google Maps markers & add WIKI links...")
         
-        js = open('vis/map/markers.js','w')
+        js = open('vis/map/js/markers.js','w')
         js.write('var locations = [')
 
         events = self.wiki.getWiki()

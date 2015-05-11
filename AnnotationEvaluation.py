@@ -25,14 +25,11 @@ class AnnotationEvaluation:
         self._makeAnnotationLists()
         self.eventKappa = self._calculateKappa(self.eventEval)
         self.categoryKappa = self._calculateKappa(self.categoryEval)
-        # TODO presentatie resultaten
-        print("eventKappa:", self.eventKappa)
-        print("categoryKappa:", self.categoryKappa)
+        print("\neventKappa:", self.eventKappa)
+        print("categoryKappa:", self.categoryKappa, '\n')
         print(ConfusionMatrix(self.judge1, self.judge2))
         print("Accuracy", accuracy(self.judge1, self.judge2))
         
-        
-
         ###
         # Kappa evaluatie
         ###
@@ -49,8 +46,6 @@ class AnnotationEvaluation:
         # Moderate agreement: 0.41 – 0.60
         # Substantial agreement: 0.61 – 0.80
         # Almost perfect agreement: 0.81 – 1.00
-    
-
 
     def _calculateKappa(self, judgeArray):
         judgeDicts = []
@@ -153,7 +148,7 @@ class AnnotationEvaluation:
             del self.annotation1[geoHash][times]
             del self.candidates[geoHash][times]
             
-        print("Writing", nEvents, "sanitized event candidates and annotations...")
+        print("\nWriting", nEvents, "sanitized event candidates and annotations...")
             
         filenameSEC = 'data/' + self.dataSets[self.choice] + '/sanitizedEventCandidates.json'
         with open(filenameSEC, 'w') as outfile:

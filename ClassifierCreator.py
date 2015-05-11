@@ -59,7 +59,7 @@ class ClassifierCreator:
         with open("data/" + self.dataSets[self.choice] + "/sanitizedAnnotation.json") as jsonFile:
             self.annotation = json.load(jsonFile)
 
-        with open("data/" + self.dataSets[self.choice] + "/sanitizedEventCandidates_cleaned.json") as jsonFile:
+        with open("data/" + self.dataSets[self.choice] + "/sanitizedEventCandidates.json") as jsonFile:
             self.candidates = json.load(jsonFile)
          
         if self.realTest:
@@ -68,7 +68,7 @@ class ClassifierCreator:
                 print("{}: {}".format(i, dataset))
             choice = int(input("Please select an annotated test dataset: "))
                 
-            with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates_cleaned.json") as jsonFile:
+            with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates.json") as jsonFile:
                 self.testCandidates = json.load(jsonFile)
 
     def _saveClassifiers(self):
