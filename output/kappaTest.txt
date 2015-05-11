@@ -1,0 +1,33 @@
+0: dataset
+1: testset
+Select dataset: 1
+
+Writing 430 sanitized event candidates and annotations...
+
+eventKappa: 0.82
+categoryKappa: 0.8 
+
+              |           e             |
+              |           n             |
+              |       b   t             |
+              |       i   e   g         |
+              |       j   r   e         |
+              |       e   t   e   i     |
+              |       e   a   n   n     |
+              |   a   n   i       c     |
+              |   n   k   n   e   i   s |
+              |   d   o   m   v   d   p |
+              |   e   m   e   e   e   o |
+              |   r   s   n   n   n   r |
+              |   s   t   t   t   t   t |
+--------------+-------------------------+
+       anders |  <.>  .   .   .   1   . |
+  bijeenkomst |   4<110> 13   9   .   3 |
+entertainment |   .   .  <8>  2   .   . |
+   geen event |   3  19   4<199>  4   2 |
+     incident |   1   .   .   . <78>  . |
+        sport |   .   1   2   2   . <35>|
+--------------+-------------------------+
+(row = reference; col = test)
+
+Accuracy 0.86

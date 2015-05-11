@@ -22,7 +22,7 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-        self.ITERATIONS = 2
+        self.ITERATIONS = 1
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.classifierAFeatures = ['wordFeatures']
@@ -49,12 +49,12 @@ class ClassifierCreator:
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
         self._trainClassifiers()
-        #self._saveClassifiers()
+        self._saveClassifiers()
 
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
-        self.choice = int(input("Select dataset: "))
+        self.choice = int(input("\nSelect annotated DEVTEST dataset: "))
         
         with open("data/" + self.dataSets[self.choice] + "/sanitizedAnnotation.json") as jsonFile:
             self.annotation = json.load(jsonFile)
@@ -66,7 +66,7 @@ class ClassifierCreator:
             print()
             for i, dataset in enumerate(self.dataSets):
                 print("{}: {}".format(i, dataset))
-            choice = int(input("Please select an annotated test dataset: "))
+            choice = int(input("\nPlease select an annotated TEST dataset: "))
                 
             with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates.json") as jsonFile:
                 self.testCandidates = json.load(jsonFile)
@@ -76,13 +76,13 @@ class ClassifierCreator:
                 self.testAnnotation = json.load(jsonFile)
 
     def _saveClassifiers(self):
-        print("Saving the category and event classifier...")
+        print("\nSaving the category and event classifier...")
         
         with open("data/" + self.dataSets[self.choice] + "/categoryClassifier.bin", "wb") as f:
-            pickle.dump(self.classifierCat,f)
+            pickle.dump(self.classifierA,f)
             
         with open("data/" + self.dataSets[self.choice] + "/eventClassifier.bin", "wb") as f:
-            pickle.dump(self.classifierBi,f)
+            pickle.dump(self.classifierB,f)
     
     def _selectDataset(self):
         dataset = []
@@ -205,7 +205,7 @@ class ClassifierCreator:
 
     def printStats(self):
         it = self.ITERATIONS
-        print("\n### EVALUATION STEP 1: Detailed statistics for the classifier:")
+        print("### EVALUATION STEP 1: Detailed statistics for the classifier:")
         for i in range(it):
             if self.realTest:
                 testMode = "TEST"
