@@ -71,6 +71,10 @@ class ClassifierCreator:
             with open("data/" + self.dataSets[choice] + "/sanitizedEventCandidates_cleaned.json") as jsonFile:
                 self.testCandidates = json.load(jsonFile)
 
+            #add to annotation file
+            with open("data/" + self.dataSets[choice] + "/sanitizedAnnotation.json") as jsonFile:
+                self.testAnnotation = json.load(jsonFile)
+
     def _saveClassifiers(self):
         print("Saving the category and event classifier...")
         
@@ -93,7 +97,7 @@ class ClassifierCreator:
             dataset = []
             for h in self.testCandidates:
                 for t in self.testCandidates[h]:
-                    dataset.append( (self.testCandidates[h][t],self.isEvent(h,t), self.eventType(h,t) ) )
+                    dataset.append( (self.testCandidates[h][t], self.eventType(h,t) ) )
                     
             self.testData = dataset
         else:
@@ -193,8 +197,13 @@ class ClassifierCreator:
     def eventType(self,geohash,timestamp):
         # return values {strings gebruiken?}
         eventTypes = {0:"geen_event", 1:"sport", 2:"entertainment", 3:"bijeenkomst", 4:"incident", 5:"anders"}
-        return eventTypes[self.annotation[geohash][timestamp]]
-        
+        try:          
+            returnValue  = eventTypes[self.annotation[geohash][timestamp]]
+        except KeyError:
+            returnValue  = eventTypes[self.testAnnotation[geohash][timestamp]]
+
+        return returnValue
+
 
     def printStats(self):
         it = self.ITERATIONS
