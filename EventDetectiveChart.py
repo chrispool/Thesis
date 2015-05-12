@@ -79,8 +79,6 @@ class EventDetectiveChart(EventDetective):
 
             for tweet in tweets:
                 i = i + 1
-                
-                # TODO probleem met appenden en tijd
                 # Meer dan een minuut tussen de tweets of dit is de laatste tweet, zet de 
                 # in tweetSimTime verzamelde tweets in de grafiek
                 if (tweet['unixTime'] - prevTime > 60 and prevTime != 0) or tweet == tweets[-1]:
@@ -91,9 +89,17 @@ class EventDetectiveChart(EventDetective):
                     # laatste tweet en het verschil is maximaal een minuut, voeg tweet toe
                     if tweet == tweets[-1] and tweet['unixTime'] - prevTime <= 60:
                             tweetSimTime.append(tweet)
-                    
+                       
+                    # pak maximaal de 10 middelste tweets van een "cluster"
+                    if len(tweetSimTime) > 10:
+                        sliceVal = len(tweetSimTime)//2
+                        tweetSimTime = tweetSimTime[sliceVal-5:sliceVal+5]
+
                     for simTimeTweet in tweetSimTime:
-                        tweetText += simTimeTweet['text'].replace("'", "\\'") + "<br/>"
+                        tweetText += simTimeTweet['text'].replace("'", "\\'")
+                        # check of dit niet de laatste tweet is: voeg dan newline toe tussen tweets
+                        if simTimeTweet != tweetSimTime[-1]:
+                            tweetText += "<br/><br/>"
 
                     beginTime = tweetSimTime[0]['unixTime']
                     endTime = tweetSimTime[-1]['unixTime']
@@ -106,7 +112,7 @@ class EventDetectiveChart(EventDetective):
                     
                     # laatste tweet en het verschil is meer dan een minuut, voeg tweet apart toe
                     if tweet == tweets[-1] and tweet['unixTime'] - prevTime > 60:
-                        tweetText = tweet['text'].replace("'", "\\'") + "<br/>"
+                        tweetText = tweet['text'].replace("'", "\\'")
                         plotData += "{"
                         plotData += "x:new Date({}*1000),y:{},tweetData:'{}'".format(tweet['unixTime'],1,tweetText)
                         plotData += "},"
