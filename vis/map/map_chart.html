@@ -109,16 +109,10 @@
                                 color: '#808080'
                             }]
                         },
-                        plotOptions: {
-                            column: {
-                                pointPadding: 0,
-                                groupPadding: 0
-                            }
-                        },
                         tooltip: {
                             shared: false,
                             useHTML: true,
-                            hideDelay: 5000,
+                            hideDelay: 10000,
                             formatter: function () {
                                 if (this.point.tweetData) {
                                     return this.point.tweetData;
