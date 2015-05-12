@@ -1,0 +1,9 @@
+\select@language {dutch}
+\contentsline {section}{Voorwoord}{2}{section*.1}
+\contentsline {section}{Samenvatting}{3}{section*.2}
+\contentsline {section}{\numberline {1}Inleiding}{4}{section.1}
+\contentsline {section}{\numberline {2}Implementatie}{4}{section.2}
+\contentsline {section}{\numberline {3}Resultaten}{4}{section.3}
+\contentsline {section}{\numberline {4}Discussie/Evaluatie}{4}{section.4}
+\contentsline {section}{\numberline {5}Conclusie}{4}{section.5}
+\contentsline {section}{\numberline {6}Slot}{4}{section.6}

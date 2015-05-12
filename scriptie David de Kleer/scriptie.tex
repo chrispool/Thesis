@@ -1,0 +1,176 @@
+%%%% PREAMBLE
+
+\documentclass[a4paper,10pt,titlepage]{article}
+
+\usepackage[a4paper]{geometry}
+
+\usepackage{listings}
+% listing (voor programmeercode, in dit geval Python)
+\lstset{language=Python, basicstyle=\ttfamily, keywordstyle=\bfseries, breaklines=true, morekeywords={then},
+	showstringspaces=false, xleftmargin=5pt, xrightmargin=5pt, aboveskip=12pt, belowskip=12pt}
+% dotted table of contents
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[dutch]{babel}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{eurosym} % euro symbolen
+\usepackage[hyphens]{url}
+%Plaats footnotes helemaal onderaan de pagina, niet alleen onderaan de tekst (waardoor voetnoten tussen de tekst en een 
+%figuur terecht kunnen komen).
+\usepackage[bottom]{footmisc}
+\usepackage{wallpaper}
+\usepackage{float}
+\usepackage[hypcap]{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage[compact]{titlesec}
+\usepackage{enumitem}
+\setlength\parindent{0pt} % gebruik nooit indents
+% titlespacing* zorgt ervoor dat er geen indents worden geplaatst na het begin van een sectie
+\titlespacing{\section}{0pt}{10pt}{10pt}
+\titlespacing{\subsection}{0pt}{10pt}{10pt}
+\titlespacing{\subsubsection}{0pt}{10pt}{10pt}
+\titlespacing{\paragraph}{0pt}{10pt}{10pt}
+
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.06in}
+\setcitestyle{round}                          % gebruik ronde haken bij citeren
+\setcounter{secnumdepth}{5}                   % voor subsubsubsections: gebruik paragraph
+\setcounter{tocdepth}{5}                      % blijf de inhoud van de PDF juist weergeven
+\def\wl{\par \vspace{\baselineskip}\noindent} % white space tussen alinea's: gebruik \wl
+\def\vl{\\[9pt]}                              % 8pt verticale ruimte, alternatief voor \wl
+\def\s{\section}                              % \s voor een section
+\def\ss{\subsection}                          % \ss voor een subsection
+\def\sss{\subsubsection}                      % \sss voor een subsubsection
+\def\p{\paragraph}                            % \p voor een paragraph (subsubsubsection)
+\def\ttt{\texttt}                             % teletype text
+
+\newenvironment{bullets}%                     % bullets in plaats van itemize (ik vergeet
+{\begin{itemize}}%                            % itemize altijd xD
+{\end{itemize}}
+
+\def\image{\includegraphics}                  % image makkelijker te onthouden
+\def\it{\textit}                              % kortere italics
+\def\bf{\textbf}                              % bold, korter
+
+% Voorbeeld voor een plaatje met label
+
+%\begin{figure}[H] % H betekent: voeg HIER in, op deze plek
+%  \centering
+%    \image[width=0.5\textwidth]{zeemeeuw}
+%    \caption{Close-up van een meeuw}
+%  \label{meeuw}
+%\end{figure}
+ 
+%Figuur \ref{meeuw} toont een foto van een meeuw.
+
+% CTRL+D: comment
+% CTRL+SHIFT+D: uncomment
+
+% Monospace schrijven: texttt{Monospace!}
+
+% Underscore typen? Gebruik \_.
+
+% Geen ruimte tussen bullets/enumerates? Gebruik \itemsep0em.
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% TITELPAGINA
+
+%Achtergrondafbeelding(en) voor de titelpagina.
+%\ThisURCornerWallPaper{1}{background2.jpg}       % afbeelding bovenaan
+%\ThisLLCornerWallPaper{1}{background1.jpg}       % afbeelding onderaan
+%\ThisCenterWallPaper{1.1}{notebackground2.jpeg} % afbeelding centreren
+\input{./title.tex}                              % genereert de titelpagina
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% HOOFDDOCUMENT
+
+\newpage
+\tableofcontents
+\newpage
+
+\phantomsection % phantomsection voor goede link in de table of contents, voor de sectie!
+\s*{Voorwoord}
+\addcontentsline{toc}{section}{Voorwoord} % toevoegen van s(ection)* aan inhoudsopgave moet in de sectie zelf!
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis justo, id rhoncus libero. Sed tincidunt odio eget nulla faucibus facilisis. Vivamus egestas mauris sit amet vehicula laoreet. Aenean commodo pharetra turpis ac euismod. Integer tristique eu tortor at dignissim. Vestibulum libero purus, tincidunt sed mollis eu, dapibus eu tellus. Quisque dolor eros, cursus sed diam vel, fringilla lobortis mauris. Phasellus vel arcu ac nisl vestibulum venenatis pellentesque eget lacus. In mauris ex, convallis vitae neque venenatis, pretium mattis mi. Nulla laoreet egestas enim, porttitor fringilla enim vehicula vitae. Nunc rhoncus ligula risus, quis gravida quam dapibus eu. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+\null
+
+\null
+
+Curabitur sollicitudin fringilla elementum. Vestibulum tincidunt volutpat ligula, a lobortis massa eleifend ac. Duis sit amet libero purus. Donec sed dictum nunc. Sed vel erat eu urna ullamcorper aliquam. Morbi vitae volutpat tellus. Quisque justo dolor, semper eu consectetur ut, mattis at nunc. Aliquam id tellus rhoncus, lobortis velit sed, tempus erat.
+\null
+
+\null
+
+Nunc a quam sed nunc blandit dignissim. Aliquam pharetra orci ex, eu dictum nibh aliquam ut. Maecenas quis accumsan felis, a fermentum purus. Vivamus dignissim odio eu est malesuada, a suscipit enim accumsan. Proin sit amet hendrerit velit. Praesent sem elit, finibus in ligula ut, eleifend vulputate orci. Praesent varius cursus purus. Ut enim lectus, blandit ut eros rutrum, aliquam varius ipsum. Vestibulum vel orci venenatis, ornare ligula vitae, egestas tortor. Vestibulum ut tincidunt nulla. Phasellus nec ligula id mi pulvinar tincidunt. Pellentesque non lobortis velit.
+\null
+
+\null
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+\null
+
+\null
+
+Praesent tristique molestie nibh, eget dapibus ipsum consequat vitae. Duis at magna a felis mollis mollis a viverra libero. Nam lobortis gravida consequat. Praesent faucibus dui nulla, a vehicula elit convallis vel. Morbi nec nisl sed ante consectetur tincidunt sollicitudin sit amet elit. Morbi at sollicitudin ex. Nulla ullamcorper, lorem faucibus malesuada tristique, purus turpis sagittis augue, sit amet condimentum est quam quis quam. 
+
+\newpage
+\null\vspace{\fill}
+
+\phantomsection
+\s*{\hfill Samenvatting \hfill}
+\addcontentsline{toc}{section}{Samenvatting}
+\begin{center}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis justo, id rhoncus libero. Sed tincidunt odio eget nulla faucibus facilisis. Vivamus egestas mauris sit amet vehicula laoreet. Aenean commodo pharetra turpis ac euismod. Integer tristique eu tortor at dignissim. Vestibulum libero purus, tincidunt sed mollis eu, dapibus eu tellus. Quisque dolor eros, cursus sed diam vel, fringilla lobortis mauris. Phasellus vel arcu ac nisl vestibulum venenatis pellentesque eget lacus. In mauris ex, convallis vitae neque venenatis, pretium mattis mi. Nulla laoreet egestas enim, porttitor fringilla enim vehicula vitae. Nunc rhoncus ligula risus, quis gravida quam dapibus eu. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+\null
+
+\null
+
+Curabitur sollicitudin fringilla elementum. Vestibulum tincidunt volutpat ligula, a lobortis massa eleifend ac. Duis sit amet libero purus. Donec sed dictum nunc. Sed vel erat eu urna ullamcorper aliquam. Morbi vitae volutpat tellus. Quisque justo dolor, semper eu consectetur ut, mattis at nunc. Aliquam id tellus rhoncus, lobortis velit sed, tempus erat.
+\null
+
+\null
+
+Nunc a quam sed nunc blandit dignissim. Aliquam pharetra orci ex, eu dictum nibh aliquam ut. Maecenas quis accumsan felis, a fermentum purus. Vivamus dignissim odio eu est malesuada, a suscipit enim accumsan. Proin sit amet hendrerit velit. Praesent sem elit, finibus in ligula ut, eleifend vulputate orci. Praesent varius cursus purus. Ut enim lectus, blandit ut eros rutrum, aliquam varius ipsum. Vestibulum vel orci venenatis, ornare ligula vitae, egestas tortor. Vestibulum ut tincidunt nulla. Phasellus nec ligula id mi pulvinar tincidunt. Pellentesque non lobortis velit.
+\null
+
+\null
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+\null
+
+\null
+
+Praesent tristique molestie nibh, eget dapibus ipsum consequat vitae. Duis at magna a felis mollis mollis a viverra libero. Nam lobortis gravida consequat. Praesent faucibus dui nulla, a vehicula elit convallis vel. Morbi nec nisl sed ante consectetur tincidunt sollicitudin sit amet elit. Morbi at sollicitudin ex. Nulla ullamcorper, lorem faucibus malesuada tristique, purus turpis sagittis augue, sit amet condimentum est quam quis quam. 
+\end{center}
+\vspace{\fill}
+\newpage
+
+\s{Inleiding}
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+
+\s{Implementatie}
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+
+\s{Resultaten}
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+
+\s{Discussie/Evaluatie}
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+
+\s{Conclusie}
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+
+\s{Slot}
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+
+\end{document}
