@@ -8,7 +8,7 @@
 <script src="js/highcharts.js"></script>
 <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
-<title>Google Maps Multiple Markers</title> 
+<title>Event Detective</title> 
 </head> 
 
 <body>
@@ -76,7 +76,7 @@
                 $(function () {
                     $('#graph').highcharts({
                         chart: {
-                        type:'column',
+                            type:'column',
                             zoomType: 'x'
                         },
                         title: {
@@ -112,7 +112,7 @@
                         tooltip: {
                             shared: false,
                             useHTML: true,
-                            hideDelay: 10000,
+                            hideDelay: 5000,
                             formatter: function () {
                                 if (this.point.tweetData) {
                                     return this.point.tweetData;

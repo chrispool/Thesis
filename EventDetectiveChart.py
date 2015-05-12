@@ -3,11 +3,11 @@
 import subprocess
 from EventDetective import EventDetective
 from operator import itemgetter
-from collections import Counter
+from collections import defaultdict, Counter
 
 class EventDetectiveChart(EventDetective):
     
-    def simNoGeo(self):
+    def simTweetsWithoutLocation(self):
         tweetList = []
         with open('corpus/5mei_all.txt', 'r') as f:
             for line in f:
@@ -75,58 +75,42 @@ class EventDetectiveChart(EventDetective):
             tweets = sorted(tweets, key=itemgetter('unixTime'))
             plotData = '['
             prevTime = 0
-            tweetSimTime = []
-
+            tweetSimTimeDict = defaultdict(list)
+            
             for tweet in tweets:
-                i = i + 1
-                # Meer dan een minuut tussen de tweets of dit is de laatste tweet, zet de 
-                # in tweetSimTime verzamelde tweets in de grafiek
-                if (tweet['unixTime'] - prevTime > 60 and prevTime != 0) or tweet == tweets[-1]:
-                    # prevTime != 0 betekent dat dit niet de eerste tweet mag zijn die
-                    # gelijk al in de grafiek gezet wordt door vergelijking met 0
-                    tweetText = ""
-                    
-                    # laatste tweet en het verschil is maximaal een minuut, voeg tweet toe
-                    if tweet == tweets[-1] and tweet['unixTime'] - prevTime <= 60:
-                            tweetSimTime.append(tweet)
-                       
-                    # pak maximaal de 10 middelste tweets van een "cluster"
-                    if len(tweetSimTime) > 10:
-                        sliceVal = len(tweetSimTime)//2
-                        tweetSimTime = tweetSimTime[sliceVal-5:sliceVal+5]
-
-                    for simTimeTweet in tweetSimTime:
-                        tweetText += simTimeTweet['text'].replace("'", "\\'")
-                        # check of dit niet de laatste tweet is: voeg dan newline toe tussen tweets
-                        if simTimeTweet != tweetSimTime[-1]:
-                            tweetText += "<br/><br/>"
-
-                    beginTime = tweetSimTime[0]['unixTime']
-                    endTime = tweetSimTime[-1]['unixTime']
-                    # middelpunt van een staaf voor meerdere tweets
-                    avgTime = (beginTime + endTime)/2
-                    # event tweets zelf
-                    plotData += "{"
-                    plotData += "x:new Date({}*1000),y:{},tweetData:'{}'".format(avgTime,len(tweetSimTime),tweetText)
-                    plotData += "},"
-                    
-                    # laatste tweet en het verschil is meer dan een minuut, voeg tweet apart toe
-                    if tweet == tweets[-1] and tweet['unixTime'] - prevTime > 60:
-                        tweetText = tweet['text'].replace("'", "\\'")
-                        plotData += "{"
-                        plotData += "x:new Date({}*1000),y:{},tweetData:'{}'".format(tweet['unixTime'],1,tweetText)
-                        plotData += "},"
-                    
-                    # reset tweetSimTime
-                    tweetSimTime = []
+                i += 1
+                
+                # t is de unix time afgerond op twee minuten (integerdeling met 120 en dat * 120)
+                t = (tweet['unixTime']//120) * 120
+                tweetSimTimeDict[t].append(tweet)
                 
                 gh.append(tweet['geoHash'])
                 avgLon += float(tweet["lon"])
                 avgLat += float(tweet["lat"])
                 # backslashes voor multiline strings in Javascript
                 writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text']).replace("'", "\\'")
-                tweetSimTime.append(tweet)
                 prevTime = tweet['unixTime']
+            
+            for simTweetTime in sorted(tweetSimTimeDict):
+                simTweetCluster = tweetSimTimeDict[simTweetTime]
+                
+                # pak maximaal de 10 middelste tweets van een cluster
+                if len(simTweetCluster) > 10:
+                    sliceVal = len(simTweetCluster)//2
+                    simTweetCluster = tweetSimTime[sliceVal-5:sliceVal+5]
+                
+                # tekst van tweets samenvoegen
+                tweetText = ""
+                for simTimeTweet in simTweetCluster:
+                    tweetText += simTimeTweet['text'].replace("'", "\\'")
+                    # check of dit niet de laatste tweet is: voeg dan newline toe tussen tweets
+                    if simTimeTweet != simTweetCluster[-1]:
+                        tweetText += "<br/><br/>"
+                        
+                plotData += "{"
+                plotData += "x:new Date({}*1000),y:{},tweetData:'{}'".format(simTweetTime,len(simTweetCluster),tweetText)
+                plotData += "},"
+                
             # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
             # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
             # Oftewel, we doen even alsof de aarde plat is ;-)
