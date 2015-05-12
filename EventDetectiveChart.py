@@ -4,7 +4,6 @@ import subprocess
 from EventDetective import EventDetective
 from operator import itemgetter
 from collections import Counter
-import datetime
 
 class EventDetectiveChart(EventDetective):
     
@@ -129,7 +128,7 @@ class EventDetectiveChart(EventDetective):
             avgLat /= i
             plotData += ']'
             # subTitle is de subtitle van de grafiek
-            subTitle = tweets[-1]['unixTime'].split()[0]
+            subTitle = tweets[-1]['localTime'].split()[0]
             js.write("['{}', {}, {}, '{}', {}, '{}'],".format(writableCluster,avgLat,avgLon,label,plotData,subTitle))
         
         js.write('];')
