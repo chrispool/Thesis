@@ -80,12 +80,11 @@
                             zoomType: 'x'
                         },
                         title: {
-                            text: 'Event Chart'
+                            text: 'Event Chart' // custom titel met belangrijke woorden of hashtag?
                         },
-                        /*subtitle: {
-                            text: 'Source: WorldClimate.com', // TODO string met dag en important words
-                            x: -20
-                        },*/
+                        subtitle: {
+                            text: locations[i][5]
+                        },
                         xAxis: {
                             title: {
                                 text: 'time',
@@ -111,11 +110,11 @@
                             }]
                         },
                         plotOptions: {
-  column: {
-    pointPadding: 0,
-    groupPadding: 0
-  }
-},
+                            column: {
+                                pointPadding: 0,
+                                groupPadding: 0
+                            }
+                        },
                         tooltip: {
                             formatter: function () {
                                 if (this.point.tweetData) {

@@ -4,6 +4,7 @@ import subprocess
 from EventDetective import EventDetective
 from operator import itemgetter
 from collections import Counter
+import datetime
 
 class EventDetectiveChart(EventDetective):
     
@@ -80,28 +81,37 @@ class EventDetectiveChart(EventDetective):
             for tweet in tweets:
                 i = i + 1
                 
-                tweetSimTime.append(tweet)
-                # Meer dan een minuut tussen de tweets, zet de in tweetSimTime 
-                # verzamelde tweets in de grafiek
-                if tweet['unixTime'] - prevTime > 60 and prevTime != 0:
+                # TODO probleem met appenden en tijd
+                # Meer dan een minuut tussen de tweets of dit is de laatste tweet, zet de 
+                # in tweetSimTime verzamelde tweets in de grafiek
+                if (tweet['unixTime'] - prevTime > 60 and prevTime != 0) or tweet == tweets[-1]:
                     # prevTime != 0 betekent dat dit niet de eerste tweet mag zijn die
                     # gelijk al in de grafiek gezet wordt door vergelijking met 0
-                    #avgTime = 0
                     tweetText = ""
                     
-                    for simTimeTweet in tweetSimTime:
-                        tweetText += tweet['text'].replace("'", "\\'") + "<br/>"
-                        #avgTime += simTimeTweet['unixTime']
+                    # laatste tweet en het verschil is maximaal een minuut, voeg tweet toe
+                    if tweet == tweets[-1] and tweet['unixTime'] - prevTime <= 60:
+                            tweetSimTime.append(tweet)
                     
-                    #avgTime /= len(tweetSimTime)
-                    # begin/eindtijd/middelpunt van een piek in de grafiek
+                    for simTimeTweet in tweetSimTime:
+                        tweetText += simTimeTweet['text'].replace("'", "\\'") + "<br/>"
+
                     beginTime = tweetSimTime[0]['unixTime']
                     endTime = tweetSimTime[-1]['unixTime']
+                    # middelpunt van een staaf voor meerdere tweets
                     avgTime = (beginTime + endTime)/2
                     # event tweets zelf
                     plotData += "{"
                     plotData += "x:new Date({}*1000),y:{},tweetData:'{}'".format(avgTime,len(tweetSimTime),tweetText)
                     plotData += "},"
+                    
+                    # laatste tweet en het verschil is meer dan een minuut, voeg tweet apart toe
+                    if tweet == tweets[-1] and tweet['unixTime'] - prevTime > 60:
+                        tweetText = tweet['text'].replace("'", "\\'") + "<br/>"
+                        plotData += "{"
+                        plotData += "x:new Date({}*1000),y:{},tweetData:'{}'".format(tweet['unixTime'],1,tweetText)
+                        plotData += "},"
+                    
                     # reset tweetSimTime
                     tweetSimTime = []
                 
@@ -110,6 +120,7 @@ class EventDetectiveChart(EventDetective):
                 avgLat += float(tweet["lat"])
                 # backslashes voor multiline strings in Javascript
                 writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text']).replace("'", "\\'")
+                tweetSimTime.append(tweet)
                 prevTime = tweet['unixTime']
             # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
             # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
@@ -117,7 +128,9 @@ class EventDetectiveChart(EventDetective):
             avgLon /= i
             avgLat /= i
             plotData += ']'
-            js.write("['{}', {}, {}, '{}', {}],".format(writableCluster,avgLat,avgLon,label,plotData))
+            # subTitle is de subtitle van de grafiek
+            subTitle = tweets[-1]['unixTime'].split()[0]
+            js.write("['{}', {}, {}, '{}', {}, '{}'],".format(writableCluster,avgLat,avgLon,label,plotData,subTitle))
         
         js.write('];')
         js.close()    
