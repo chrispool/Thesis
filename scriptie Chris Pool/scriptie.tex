@@ -1,0 +1,296 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Arsclassica Article
+% LaTeX Template
+% Version 1.1 (10/6/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Lorenzo Pantieri (http://www.lorenzopantieri.net) with extensive modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+10pt, % Main document font size
+a4paper, % Paper type, use 'letterpaper' for US Letter paper
+oneside, % One page layout (no page indentation)
+%twoside, % Two page layout (page indentation for binding and different headers)
+headinclude,footinclude, % Extra spacing for the header and footer
+BCOR5mm, % Binding correction
+]{scrartcl}
+
+\input{structure.tex} % Include the structure.tex file which specified the document structure and layout
+
+\hyphenation{Fortran hy-phen-ation} % Specify custom hyphenation points in words with dashes where you would like hyphenation to occur, or alternatively, don't put any dashes in a word to stop hyphenation altogether
+
+%----------------------------------------------------------------------------------------
+%	TITLE AND AUTHOR(S)
+%----------------------------------------------------------------------------------------
+
+\title{\normalfont\spacedallcaps{Detecting local events in the Twitter stream}} % The article title
+
+\author{\spacedlowsmallcaps{Chris Pool}} % The article author(s) - author affiliations need to be specified in the AUTHOR AFFILIATIONS block
+
+\date{} % An optional date to appear under the author(s)
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	HEADERS
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\sectionmark}[1]{\markright{\spacedlowsmallcaps{#1}}} % The header for all pages (oneside) or for even pages (twoside)
+%\renewcommand{\subsectionmark}[1]{\markright{\thesubsection~#1}} % Uncomment when using the twoside option - this modifies the header on odd pages
+\lehead{\mbox{\llap{\small\thepage\kern1em\color{halfgray} \vline}\color{halfgray}\hspace{0.5em}\rightmark\hfil}} % The header style
+
+\pagestyle{scrheadings} % Enable the headers specified in this block
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS & LISTS OF FIGURES AND TABLES
+%----------------------------------------------------------------------------------------
+
+\maketitle % Print the title/author/date block
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=4.5in]{voorkant.png} 
+   \caption{GUI}
+   \label{fig:gui}
+\end{figure}
+\clearpage
+
+
+\setcounter{tocdepth}{2} % Set the depth of the table of contents to show sections and subsections only
+\tableofcontents % Print the table of contents
+
+%\listoffigures % Print the list of figures
+
+%\listoftables % Print the list of tables
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+\clearpage
+\section*{Abstract} % This section will not appear in the table of contents due to the star (\section*)
+
+\lipsum[1] % Dummy text
+
+
+%----------------------------------------------------------------------------------------
+
+\newpage % Start the article content on the second page, remove this if you have a longer abstract that goes onto the second page
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+%waarom
+With the growing number of people using social media services like Twitter and the enormous amount of data available makes it interesting to use as a source of information about events that are taking place at a certain time and location. This real time information and with the addition about how people feel about these events can be very useful, for example to provide news items with more information about user sentiment.
+
+%wat
+This thesis describes a method of finding local events based on tweets with geo information and categorize them into 5 categories (No-event, Sport, Enterainment, Meeting, Incident) and to find relevant information within those tweets about the location and people involved. Local events are events that take place in a certain radius (\begin{math}Z\end{math}) within a certain time interval (\begin{math}X\end{math}). For this research \begin{math}z= 0.5km , x= 5 hours\end{math}.
+
+My research question is: Is it possible to detect local events from the Twitter stream that take place in the Netherlands based on Tweets with geo-information, to see if you can detect what type of events take place and who the important people/organizations or topics are to make an interactive map of these events.
+
+%hoe
+You can read in the following chapters how the research was conducted
+
+%----------------------------------------------------------------------------------------
+%	Related literature
+%----------------------------------------------------------------------------------------
+
+\section{Related literature}
+Walter and Kaisser[1] describe in their paper Geo-spatial event detection in the Twitter stream a way to recognize geo-spatial events. They focus on small events that take place in a small area like fires and traffic jams. It differs from my research because I want to focus on locations where events of different sizes can take place but the features they use can be useful for my research. Especially how they calculate the clusterscore (cluster of tweets from a region) can be useful. Unfortunately they do not describe how they make clusters of locations.
+
+Amineh Amini et al.: Density-Based Data Streams Clustering Survey[2] is a paper about different clustering techniques and is interesting to see which ones I can use to make clusters of the locations and the events. DBSCAN is one of the density-based clustering algorithms I maybe can use.  DBSCAN (Density-Based Spatial Clustering of Applications with Noise) is developed for clustering large spatial databases with noise, based on connected regions with high density. The density of each point is defined based on the number of points close to that particular point called the point's neighborhood.
+The dense neighborhood is defined based on two user-specified parameters: the radius (of the neighborhood, and the number of the objects in the neighborhood 
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	METHOD
+%----------------------------------------------------------------------------------------
+
+
+\section{Method}
+\lipsum[3] % Dummy text
+
+\subsection{Clustering}
+Of of the most important tasks is to cluster the tweets based on their location and time. There are several approaches in location clustering that can be used. Because the aim of the research was to make something that could work in real-time it was necessary to look at the process time. One technique that could be interesting to use is GeoHash. 
+
+GeoHash is is a system invented by Gustavo Niemeyer that converts lattitude/longitude coordinates into a hash. The more digits used means a higher accuracy. If two locations share the same prefix indicates (not always) that the locations are nearby.
+
+Figure 2 illustrates that 1 digit can be used to represent a quarter of the world, two digits 1/16 and three digits 1/64 etc. The highest accuracy is 12 digits, and is about x x Meters.
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=4.5in]{geohash.jpg} 
+   \caption{Geohash}
+   \label{fig:geohash}
+\end{figure}
+
+This technique is quick and easy to implement in clustering but has one downside, two locations can be very close togehther but have a different  geohash. 
+
+Another technique that could be used is k-means clustering. This techinque however is much more resource intensive %dit verder uitkwerken
+
+\subsection{Classification}
+\lipsum[3] % Dummy text
+
+\subsection{NLTK}
+Python has a lot of functions to use while doing NLP tasks but for more advanced tasks it is not powerful enough. Therefore we have chosen the Natural Language Tookit (NLTK) %link naar bron.
+NLTK has a lot of modules that can be used for a wide range of NLP tasks. It is also really easy to use and well documented. 
+
+
+
+
+\subsection{Named Entity Reconinigzion}
+\lipsum[10] % Dummy text
+
+
+%----------------------------------------------------------------------------------------
+%	Experiment and Evaluation
+%----------------------------------------------------------------------------------------
+
+\section{Experiment and Evaluation}
+For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams.  Events that take place on a larger scale like elections and extreme weather are ignored. The input for this system are tweets that have coordinates that we afterwards try to cluster based on proximity, time and topic. These clusters of tweets are potential events that are system should classify as event/no event. The final goal was to plot these events on a map with the correct category icon and WikiFied text. 
+
+\subsection{System architecture}
+We used Python for this system because of the excellent tools available to build a machine learning system. NLTK and Scikit learn are used for classifying the event candidates.
+
+We designed several classes for building our system but there are 3 main modules:
+
+\begin{description}
+
+\item[EventCandidates] 
+The module that processes the tweets by giving each tweet a GeoHash, tokenizes the tweet and passes it through to the clusterCreator module that clusters the tweets using the geoHash and the timestamp resulting in event candidates. Finally the module clusterMerger checks for each event candidate if there are any neighboring event candidates that belong to each other and merges them. Finally the event candidates are saved as a datafile.
+
+
+\item[Annotater] 
+This module makes it possible for multiple judges to annotate the data created with the EventCandidates module. After finishing the annotation by both judges it calculates the Kappa score and other statistics and saves the annotation in a datafile.
+
+
+\item[EventDetective] 
+This module uses classification to detect events in the given event candidates and generates a Google map of events with corresponding category icons and wikified text.
+
+
+\end{description}
+
+\subsection{Data collection}
+For the experiment tweets are used that have coordinates. Using a simple Grep command it was possible to retrieve only tweets with this information from the Karora machine. We collected two datasets. One set for testing and training and one for the final test (devset). 
+The first dataset consisted of Dutch tweets from March 2015 that we have downloaded from the Karora machine. In total there where 566549 tweets with geo information. That is about 3procent of the total number of tweets published in that month. The Devset consists of 165848 tweets from the second half of April 2015.
+
+\subsection{Annotation}
+The data is annotated by two judges. The kappa score was 0.79 for the trainset and 0.8 for the devset. We defined the following categories:
+
+\begin{itemize}[noitemsep] % [noitemsep] removes whitespace between the items for a compact look
+\item \textbf{Other (OTH)} All events that are other then the following categories 
+\item \textbf{Meeting (MEE)} All events that are meetings or conferences 
+\item \textbf{Entertainment (ENT)} All events that have to do with concerts, movies or theater
+\item \textbf{No Event (NOE)} No Event
+\item \textbf{Sport (SPO)} All events that have to do with sport 
+\end{itemize}
+For the testset we annotated 1350 event candidates with these categories. In 87\% of the cases the judges agreed.
+
+\begin{table}[h]
+\begin{tabular}{lcccccc}
+ & \multicolumn{1}{l}{\textbf{OTH}} & \multicolumn{1}{l}{\textbf{MEE}} & \multicolumn{1}{l}{\textbf{ENT}} & \multicolumn{1}{l}{\textbf{NOE}} & \multicolumn{1}{l}{\textbf{INC}} & \multicolumn{1}{l}{\textbf{SPO}} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{OTH}} & \multicolumn{1}{c|}{\textless1\textgreater} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{2} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{MEE}} & \multicolumn{1}{c|}{21} & \multicolumn{1}{c|}{\textless207\textgreater} & \multicolumn{1}{c|}{7} & \multicolumn{1}{c|}{25} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{2} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{ENT}} & \multicolumn{1}{c|}{3} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{\textless20\textgreater} & \multicolumn{1}{c|}{5} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{.} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{NOE}} & \multicolumn{1}{c|}{14} & \multicolumn{1}{c|}{27} & \multicolumn{1}{c|}{18} & \multicolumn{1}{c|}{\textless619\textgreater} & \multicolumn{1}{c|}{9} & \multicolumn{1}{c|}{9} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{INC}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{2} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{12} & \multicolumn{1}{c|}{\textless178\textgreater} & \multicolumn{1}{c|}{.} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{SPO}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{5} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{60\textgreater} \\ \cline{2-7} 
+\end{tabular}
+\caption[Table caption text]{Confusion matrix testset annotation }
+\end{table}
+
+For the devset we annotated 500 event candidates with these categories. In 86\% of the cases the judges agreed.
+
+\begin{table}[h]
+\begin{tabular}{lcccccc}
+                                  & \multicolumn{1}{l}{\textbf{OTH}}            & \multicolumn{1}{l}{\textbf{MEE}}              & \multicolumn{1}{l}{\textbf{ENT}}            & \multicolumn{1}{l}{\textbf{NOE}}              & \multicolumn{1}{l}{\textbf{INC}}             & \multicolumn{1}{l}{\textbf{SPO}}    \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{OTH}} & \multicolumn{1}{c|}{\textless.\textgreater} & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{1}                       & \multicolumn{1}{c|}{.}              \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{MEE}} & \multicolumn{1}{c|}{4}                      & \multicolumn{1}{c|}{\textless110\textgreater} & \multicolumn{1}{c|}{13}                     & \multicolumn{1}{c|}{9}                        & \multicolumn{1}{c|}{.}                       & \multicolumn{1}{c|}{3}              \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{ENT}} & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{\textless8\textgreater} & \multicolumn{1}{c|}{2}                        & \multicolumn{1}{c|}{.}                       & \multicolumn{1}{c|}{.}              \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{NOE}} & \multicolumn{1}{c|}{3}                      & \multicolumn{1}{c|}{19}                       & \multicolumn{1}{c|}{4}                      & \multicolumn{1}{c|}{\textless199\textgreater} & \multicolumn{1}{c|}{4}                       & \multicolumn{1}{c|}{2}              \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{INC}} & \multicolumn{1}{c|}{1}                      & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{\textless78\textgreater} & \multicolumn{1}{c|}{.}              \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{SPO}} & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{1}                        & \multicolumn{1}{c|}{2}                      & \multicolumn{1}{c|}{2}                        & \multicolumn{1}{c|}{.}                       & \multicolumn{1}{c|}{60\textgreater} \\ \cline{2-7} 
+\end{tabular}
+\caption[Table caption text]{Confusion matrix devset annotation }
+\end{table}
+
+
+\subsection{Creating Event Candidates}
+We first processed all tweets by giving each tweet a GeoHash (see chapter x) and tokenize the tweet. That resulted in a dictionary of tweets that we used in the second step, clustering the tweets. The clusterCreator merged all GeoHashes and added the tweets to the correct time period using the function below :
+\begin{python}
+
+#setting used for this experiment
+self.MINUTES = 60
+
+def __createClusters(self):
+        for tweet in self.tweetDicts:
+            geoHash = tweet["geoHash"]
+            tweetTime = tweet["unixTime"]
+            foundTime = tweetTime
+
+            if geoHash in self.clusters:
+                for times in self.clusters[geoHash].keys():
+                    if times <= tweetTime <= times + self.MINUTES * 60:
+                        foundTime = times
+            
+            self.clusters[geoHash][foundTime].append(tweet)
+            if tweetTime != foundTime:
+                # use new timestamp as key to keep event active
+                self.clusters[geoHash][tweetTime] = self.clusters[geoHash][foundTime]
+                # Remove old key
+                del self.clusters[geoHash][foundTime] 
+\end{python}
+The result is a dataset with potential events that we call Event Candidates.
+
+With the use of GeoHash it is possible to have cases where the event is on a border resulting in two events which is actually is one event. We used the module clusterMerger to merge those clusters. This module iterates through all Event Candidates and calculates its neighbors GeoHashes. It then iterates over all neighbors if there are events in the same period. It also checks if the overlap in words is high enough, if so the clusters are merged. 
+
+
+\subsection{Event detection}
+\lipsum[10]
+
+\subsubsection{Feature selection}
+\lipsum[12]
+
+\subsection{Wikification}
+\lipsum[13] % Dummy text
+
+\subsection{Results}
+\lipsum[7] % Dummy text
+
+\begin{tabular}{lllllll}
+\hline
+ \#    & accuracy   & geen\_event       & sport            & entertainment    & bijeenkomst      & incident         \\
+\hline
+      &            & P     R     F    & P     R     F    & P     R     F    & P     R     F    & P     R     F    \\
+ 1    & 0.9        & 0.90, 0.93, 0.91 & 0.92, 0.79, 0.85 & 0.00, 0.00, 0.00 & 0.80, 0.86, 0.83 & 1.00, 0.93, 0.96 \\
+ 2    & 0.83       & 0.85, 0.85, 0.85 & 0.60, 0.56, 0.58 & 0.00, 0.00, 0.00 & 0.78, 0.78, 0.78 & 0.95, 0.97, 0.96 \\
+ 3    & 0.87       & 0.91, 0.88, 0.90 & 0.89, 0.62, 0.73 & 0.00, 0.00, 0.00 & 0.71, 0.84, 0.77 & 0.97, 1.00, 0.99 \\
+ 4    & 0.88       & 0.92, 0.91, 0.91 & 0.86, 0.80, 0.83 & 0.00, 0.00, 0.00 & 0.76, 0.83, 0.80 & 0.94, 1.00, 0.97 \\
+ 5    & 0.92       & 0.93, 0.95, 0.94 & 0.86, 0.80, 0.83 & 0.00, 0.00, 0.00 & 0.89, 0.87, 0.88 & 0.97, 1.00, 0.99 \\
+ Avg. & 0.88       & 0.90, 0.91, 0.90 & 0.82, 0.71, 0.76 & 0.00, 0.00, 0.00 & 0.79, 0.84, 0.81 & 0.97, 0.98, 0.97 \\
+\hline
+\end{tabular}
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
