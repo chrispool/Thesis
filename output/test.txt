@@ -4,7 +4,7 @@ The system is running in TEST mode.
 0: dataset
 1: testset
 
-Select annotated DEVTEST dataset: 0
+Please select an annotated TRAIN dataset: 0
 
 0: dataset
 1: testset

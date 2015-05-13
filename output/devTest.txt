@@ -4,7 +4,7 @@ The system is running in DEVTEST mode.
 0: dataset
 1: testset
 
-Select dataset: 0
+Please select an annotated TRAIN/DEVTEST dataset: 0
 
 Classifying events...
 

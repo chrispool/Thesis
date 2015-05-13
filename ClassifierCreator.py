@@ -49,12 +49,15 @@ class ClassifierCreator:
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
         self._trainClassifiers()
-        self._saveClassifiers()
+        #self._saveClassifiers()
 
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
-        self.choice = int(input("\nSelect annotated DEVTEST dataset: "))
+        if self.realTest:
+            self.choice = int(input("\nPlease select an annotated TRAIN dataset: "))
+        else:
+            self.choice = int(input("\nPlease select an annotated TRAIN/DEVTEST dataset: "))
         
         with open("data/" + self.dataSets[self.choice] + "/sanitizedAnnotation.json") as jsonFile:
             self.annotation = json.load(jsonFile)
