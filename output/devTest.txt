@@ -8,6 +8,7 @@ Please select an annotated TRAIN/DEVTEST dataset: 0
 
 Classifying events...
 
+###########
 ### DEVTEST 1
 #############
 ### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###
@@ -67,11 +68,12 @@ Classifying events...
 ### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###
 ### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###
 
-###########
 ### EVALUATION STEP 1: Detailed statistics for the classifier:
 
+###########
 ### DEVTEST 1
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -97,8 +99,10 @@ entertainment |   .  <.>  .   .   . |
 Most informative features
 [('category', 'sport'), ('category', 'entertainment'), ('category', 'incident'), ('category', 'geen_event'), ('wordOverlapUser', 0.0), ('wordOverlapSimple', 12.5), ('wordOverlapUser', 1.0), ('wordOverlapSimple', 0.0), ('wordOverlapSimple', 0.5), ('wordOverlapSimple', 6.5)]
 
+###########
 ### DEVTEST 2
 #############
+
               |           e             |
               |           n             |
               |       b   t             |
@@ -125,8 +129,10 @@ entertainment |   .   .  <.>  1   .   . |
 Most informative features
 [('category', 'sport'), ('category', 'incident'), ('category', 'entertainment'), ('category', 'geen_event'), ('wordOverlapUser', 0.0), ('category', 'bijeenkomst'), ('wordOverlapUser', 1.5), ('wordOverlapSimple', 0.0), ('wordOverlapSimple', 6.5), ('wordOverlapSimple', 0.5)]
 
+###########
 ### DEVTEST 3
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -152,8 +158,10 @@ entertainment |   .  <.>  .   .   . |
 Most informative features
 [('category', 'sport'), ('category', 'incident'), ('category', 'geen_event'), ('category', 'bijeenkomst'), ('wordOverlapUser', 0.0), ('wordOverlapSimple', 12.5), ('wordOverlapSimple', 0.0), ('wordOverlapSimple', 0.5), ('wordOverlapUser', 1.0), ('wordOverlapUser', 1.5)]
 
+###########
 ### DEVTEST 4
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -179,8 +187,10 @@ entertainment |   .  <1>  .   .   . |
 Most informative features
 [('category', 'sport'), ('category', 'entertainment'), ('category', 'incident'), ('category', 'geen_event'), ('wordOverlapUser', 0.0), ('wordOverlapSimple', 12.5), ('wordOverlapSimple', 0.0), ('wordOverlapSimple', 10.0), ('category', 'bijeenkomst'), ('wordOverlapSimple', 0.5)]
 
+###########
 ### DEVTEST 5
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -206,8 +216,10 @@ entertainment |   .  <.>  2   .   . |
 Most informative features
 [('category', 'entertainment'), ('category', 'sport'), ('category', 'incident'), ('category', 'geen_event'), ('wordOverlapUser', 0.0), ('category', 'bijeenkomst'), ('wordOverlapSimple', 12.5), ('wordOverlapSimple', 10.0), ('wordOverlapSimple', 0.0), ('wordOverlapSimple', 6.5)]
 
+###########
 ### DEVTEST 6
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -233,8 +245,10 @@ entertainment |   .  <.>  .   .   . |
 Most informative features
 [('category', 'entertainment'), ('category', 'incident'), ('category', 'sport'), ('category', 'geen_event'), ('wordOverlapUser', 0.0), ('wordOverlapSimple', 12.5), ('category', 'bijeenkomst'), ('wordOverlapSimple', 0.0), ('wordOverlapUser', 1.0), ('wordOverlapSimple', 10.0)]
 
+###########
 ### DEVTEST 7
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -260,8 +274,10 @@ entertainment |   .  <.>  .   .   . |
 Most informative features
 [('category', 'sport'), ('category', 'incident'), ('category', 'entertainment'), ('category', 'geen_event'), ('category', 'bijeenkomst'), ('wordOverlapSimple', 12.5), ('wordOverlapUser', 0.0), ('wordOverlapSimple', 0.0), ('wordOverlapSimple', 0.5), ('wordOverlapUser', 1.0)]
 
+###########
 ### DEVTEST 8
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -287,8 +303,10 @@ entertainment |   .  <2>  1   .   . |
 Most informative features
 [('category', 'entertainment'), ('category', 'sport'), ('wordOverlapUser', 0.0), ('category', 'incident'), ('category', 'geen_event'), ('wordOverlapSimple', 12.5), ('category', 'bijeenkomst'), ('wordOverlapUser', 1.5), ('wordOverlapSimple', 0.5), ('wordOverlapSimple', 2.5)]
 
+###########
 ### DEVTEST 9
 #############
+
               |       e             |
               |       n             |
               |   b   t             |
@@ -314,8 +332,10 @@ entertainment |   .  <1>  2   .   . |
 Most informative features
 [('category', 'entertainment'), ('category', 'incident'), ('category', 'sport'), ('wordOverlapUser', 0.0), ('category', 'geen_event'), ('category', 'bijeenkomst'), ('wordOverlapSimple', 12.5), ('wordOverlapUser', 1.5), ('wordOverlapSimple', 1.5), ('wordOverlapSimple', 0.0)]
 
+###########
 ### DEVTEST 10
 #############
+
               |       e             |
               |       n             |
               |   b   t             |

@@ -13,16 +13,18 @@ Please select an annotated TEST dataset: 1
 
 Classifying events...
 
+###########
 ### TEST 1
 #############
 ### TRAINING STEP 1: Training category classifier (Naive Bayes with word features) ###
 ### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###
 
-###########
 ### EVALUATION STEP 1: Detailed statistics for the classifier:
 
+###########
 ### TEST 1
 #############
+
               |           e             |
               |           n             |
               |       b   t             |

@@ -22,7 +22,7 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-        self.ITERATIONS = 1
+        self.ITERATIONS = 2
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.classifierAFeatures = ['wordFeatures']
@@ -117,6 +117,7 @@ class ClassifierCreator:
                 testMode = "TEST"
             else:
                 testMode = "DEVTEST"
+            print("###########")
             print("### {} {}".format(testMode,i+1))
             print("#############")
             self._selectDataset()
@@ -155,7 +156,6 @@ class ClassifierCreator:
             self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
 
             self.calculateStats(i)
-            print("###########")
             
         self.printStats()
 
@@ -214,8 +214,9 @@ class ClassifierCreator:
                 testMode = "TEST"
             else:
                 testMode = "DEVTEST"
-            print("\n### {} {}".format(testMode,i+1))
-            print("#############")
+            print("\n###########")    
+            print("### {} {}".format(testMode,i+1))
+            print("#############\n")
             print(self.cm[i])
             print("Most informative features")
             print(self.informativeFeatures[i])
