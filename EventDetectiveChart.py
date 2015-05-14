@@ -15,6 +15,8 @@ class EventDetectiveChart(EventDetective):
             for line in f:
                 tweetList.append(line)
                 
+        eventAugCount = 0
+                
         for i in range(len(self.events)):
             tweets = self.events[i][0]
             label = self.events[i][1]
@@ -52,6 +54,7 @@ class EventDetectiveChart(EventDetective):
                         break
             
             if eventIntervalTweets:
+                eventAugCount += 1
                 preprocessor = TweetPreprocessor(eventIntervalTweets)
                 tweetDicts = preprocessor.getTweetDicts()
                 tweets.extend(tweetDicts)
@@ -63,6 +66,7 @@ class EventDetectiveChart(EventDetective):
             eventTitle +=  "- " + label
 
             self.events[i] = (tweets,label,eventTitle)
+        print(eventAugCount, "event clusters have been augmented with new tweets.")
        
     # geeft de n hoogste tf waarden
     def _getImportantWords(self, tweets, n=3):

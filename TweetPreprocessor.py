@@ -64,7 +64,9 @@ class TweetPreprocessor:
        
     # Maak de lijst van tweet dictionaries
     def _createTweetDicts(self, tweetFile):
-        #print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")
+        if type(tweetFile) == str:
+            print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")
+
         tweetDicts = []
         
         if type(tweetFile) == str: # is dit een file (string)...
