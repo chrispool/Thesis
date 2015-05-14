@@ -64,14 +64,13 @@ class TweetPreprocessor:
        
     # Maak de lijst van tweet dictionaries
     def _createTweetDicts(self, tweetFile):
-        if type(tweetFile) == str:
-            print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")
-
         tweetDicts = []
         
-        if type(tweetFile) == str: # is dit een file (string)...
+        # is tweetFile een file (string) of een andere iterable?
+        if type(tweetFile) == str:
             f = open(tweetFile)
-        else:                      # of een andere iterable?
+            print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")
+        else:
             f = tweetFile
 
         for line in f:

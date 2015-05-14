@@ -44,8 +44,9 @@ class EventDetectiveChart(EventDetective):
                         for word,n in importantWords:
                             if " " + word in tweet or "#" + word in tweet or "@" + word in tweet:
                                 wordCount += 1
-                        if wordCount > 1:
-                            # n (standaard 3) woorden moeten minstens 2 keer voorkomen
+                        if wordCount > 1 and (tweet.split('\t')[0] not in str(tweets)):
+                            # n (standaard 3) woorden moeten minstens 2 keer voorkomen en tweet 
+                            # is nog niet aanwezig in cluster
                             eventIntervalTweets.append(tweet)
 
                     if eventStart in tweet:
