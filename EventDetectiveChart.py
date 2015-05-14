@@ -4,6 +4,8 @@ import subprocess
 from EventDetective import EventDetective
 from operator import itemgetter
 from collections import defaultdict, Counter
+from TweetPreprocessor import TweetPreprocessor
+from math import log
 
 class EventDetectiveChart(EventDetective):
     
@@ -12,15 +14,25 @@ class EventDetectiveChart(EventDetective):
         with open('corpus/5mei_all.txt', 'r') as f:
             for line in f:
                 tweetList.append(line)
-        
-        for tweets,label in self.events:
+                
+        for i in range(len(self.events)):
+            tweets = self.events[i][0]
+            label = self.events[i][1]
+            eventIntervalTweets = []
+            importantWords = self._getImportantWords(tweets)
+            
+            # PROOF OF CONCEPT voor alle tweets van 5 mei
+            #############################################
+            # * Bevrijdingsfestival Utrecht bij Kanaleneiland in Utrecht (ingedeeld als incident)
+            # * Bevrijdingspop in Haarlem staat weergegeven als bijeenkomst in Haarlem (wordt niet
+            #   iedere keer gevonden)
+            # * Werkt niet goed voor [('zwolle', 47), ('nieuws', 14), ('mei', 14)], maar dit was
+            #   sowieso al geen event
             if '2015-05-05' in tweets[0]['localTime']:
                 tweets = sorted(tweets, key=itemgetter('unixTime'))
-                importantWords = self._getImportantWords(2,tweets)
-                print(tweets)
+
                 eventStart = tweets[0]['localTime']
                 eventEnd = tweets[-1]['localTime']
-                eventIntervalTweets = []
                 # itereren we over het interval van huidige event?
                 intervalIter = False
                         
@@ -28,36 +40,40 @@ class EventDetectiveChart(EventDetective):
                     if intervalIter:
                         wordCount = 0
                         for word,n in importantWords:
-                            if word in tweet:
+                            if " " + word in tweet or "#" + word in tweet or "@" + word in tweet:
                                 wordCount += 1
                         if wordCount > 1:
+                            # n (standaard 3) woorden moeten minstens 2 keer voorkomen
                             eventIntervalTweets.append(tweet)
-                            
+
                     if eventStart in tweet:
                         intervalIter = True
                     elif eventEnd in tweet:
                         break
-                    
-                tweets.extend(eventIntervalTweets)
-
-            # TODO woorden die door meerdere gebruikers worden genoemd (meer dan 1x voorkomen)
             
-            # TODO
-            # find hashtags (min 2 people)
-            #for tweet in tweets:
-            #    for word in tweet['tokens']:
-            #        if word.startswith("#")
-         
+            if eventIntervalTweets:
+                preprocessor = TweetPreprocessor(eventIntervalTweets)
+                tweetDicts = preprocessor.getTweetDicts()
+                tweets.extend(tweetDicts)
+            
+            # titel van event: 3 meest voorkomende woorden
+            eventTitle = ""
+            for word,n in importantWords:
+                eventTitle += word + " "
+            eventTitle +=  "- " + label
+
+            self.events[i] = (tweets,label,eventTitle)
+       
     # geeft de n hoogste tf waarden
-    def _getImportantWords(self, n, tweets):
+    def _getImportantWords(self, tweets, n=3):
         result = Counter()
         for tweet in tweets:
-            result.update(tweet['tokens'])
-        #reslist = list(result.keys())
-        #print(reslist)
-        #for word in reslist:
-        #    if word.startswith('#'):
-        #        del result[word]
+            for word in tweet['tokens']:
+                if word.startswith('#') or (word.startswith('@') and word[1:] in result):
+                    # hashtag-termen zijn belangrijk, ze tellen dubbel
+                    result[word[1:]] += 2
+                else:
+                    result[word] += 1
         return(result.most_common(n))
             
     def generateMarkers(self):
@@ -66,9 +82,8 @@ class EventDetectiveChart(EventDetective):
         js = open('vis/map/js/markers.js','w')
         js.write('var locations = [')
         
-        for tweets,label in self.events:
+        for tweets,label,eventTitle in self.events:
             writableCluster = ''
-            gh = []
             i = 0
             avgLon = 0
             avgLat = 0
@@ -83,12 +98,20 @@ class EventDetectiveChart(EventDetective):
                 # t is de unix time afgerond op twee minuten (integerdeling met 120 en dat * 120)
                 t = (tweet['unixTime']//120) * 120
                 tweetSimTimeDict[t].append(tweet)
-                
-                gh.append(tweet['geoHash'])
-                avgLon += float(tweet["lon"])
-                avgLat += float(tweet["lat"])
+                tweetText = tweet['text'].replace("'", "\\'")
+                if 'geoHash' in tweet:
+                    # tweets MET coordinaten
+                    gh = tweet['geoHash']
+                    avgLon += float(tweet["lon"])
+                    avgLat += float(tweet["lat"])
+                else:
+                    # tweets ZONDER coordinaten
+                    gh = ""
+                    i -= 1 # deze tweets tellen dus ook niet mee voor de gemiddelde positie!
+                    tweetText = "<b>" + tweetText + "</b>"
+                    
                 # backslashes voor multiline strings in Javascript
-                writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text']).replace("'", "\\'")
+                writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], gh, tweet['user'], tweetText)
                 prevTime = tweet['unixTime']
             
             for simTweetTime in sorted(tweetSimTimeDict):
@@ -97,7 +120,7 @@ class EventDetectiveChart(EventDetective):
                 # pak maximaal de 10 middelste tweets van een cluster
                 if len(simTweetCluster) > 10:
                     sliceVal = len(simTweetCluster)//2
-                    simTweetCluster = tweetSimTime[sliceVal-5:sliceVal+5]
+                    simTweetCluster = simTweetCluster[sliceVal-5:sliceVal+5]
                 
                 # tekst van tweets samenvoegen
                 tweetText = ""
@@ -119,12 +142,12 @@ class EventDetectiveChart(EventDetective):
             plotData += ']'
             # subTitle is de subtitle van de grafiek
             subTitle = tweets[-1]['localTime'].split()[0]
-            js.write("['{}', {}, {}, '{}', {}, '{}'],".format(writableCluster,avgLat,avgLon,label,plotData,subTitle))
+            js.write("['{}', {}, {}, '{}', {}, '{}', '{}'],".format(writableCluster,avgLat,avgLon,label,plotData,subTitle,eventTitle))
         
         js.write('];')
         js.close()    
         
 if __name__ == "__main__":
     detective = EventDetectiveChart()
-    #detective.simNoGeo()
+    detective.simTweetsWithoutLocation()
     detective.generateMarkers()

@@ -43,9 +43,9 @@ class TweetPreprocessor:
                 self.stoplist.append(stopword.strip())
         # maak een lijst van tweet dictionaries
         self.tweetDicts = []
-        self.__createTweetDicts(tweetFile)
+        self._createTweetDicts(tweetFile)
         
-    def __tokenize(self, text):
+    def _tokenize(self, text):
         tokens = text.split()
      
         # filter links
@@ -63,15 +63,22 @@ class TweetPreprocessor:
         return list(set(tokens)) # filter dubbele woorden
        
     # Maak de lijst van tweet dictionaries
-    def __createTweetDicts(self, tweetFile):
-        print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")
+    def _createTweetDicts(self, tweetFile):
+        #print("Creating tweet dictionaries for ", tweetFile, "...", sep = "")
         tweetDicts = []
+        
+        if type(tweetFile) == str: # is dit een file (string)...
+            f = open(tweetFile)
+        else:                      # of een andere iterable?
+            f = tweetFile
 
-        with open(tweetFile) as f:
-            for line in f:
-                tweetElements = line.strip().split('\t')
-                text = tweetElements[0]
-                tokens = self.__tokenize(text)
+        for line in f:
+            tweetElements = line.strip().split('\t')
+            text = tweetElements[0]
+            tokens = self._tokenize(text)
+            
+            if len(tweetElements) == 4:
+                # tweets MET coordinaten
                 coords = tweetElements[1].split()
                 lat, lon = float(coords[1]), float(coords[0])
                 # maak een geoHash met precisie HASH_ACCURACY
@@ -88,6 +95,18 @@ class TweetPreprocessor:
                                         "unixTime"  : unixTime,
                                         "localTime" : tweetTime,
                                         "geoHash"   : geoHash})
-    
+            elif len(tweetElements) == 3:
+                # tweets ZONDER coordinaten
+                tweetTime = ' '.join(tweetElements[2].split()[:2])
+                unixTime = int(time.mktime(datetime.datetime.strptime(tweetTime, "%Y-%m-%d %H:%M:%S").timetuple()))
+                self.tweetDicts.append({"text"      : text,
+                                        "tokens"    : tokens,
+                                        "user"      : tweetElements[1],
+                                        "unixTime"  : unixTime,
+                                        "localTime" : tweetTime})
+            
+        if type(tweetFile) == str:
+            f.close()
+            
     def getTweetDicts(self):
         return self.tweetDicts
