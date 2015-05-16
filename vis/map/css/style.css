@@ -1,18 +1,23 @@
 html, body { 
-    height: 100%; margin:0;
+    height: 100%; 
+    margin:0;
 }
 
 #map {
-    width: 50%; height: 100%; float: left;
+    width: 50%; 
+    height: 100%; 
+    float: left;
 }
 
 #graph {
-    width: 50%; height: 100%; float:right;
+    width: 50%; 
+    height: 100%;
+    float:right;
 }
 
 .highcharts-tooltip span {
-    height:auto;
-    width:200px;
-    overflow:auto;
-    white-space:normal !important;
+    height: auto;
+    width: 200px;
+    overflow: auto;
+    white-space: normal !important;
 }
