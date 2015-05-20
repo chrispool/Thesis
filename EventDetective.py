@@ -16,7 +16,6 @@ from nltk.classify.scikitlearn import SklearnClassifier
 import random
 from modules import tabulate
 from FeatureSelector import FeatureSelector
-from Wikification import Wikification
 from operator import itemgetter
 
 class EventDetective:
@@ -42,7 +41,6 @@ class EventDetective:
                 if self.classifierBi.classify(featuresBi) != "geen_event":
                     self.events.append((candidate,label))                          
         
-        self.wiki = Wikification(self.events) #adds wikification to events
         
     def _loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -66,9 +64,8 @@ class EventDetective:
         js = open('vis/map/js/markers.js','w')
         js.write('var locations = [')
 
-        events = self.wiki.getWiki()
         
-        for tweets,label,ngrams in events:
+        for tweets,label in self.events:
             writableCluster = ''
             gh = []
             i = 0
@@ -88,7 +85,7 @@ class EventDetective:
             # Oftewel, we doen even alsof de aarde plat is ;-)
             avgLon /= i
             avgLat /= i
-            writableCluster += "</br>" + str(ngrams).replace("'", "\\'")
+            #writableCluster += "</br>" + str(ngrams).replace("'", "\\'")
             js.write("['{}', {}, {}, '{}'],".format(writableCluster,avgLat,avgLon,label))
         js.write('];')
         js.close()

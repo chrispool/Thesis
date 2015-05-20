@@ -22,7 +22,7 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-        self.ITERATIONS = 2
+        self.ITERATIONS = 10
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.classifierAFeatures = ['wordFeatures']

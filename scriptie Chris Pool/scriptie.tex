@@ -157,7 +157,12 @@ NLTK has a lot of modules that can be used for a wide range of NLP tasks. It is 
 
 
 \subsection{Named Entity Reconinigzion}
-\lipsum[10] % Dummy text
+For finding the important persons, organizations and locations i want to use Named Entity Reconinigzion(NER). NER is the proces of labeling data with corresponding categories like person, organization or location. For example:
+
+\begin {quote}
+Klaar voor Ajax (organization) - NAC(organization) @Amsterdam(location) @ArenAPoort(location) in Amsterdam(location) Zuidoost, Noord-Holland(location)
+\end{quote}
+Current NER tools were designed to process large texts and perform badly with tweets due to the noisy and short style. One of the most used NER tools is Stanford NER. This Java implementation is also known as CRFClassifier. The software comes with 3 trained classifiers that perform particularly well for the three classes persons, organizations and locations. Some experiments are done with using labeled tweets as traindata but mostly in English.  
 
 
 %----------------------------------------------------------------------------------------
@@ -165,10 +170,9 @@ NLTK has a lot of modules that can be used for a wide range of NLP tasks. It is 
 %----------------------------------------------------------------------------------------
 
 \section{Experiment and Evaluation}
-For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams.  Events that take place on a larger scale like elections and extreme weather are ignored. The input for this system are tweets that have coordinates that we afterwards try to cluster based on proximity, time and topic. These clusters of tweets are potential events that are system should classify as event/no event. The final goal was to plot these events on a map with the correct category icon and WikiFied text. 
-
+For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams.  Events that take place on a larger scale like elections and extreme weather conditions are ignored. The input for this system are tweets that have coordinates that we afterwards try to cluster based on proximity, time and topic. These clusters of tweets are potential events that are system should classify as event/no event. The final goal was to plot these events on a map.
 \subsection{System architecture}
-We used Python for this system because of the excellent tools available to build a machine learning system. NLTK and Scikit learn are used for classifying the event candidates.
+Python was uded for this system because of the excellent tools available to build a machine learning system. NLTK and Scikit learn are used for classifying the event candidates.
 
 We designed several classes for building our system but there are 3 main modules:
 
@@ -269,26 +273,37 @@ With the use of GeoHash it is possible to have cases where the event is on a bor
 \subsubsection{Feature selection}
 \lipsum[12]
 
-\subsection{Wikification}
-\lipsum[13] % Dummy text
+\subsection{Named Entity Recognizion}
+Because the available classifiers in the Stanford NER are not suitable for Tweets i trained my own classifier. First i collected a list of Dutch words of each category (Location, Persons, Organizations and Miscellaneous) I used the wordlist of Alpino,  software that is developed by Professor Gert-jan van Noord. Then i collected one million tweets that have at least one of the words. The second step was to automatically annotate the tweets. I wrote a Python script that processes each tweet and assigns the correct class based on the wordlists to each token and creates the training file. The training file was split to make a testfile (4/5 for the training and 1/5 for testing)
+
+I compare my results with the standard Stanford 4 class classifier. This classifier is trained on xxx and uses the same classes as my classifier.
+
+
+
 
 \subsection{Results}
 \lipsum[7] % Dummy text
 
-\begin{tabular}{lllllll}
+\newpage
+\begin{landscape}
+\begin{tabular}{llllllll}
 \hline
- \#    & accuracy   & geen\_event       & sport            & entertainment    & bijeenkomst      & incident         \\
+ \#    & accuracy   & geen\_event     & sport          & entertainment   & bijeenkomst    & incident       & anders         \\
 \hline
-      &            & P     R     F    & P     R     F    & P     R     F    & P     R     F    & P     R     F    \\
- 1    & 0.9        & 0.90, 0.93, 0.91 & 0.92, 0.79, 0.85 & 0.00, 0.00, 0.00 & 0.80, 0.86, 0.83 & 1.00, 0.93, 0.96 \\
- 2    & 0.83       & 0.85, 0.85, 0.85 & 0.60, 0.56, 0.58 & 0.00, 0.00, 0.00 & 0.78, 0.78, 0.78 & 0.95, 0.97, 0.96 \\
- 3    & 0.87       & 0.91, 0.88, 0.90 & 0.89, 0.62, 0.73 & 0.00, 0.00, 0.00 & 0.71, 0.84, 0.77 & 0.97, 1.00, 0.99 \\
- 4    & 0.88       & 0.92, 0.91, 0.91 & 0.86, 0.80, 0.83 & 0.00, 0.00, 0.00 & 0.76, 0.83, 0.80 & 0.94, 1.00, 0.97 \\
- 5    & 0.92       & 0.93, 0.95, 0.94 & 0.86, 0.80, 0.83 & 0.00, 0.00, 0.00 & 0.89, 0.87, 0.88 & 0.97, 1.00, 0.99 \\
- Avg. & 0.88       & 0.90, 0.91, 0.90 & 0.82, 0.71, 0.76 & 0.00, 0.00, 0.00 & 0.79, 0.84, 0.81 & 0.97, 0.98, 0.97 \\
+      &            & P    R    F    & P    R    F    & P    R    F     & P    R    F    & P    R    F    & P    R    F    \\
+ 1    & 0.88       & 0.93 0.91 0.92 & 0.50 0.88 0.64 & 0.00 0.00 0.00  & 0.86 0.84 0.85 & 0.89 0.96 0.93 & 0.00 0.00 0.00 \\
+ 2    & 0.88       & 0.91 0.92 0.92 & 0.62 0.80 0.70 & 0.00 0.00 0.00  & 0.82 0.72 0.77 & 0.89 1.00 0.94 & 0.00 0.00 0.00 \\
+ 3    & 0.89       & 0.91 0.93 0.92 & 0.79 0.85 0.81 & 0.00 0.00 0.00  & 0.81 0.83 0.82 & 0.95 0.95 0.95 & 0.00 0.00 0.00 \\
+ 4    & 0.84       & 0.85 0.88 0.87 & 0.80 0.80 0.80 & 0.00 0.00 0.00  & 0.81 0.79 0.80 & 0.91 0.94 0.92 & 0.00 0.00 0.00 \\
+ 5    & 0.89       & 0.91 0.93 0.92 & 0.75 0.75 0.75 & 0.00 0.00 0.00  & 0.83 0.88 0.85 & 1.00 0.93 0.97 & 0.00 0.00 0.00 \\
+ 6    & 0.86       & 0.88 0.89 0.88 & 0.75 1.00 0.86 & 0.00 0.00 0.00  & 0.79 0.76 0.77 & 0.92 0.97 0.95 & 0.00 0.00 0.00 \\
+ 7    & 0.89       & 0.89 0.93 0.91 & 0.78 0.70 0.74 & 0.00 0.00 0.00  & 0.90 0.78 0.84 & 0.98 0.98 0.98 & 0.00 0.00 0.00 \\
+ 8    & 0.88       & 0.90 0.89 0.90 & 0.69 0.75 0.72 & 0.00 0.00 0.00  & 0.81 0.83 0.82 & 0.91 0.97 0.94 & 0.00 0.00 0.00 \\
+ 9    & 0.88       & 0.87 0.93 0.90 & 0.86 0.75 0.80 & 0.00 0.00 0.00  & 0.80 0.74 0.77 & 1.00 0.97 0.99 & 0.00 0.00 0.00 \\
+ 10   & 0.9        & 0.91 0.92 0.91 & 0.73 1.00 0.85 & 0.00 0.00 0.00  & 0.85 0.87 0.86 & 1.00 0.91 0.95 & 0.00 0.00 0.00 \\
+ Avg. & 0.88       & 0.90 0.91 0.90 & 0.73 0.83 0.77 & 0.00 0.00 0.00  & 0.83 0.80 0.81 & 0.95 0.96 0.95 & 0.00 0.00 0.00 \\
 \hline
-\end{tabular}
-
+\end{tabular}\end{landscape}
 
 
 %----------------------------------------------------------------------------------------

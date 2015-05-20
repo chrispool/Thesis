@@ -9,8 +9,8 @@
 \contentsline {subsection}{\numberline {4.1}System architecture}{6}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Data collection}{7}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Annotation}{7}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}Creating Event Candidates}{7}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.4}Creating Event Candidates}{8}{subsection.4.4}
 \contentsline {subsection}{\numberline {4.5}Event detection}{8}{subsection.4.5}
-\contentsline {subsubsection}{\numberline {4.5.1}Feature selection}{8}{subsubsection.4.5.1}
-\contentsline {subsection}{\numberline {4.6}Wikification}{9}{subsection.4.6}
+\contentsline {subsubsection}{\numberline {4.5.1}Feature selection}{9}{subsubsection.4.5.1}
+\contentsline {subsection}{\numberline {4.6}Named Entity Recognizion}{9}{subsection.4.6}
 \contentsline {subsection}{\numberline {4.7}Results}{9}{subsection.4.7}
