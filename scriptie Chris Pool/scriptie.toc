@@ -1,16 +1,18 @@
 \contentsline {section}{\numberline {1}Introduction}{4}{section.1}
 \contentsline {section}{\numberline {2}Related literature}{4}{section.2}
-\contentsline {section}{\numberline {3}Method}{4}{section.3}
+\contentsline {section}{\numberline {3}Method}{5}{section.3}
 \contentsline {subsection}{\numberline {3.1}Clustering}{5}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Classification}{5}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}NLTK}{6}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.2}NLTK}{5}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Classification}{6}{subsection.3.3}
 \contentsline {subsection}{\numberline {3.4}Named Entity Reconinigzion}{6}{subsection.3.4}
-\contentsline {section}{\numberline {4}Experiment and Evaluation}{6}{section.4}
-\contentsline {subsection}{\numberline {4.1}System architecture}{6}{subsection.4.1}
+\contentsline {section}{\numberline {4}Experiment and Evaluation}{7}{section.4}
+\contentsline {subsection}{\numberline {4.1}System architecture}{7}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Data collection}{7}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Annotation}{7}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}Creating Event Candidates}{8}{subsection.4.4}
-\contentsline {subsection}{\numberline {4.5}Event detection}{8}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.5}Event detection}{9}{subsection.4.5}
 \contentsline {subsubsection}{\numberline {4.5.1}Feature selection}{9}{subsubsection.4.5.1}
 \contentsline {subsection}{\numberline {4.6}Named Entity Recognizion}{9}{subsection.4.6}
-\contentsline {subsection}{\numberline {4.7}Results}{9}{subsection.4.7}
+\contentsline {subsection}{\numberline {4.7}Results}{10}{subsection.4.7}
+\contentsline {subsubsection}{\numberline {4.7.1}Classifier}{10}{subsubsection.4.7.1}
+\contentsline {subsubsection}{\numberline {4.7.2}NER}{10}{subsubsection.4.7.2}
