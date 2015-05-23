@@ -22,11 +22,12 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-        self.ITERATIONS = 10
+
+        
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.classifierAFeatures = ['wordFeatures']
-        self.classifierBFeatures = ['category', 'location','wordOverlapSimple','wordOverlapUser']
+        self.classifierBFeatures =  ['category', 'location','wordOverlapSimple','wordOverlapUser']
         self.annotation = {}
         self.candidates = {}
         self.result = defaultdict(self.resultDictionary)
@@ -43,9 +44,13 @@ class ClassifierCreator:
         
         if self.realTest:
             print("\nThe system is running in TEST mode.\n")
+            self.ITERATIONS = 1
         else:
             print("\nThe system is running in DEVTEST mode.\n")
+            self.ITERATIONS = 10
         
+
+
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
         self._trainClassifiers()
@@ -153,7 +158,7 @@ class ClassifierCreator:
                 self.featureKeys = featuresB.keys()
                 self.trainB.append((featuresB, label))
 
-            self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
+            self.classifierB = nltk.SklearnClassifier(LinearSVC()).train(self.trainB)
 
             self.calculateStats(i)
             
@@ -172,7 +177,7 @@ class ClassifierCreator:
             tagged.append(e)
 
         self.cm.append(nltk.ConfusionMatrix(ref, tagged))
-        self.informativeFeatures.append(self.classifierB.most_informative_features(10))
+        #self.informativeFeatures.append(self.classifierB.most_informative_features(10))
         print()
         #calculate precision and recall for this iteration for each category
         refsets = defaultdict(set)
@@ -182,7 +187,7 @@ class ClassifierCreator:
             refsets[label].add(n)
             observed = self.classifierB.classify(feats)
             testsets[observed].add(n)
-        
+
         self.accuracy.append(nltk.classify.accuracy(self.classifierB,self.testB))
         
         #for elke category precision and recall berekenen.
@@ -207,6 +212,7 @@ class ClassifierCreator:
         return returnValue
 
     def printStats(self):
+        print(", ".join(self.classifierBFeatures))
         it = self.ITERATIONS
         print("### EVALUATION STEP 1: Detailed statistics for the classifier:")
         for i in range(it):
@@ -219,7 +225,7 @@ class ClassifierCreator:
             print("#############\n")
             print(self.cm[i])
             print("Most informative features")
-            print(self.informativeFeatures[i])
+           # print(self.informativeFeatures[i])
         print("\n### EVALUATION STEP 2: Classification using features: {} | training set size: {} & test set size: {}\n".format(", ".join(self.featureKeys),len(self.trainB), len(self.testB)))
         headers = ['#', 'accuracy'] + self.categories
         

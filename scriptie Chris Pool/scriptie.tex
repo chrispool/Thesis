@@ -124,17 +124,14 @@ The dense neighborhood is defined based on two user-specified parameters: the ra
 %	METHOD
 %----------------------------------------------------------------------------------------
 
-
+\newpage
 \section{Method}
-\lipsum[3] % Dummy text
+In this chapter the used methods for the experiment are described. 
 
 \subsection{Clustering}
-Of of the most important tasks is to cluster the tweets based on their location and time. There are several approaches in location clustering that can be used. Because the aim of the research was to make something that could work in real-time it was necessary to look at the process time. One technique that could be interesting to use is GeoHash. 
+The first task is to cluster the tweets based on their location and time. There are several approaches in location clustering that can be used. Because the aim of the research was to make something that could work in real-time it was necessary to look for an approach that was quick. GeoHash is is a system invented by Gustavo Niemeyer that converts latitude and longitude coordinates into a hash. The more digits used means a higher accuracy. If two locations share the same prefix indicates (not always) that the locations are nearby. This algorithm is quick and easy to use and ideal for my experiment.
 
-GeoHash is is a system invented by Gustavo Niemeyer that converts lattitude/longitude coordinates into a hash. The more digits used means a higher accuracy. If two locations share the same prefix indicates (not always) that the locations are nearby.
-
-Figure 2 illustrates that 1 digit can be used to represent a quarter of the world, two digits 1/16 and three digits 1/64 etc. The highest accuracy is 12 digits, and is about x x Meters.
-
+Figure 2 illustrates that 1 digit can be used to represent a quarter of the world, two digits 1/16 and three digits 1/64 etc. 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=4.5in]{geohash.jpg} 
@@ -142,18 +139,24 @@ Figure 2 illustrates that 1 digit can be used to represent a quarter of the worl
    \label{fig:geohash}
 \end{figure}
 
-This technique is quick and easy to implement in clustering but has one downside, two locations can be very close togehther but have a different  geohash. 
-
-Another technique that could be used is k-means clustering. This techinque however is much more resource intensive %dit verder uitkwerken
-
-\subsection{Classification}
-\lipsum[3] % Dummy text
+There are several implementations of this algorithm in Python. I used the GeoHash library written in 2009 by Hiroaki Kawai because of the good documentation and excellent features. The function to calculate the GeoHash of a location requires the desired accuracy, latitude and longitude of that location and returns the GeoHash for that location. The library also provides functions to calculate the neighboring GeoHashes, this is useful because in a grid clustering approach border cases can occur and with this function neighboring GeoHashes can be explored to see if it contains tweets with the same topic and can merge them if necessary. 
 
 \subsection{NLTK}
 Python has a lot of functions to use while doing NLP tasks but for more advanced tasks it is not powerful enough. Therefore we have chosen the Natural Language Tookit (NLTK) %link naar bron.
 NLTK has a lot of modules that can be used for a wide range of NLP tasks. It is also really easy to use and well documented. 
 
+\subsection{Classification}
+After forming the potential events (Event Candidates) the Event Candidates have to be classified as a specific event category or not an event.  NLTK provides excellent documentation and functions for classifying. \\\\  NLTK provides several classifier types:
 
+\begin{itemize}[noitemsep]
+\item ConditionalExponentialClassifier
+\item DecisionTreeClassifier
+\item MaxentClassifier
+\item NaiveBayesClassifier
+\item WekaClassifier
+\end{itemize}
+
+In the next chapter I describe the results using the different classifiers. Some classifiers where not used because they are used together with other software.
 
 
 \subsection{Named Entity Reconinigzion}
@@ -168,7 +171,7 @@ Current NER tools were designed to process large texts and perform badly with tw
 %----------------------------------------------------------------------------------------
 %	Experiment and Evaluation
 %----------------------------------------------------------------------------------------
-
+\newpage
 \section{Experiment and Evaluation}
 For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams.  Events that take place on a larger scale like elections and extreme weather conditions are ignored. The input for this system are tweets that have coordinates that we afterwards try to cluster based on proximity, time and topic. These clusters of tweets are potential events that are system should classify as event/no event. The final goal was to plot these events on a map.
 \subsection{System architecture}
@@ -276,34 +279,122 @@ With the use of GeoHash it is possible to have cases where the event is on a bor
 \subsection{Named Entity Recognizion}
 Because the available classifiers in the Stanford NER are not suitable for Tweets i trained my own classifier. First i collected a list of Dutch words of each category (Location, Persons, Organizations and Miscellaneous) I used the wordlist of Alpino,  software that is developed by Professor Gert-jan van Noord. Then i collected one million tweets that have at least one of the words. The second step was to automatically annotate the tweets. I wrote a Python script that processes each tweet and assigns the correct class based on the wordlists to each token and creates the training file. The training file was split to make a testfile (4/5 for the training and 1/5 for testing)
 
-I compare my results with the standard Stanford 4 class classifier. This classifier is trained on xxx and uses the same classes as my classifier.
-
-
-
-
-\subsection{Results}
-\lipsum[7] % Dummy text
 
 \newpage
+\subsection{Results}
+
+
+
+\subsubsection{Classifier}
+\begin{table}[h]
+\begin{tabular}{l|l|l|l|l|l|l|l|l|l|}
+\cline{2-10}
+                          & \multicolumn{3}{c|}{Naive Bayes}                                         & \multicolumn{3}{c|}{Maximum Entropy}                                     & \multicolumn{3}{c|}{SVM}             \\ \cline{2-10} 
+                          & \multicolumn{3}{c|}{Accuracy = 84\%}                                     & \multicolumn{3}{c|}{Accuracy = 83\%}                                     & \multicolumn{3}{c|}{Accuracy = 81\%} \\ \cline{2-10} 
+                          & \multicolumn{1}{c|}{P} & \multicolumn{1}{c|}{R} & \multicolumn{1}{c|}{F} & \multicolumn{1}{c|}{P} & \multicolumn{1}{c|}{R} & \multicolumn{1}{c|}{F} & P          & R          & F          \\ \hline
+\multicolumn{1}{|l|}{NOE} & 0.85                   & 0.90                   & 0.88                   & 0.83                   & 0.93                   & 0.88                   & 0.85       & 0.83       & 0.84       \\ \hline
+\multicolumn{1}{|l|}{SPO} & 0.77                   & 0.49                   & 0.60                   & 0.77                   & 0.49                   & 0.60                   & 0.77       & 0.49       & 0.60       \\ \hline
+\multicolumn{1}{|l|}{ENT} & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00       & 0.00       & 0.00       \\ \hline
+\multicolumn{1}{|l|}{MEE} & 0.76                   & 0.79                   & 0.77                   & 0.79                   & 0.74                   & 0.76                   & 0.65       & 0.81       & 0.72       \\ \hline
+\multicolumn{1}{|l|}{INC} & 0.97                   & 0.97                   & 0.97                   & 0.94                   & 0.94                   & 0.94                   & 1.00       & 0.97       & 0.99       \\ \hline
+\multicolumn{1}{|l|}{OTH} & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00       & 0.00       & 0.00       \\ \hline
+\end{tabular}
+\caption[Table caption text]{Results using all features }
+\end{table}
+
+
+\begin{table}[h]
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+    & \multicolumn{1}{l|}{OTH} & \multicolumn{1}{l|}{MEE} & \multicolumn{1}{l|}{ENT} & \multicolumn{1}{l|}{NOE} & \multicolumn{1}{l|}{INC} & \multicolumn{1}{l|}{SPO} \\ \hline
+OTH & \textless.\textgreater   & .                        & .                        & 1.                       & .                        & .                        \\ \hline
+MEE & .                        & \textless82\textgreater  & 2                        & 14                       & .                        & 12                       \\ \hline
+ENT & .                        & .                        & \textless.\textgreater   & 1                        & .                        & .                        \\ \hline
+NOE & .                        & 27                       & 5                        & \textless179\textgreater & 1                        & 7                        \\ \hline
+INC & .                        & .                        & .                        & 2                        & \textless76\textgreater  & .                        \\ \hline
+SPO & .                        & 1                        & 1                        & 2                        & 1                        & \textless16\textgreater  \\ \hline
+\end{tabular}
+
+\caption[Table caption text]{Confusion Matrix Naive Bayes }
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+    & \multicolumn{1}{l|}{OTH} & \multicolumn{1}{l|}{MEE} & \multicolumn{1}{l|}{ENT} & \multicolumn{1}{l|}{NOE} & \multicolumn{1}{l|}{INC} & \multicolumn{1}{l|}{SPO} \\ \hline
+OTH & \textless.\textgreater   & 1                        & .                        & .                        & .                        & .                        \\ \hline
+MEE & .                        & \textless81\textgreater  & 2                        & 7                        & 2                        & 11                       \\ \hline
+ENT & .                        & .                        & \textless.\textgreater   & .                        & 1                        & .                        \\ \hline
+NOE & .                        & 26                       & 5                        & \textless186\textgreater & 1                        & 7                        \\ \hline
+INC & .                        & 1                        & .                        & 4                        & \textless73\textgreater  & .                        \\ \hline
+SPO & .                        & 1                        & 1                        & 2                        & 1                        & \textless16\textgreater  \\ \hline
+\end{tabular}
+\caption[Table caption text]{Confusion Matrix Maximum Entropy }
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+    & \multicolumn{1}{l|}{OTH} & \multicolumn{1}{l|}{MEE} & \multicolumn{1}{l|}{ENT} & \multicolumn{1}{l|}{NOE} & \multicolumn{1}{l|}{INC} & \multicolumn{1}{l|}{SPO} \\ \hline
+OTH & \textless.\textgreater   & 1                        & .                        & .                        & .                        & .                        \\ \hline
+MEE & .                        & \textless89\textgreater  & 2                        & 31                       &                          & 14                       \\ \hline
+ENT & .                        & .                        & \textless.\textgreater   & .                        &                          & .                        \\ \hline
+NOE & .                        & 19                       & 5                        & \textless166\textgreater & 1                        & 4                        \\ \hline
+INC & .                        & .                        & .                        & .                        & \textless73\textgreater  & .                        \\ \hline
+SPO & .                        & 1                        & 1                        & 2                        & 1                        & \textless17\textgreater  \\ \hline
+\end{tabular}
+\caption[Table caption text]{SVM }
+\end{table}
+
+
+
+
+\subsubsection{NER}
+I compare my results with the standard Stanford 4 class classifier. This classifier is trained on xxx and uses the same classes as my classifier.
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+Entity       & P      & R      & F1     & TP    & FP  & FN   \\ \hline
+LOCATION     & 0,9623 & 0,9363 & 0,9491 & 4718  & 185 & 321  \\ \hline
+MISC         & 0,9744 & 0,8964 & 0,9338 & 1903  & 50  & 220  \\ \hline
+ORGANIZATION & 0,9711 & 0,9315 & 0,9509 & 4241  & 126 & 312  \\ \hline
+PERSON       & 0,9031 & 0,8773 & 0,8900 & 4583  & 492 & 641  \\ \hline
+Totals       & 0,9477 & 0,9118 & 0,9294 & 15445 & 853 & 1494 \\ \hline
+\end{tabular}
+\caption[Table caption text]{Classifier trained with Tweets }
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+Entity       & P      & R      & F1     & TP   & FP   & FN    \\ \hline
+LOCATION     & 0,5779 & 0,2239 & 0,3227 & 1128 & 824  & 3911  \\ \hline
+MISC         & 0,0280 & 0,0118 & 0,0166 & 25   & 869  & 2098  \\ \hline
+ORGANIZATION & 0,2485 & 0,2554 & 0,2519 & 1163 & 3517 & 3390  \\ \hline
+PERSON       & 0,2627 & 0,3084 & 0,2837 & 1611 & 4521 & 3613  \\ \hline
+Totals       & 0,2875 & 0,2318 & 0,2567 & 3927 & 9731 & 13012 \\ \hline
+\end{tabular}
+\caption[Table caption text]{Stanford 4-class classifier }
+\end{table}
+
+
+
 \begin{landscape}
-\begin{tabular}{llllllll}
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
- \#    & accuracy   & geen\_event     & sport          & entertainment   & bijeenkomst    & incident       & anders         \\
-\hline
-      &            & P    R    F    & P    R    F    & P    R    F     & P    R    F    & P    R    F    & P    R    F    \\
- 1    & 0.88       & 0.93 0.91 0.92 & 0.50 0.88 0.64 & 0.00 0.00 0.00  & 0.86 0.84 0.85 & 0.89 0.96 0.93 & 0.00 0.00 0.00 \\
- 2    & 0.88       & 0.91 0.92 0.92 & 0.62 0.80 0.70 & 0.00 0.00 0.00  & 0.82 0.72 0.77 & 0.89 1.00 0.94 & 0.00 0.00 0.00 \\
- 3    & 0.89       & 0.91 0.93 0.92 & 0.79 0.85 0.81 & 0.00 0.00 0.00  & 0.81 0.83 0.82 & 0.95 0.95 0.95 & 0.00 0.00 0.00 \\
- 4    & 0.84       & 0.85 0.88 0.87 & 0.80 0.80 0.80 & 0.00 0.00 0.00  & 0.81 0.79 0.80 & 0.91 0.94 0.92 & 0.00 0.00 0.00 \\
- 5    & 0.89       & 0.91 0.93 0.92 & 0.75 0.75 0.75 & 0.00 0.00 0.00  & 0.83 0.88 0.85 & 1.00 0.93 0.97 & 0.00 0.00 0.00 \\
- 6    & 0.86       & 0.88 0.89 0.88 & 0.75 1.00 0.86 & 0.00 0.00 0.00  & 0.79 0.76 0.77 & 0.92 0.97 0.95 & 0.00 0.00 0.00 \\
- 7    & 0.89       & 0.89 0.93 0.91 & 0.78 0.70 0.74 & 0.00 0.00 0.00  & 0.90 0.78 0.84 & 0.98 0.98 0.98 & 0.00 0.00 0.00 \\
- 8    & 0.88       & 0.90 0.89 0.90 & 0.69 0.75 0.72 & 0.00 0.00 0.00  & 0.81 0.83 0.82 & 0.91 0.97 0.94 & 0.00 0.00 0.00 \\
- 9    & 0.88       & 0.87 0.93 0.90 & 0.86 0.75 0.80 & 0.00 0.00 0.00  & 0.80 0.74 0.77 & 1.00 0.97 0.99 & 0.00 0.00 0.00 \\
- 10   & 0.9        & 0.91 0.92 0.91 & 0.73 1.00 0.85 & 0.00 0.00 0.00  & 0.85 0.87 0.86 & 1.00 0.91 0.95 & 0.00 0.00 0.00 \\
- Avg. & 0.88       & 0.90 0.91 0.90 & 0.73 0.83 0.77 & 0.00 0.00 0.00  & 0.83 0.80 0.81 & 0.95 0.96 0.95 & 0.00 0.00 0.00 \\
-\hline
-\end{tabular}\end{landscape}
+                          & accuracy & geen\_event    & sport          & entertainment  & bijeenkomst    & incident       & anders         \\ \hline
+                          &          & P    R    F    & P    R    F    & P    R    F    & P    R    F    & P    R    F    & P    R    F    \\ \hline
+All features              & 0.84     & 0.85 0.90 0.88 & 0.77 0.49 0.60 & 0.00 0.00 0.00 & 0.76 0.79 0.77 & 0.97 0.97 0.97 & 0.00 0.00 0.00 \\ \hline
+Category                  & 0.81     & 0.85 0.82 0.84 & 0.73 0.46 0.56 & 0.00 0.00 0.00 & 0.66 0.84 0.74 & 0.99 0.97 0.98 & 0.00 0.00 0.00 \\ \hline
+Location                  & 0.51     & 0.49 0.94 0.65 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.66 0.25 0.36 & 0.50 0.06 0.11 & 0.00 0.00 0.00 \\ \hline
+WordOverlapSimple         & 0.63     & 0.60 0.85 0.71 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.57 0.33 0.42 & 0.77 0.83 0.80 & 0.00 0.00 0.00 \\ \hline
+wordOverlapUser           & 0.6      & 0.57 0.93 0.71 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.66 0.90 0.76 & 0.00 0.00 0.00 \\ \hline
+wordOverlapUser, category & 0.82     & 0.86 0.83 0.85 & 0.77 0.49 0.60 & 0.00 0.00 0.00 & 0.66 0.85 0.74 & 1.00 0.97 0.99 & 0.00 0.00 0.00 \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
 
 
 %----------------------------------------------------------------------------------------
