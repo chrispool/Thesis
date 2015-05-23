@@ -60,7 +60,7 @@ class TweetPreprocessor:
             if word in self.stoplist or word.isdigit() or len(word) < 2:
                 tokens.remove(word)
 
-        return list(set(tokens)) # filter dubbele woorden
+        return tokens
        
     # Maak de lijst van tweet dictionaries
     def _createTweetDicts(self, tweetFile):
