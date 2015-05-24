@@ -5,9 +5,9 @@
 ClusterMerger
 #############
 Voegt candidate clusters samen, gegeven een dictionary met clusters
-gegenereerd door de ClusterCreator en idf-waarden gegenereerd door
-de TweetPreprocessor. Clusters worden samengevoegd wanneer ze qua 
-tijd, inhoud en onderwerp overlappen.
+gegenereerd door de ClusterCreator en gegenereerde idf-waarden. 
+Clusters worden samengevoegd wanneer ze qua tijd, inhoud en onderwerp
+overlappen.
 """
 from modules import geohash
 from collections import defaultdict, Counter
