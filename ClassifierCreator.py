@@ -22,8 +22,6 @@ from FeatureSelector import FeatureSelector
 class ClassifierCreator:
 
     def __init__(self):
-
-        
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
         self.classifierAFeatures = ['wordFeatures']
@@ -49,8 +47,6 @@ class ClassifierCreator:
             print("\nThe system is running in DEVTEST mode.\n")
             self.ITERATIONS = 10
         
-
-
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
         self._trainClassifiers()
@@ -158,7 +154,10 @@ class ClassifierCreator:
                 self.featureKeys = featuresB.keys()
                 self.trainB.append((featuresB, label))
 
-            self.classifierB = nltk.SklearnClassifier(LinearSVC()).train(self.trainB)
+            # SVM zou een logische keuze zijn zijn voor de event/non-event classifier (2 categorieen, 
+            # maar dit werkt in de praktijk minder goed dan NLTK Naive Bayes!
+            # nltk.SklearnClassifier(LinearSVC()).train(self.trainB)
+            self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
 
             self.calculateStats(i)
             
