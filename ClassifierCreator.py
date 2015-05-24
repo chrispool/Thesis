@@ -158,7 +158,7 @@ class ClassifierCreator:
                 self.featureKeys = featuresB.keys()
                 self.trainB.append((featuresB, label))
 
-            self.classifierB = nltk.SklearnClassifier(LinearSVC()).train(self.trainB)
+            self.classifierB = nltk.SklearnClassifier(MultinomialNB()).train(self.trainB)
 
             self.calculateStats(i)
             
