@@ -17,14 +17,11 @@ class FeatureSelector:
         self.featureTypes = ['wordOverlapUser', 
                             'wordOverlapSimple',
                             'wordOverlap',
-                            'overlapHashtags', 
-                            'atRatio', 
                             'location', 
                             'uniqueUsers',
                             'nTweets',
-                            'averageTfIdf',
                             'wordFeatures',
-                            'category' ]
+                            'category']
         
         self.candidates = eventCandidates
         self.idf = Counter()
@@ -129,12 +126,10 @@ class FeatureSelector:
 
     def _wordOverlap(self, candidate):
         types = Counter() #counter with n of tweets this term occurs
-        tokens = Counter()
         idf = defaultdict(float)
         n = len(candidate)
-        for row in candidate:    
+        for row in candidate:
             types.update(set(row['tokens']))
-            tokens.update(row['tokens'])  
         #calculate cluster IDF, hoe waardevol is woord in cluster
         #IDF(t) = log_e(Total number of documents / Number of documents with term t in it).   
         for t in types:
@@ -151,21 +146,6 @@ class FeatureSelector:
             return 0
         else:
             return round((score / n) * 2) / 2 # round to 0.5
-    
-    def _overlapHashtags(self, candidate):
-        #find all hashtags
-        h = []
-        hashTagsC = Counter()
-        for tweet in candidate:
-            for token in tweet['tokens']:
-                if token[0] == '#':
-                    hashTagsC[token] += 1
-
-        return round((sum(hashTagsC.values()) / len(candidate)) * 2 ) / 2
-
-    def _retweets(self, candidate):
-        #feature to negative score retweet clusters
-        pass
 
     def _wordOverlapDisplay(self, candidate):
         types = Counter() #counter with n of tweets this term occurs
@@ -195,16 +175,7 @@ class FeatureSelector:
             
             value = round((score / n) * 2) / 2 #round to 0.5
             common = [w + "(" + str(tokens[w]) + str(c * idf[t]) + ")" for w,c in types.most_common(3)]
-            return "Score: {:.2f} , Overlapping words: {} ".format( value, ' '.join(common ))   
-            
-    def _atRatio(self, candidate):
-        #Number of @s relative to the number of posts in the cluster.
-        nAt = 0
-        for tweet in candidate:
-            for word in tweet['text']:
-                if word[0] == '@':
-                    nAt += 1
-        return round(nAt / nTweets(candidate), 2)
+            return "Score: {:.2f} , Overlapping words: {} ".format( value, ' '.join(common ))
 
     # Bepaal de gemiddelde locatie (lengte- en breedtegraad, omgezet
     # naar geohash) van alle gebruikers in een cluster
@@ -230,14 +201,3 @@ class FeatureSelector:
     
     def _category(self, candidate):
         return self.classifierCat.classify(self._wordFeatures(candidate))
-
-    def _averageTfIdf(self, candidate, idf):
-        tokens = Counter()
-        for tweet in candidate:
-            tokens.update(tweet['tokens'])
-
-        score = 0
-        for token in tokens:
-            score += tokens[token] * idf[token]
-            
-        return score / len(candidate)
