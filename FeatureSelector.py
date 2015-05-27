@@ -194,10 +194,10 @@ class FeatureSelector:
 
     def _uniqueUsers(self, cluster):
         users = [tweet['user'] for tweet in cluster]
-        return round(  len( set( users)) , 1 )
+        return len(set(users))
 
     def _nTweets(self, cluster):
-        return (len(cluster))
+        return len(cluster)
     
     def _category(self, candidate):
         return self.classifierCat.classify(self._wordFeatures(candidate))
