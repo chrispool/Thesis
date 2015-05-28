@@ -100,7 +100,7 @@ BCOR5mm, % Binding correction
 With the growing number of people using social media services like Twitter and the enormous amount of data available makes it interesting to use as a source of information about events that are taking place at a certain time and location. This real time information and with the addition about how people feel about these events can be very useful, for example to provide news items with more information about user sentiment.
 
 %wat
-This thesis describes a method of finding local events based on tweets with geo information and categorize them into 5 categories (No-event, Sport, Enterainment, Meeting, Incident) and to find relevant information within those tweets about the location and people involved. Local events are events that take place in a certain radius (\begin{math}Z\end{math}) within a certain time interval (\begin{math}X\end{math}). For this research \begin{math}z= 0.5km , x= 5 hours\end{math}.
+This thesis describes a method of finding local events based on tweets with geo information and categorize them into 5 categories (No-event, Sport, Entertainment, Meeting, Incident) and to find relevant information within those tweets about the location and people involved. Local events are events that take place in a certain radius (\begin{math}Z\end{math}) within a certain time interval (\begin{math}X\end{math}). For this research \begin{math}z= 0.5km , x= 5 hours\end{math}.
 
 My research question is: Is it possible to detect local events from the Twitter stream that take place in the Netherlands based on Tweets with geo-information, to see if you can detect what type of events take place and who the important people/organizations or topics are to make an interactive map of these events.
 
@@ -129,7 +129,7 @@ The dense neighborhood is defined based on two user-specified parameters: the ra
 In this chapter the used methods for the experiment are described. 
 
 \subsection{Clustering}
-The first task is to cluster the tweets based on their location and time. There are several approaches in location clustering that can be used. Because the aim of the research was to make something that could work in real-time it was necessary to look for an approach that was quick. GeoHash is is a system invented by Gustavo Niemeyer that converts latitude and longitude coordinates into a hash. The more digits used means a higher accuracy. If two locations share the same prefix indicates (not always) that the locations are nearby. This algorithm is quick and easy to use and ideal for my experiment.
+The first task is to cluster the tweets based on their location and the time the tweets are published. There are several approaches in location clustering that can be used. Because the aim of the research was to make something that could work in real-time it was necessary to look for an approach that was quick. GeoHash is is a system invented by Gustavo Niemeyer that converts latitude and longitude coordinates into a hash. The more digits used means a higher accuracy. If two locations share the same prefix indicates (not always) that the locations are nearby. This algorithm is quick and easy to use and ideal for my experiment.
 
 Figure 2 illustrates that 1 digit can be used to represent a quarter of the world, two digits 1/16 and three digits 1/64 etc. 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
@@ -139,11 +139,11 @@ Figure 2 illustrates that 1 digit can be used to represent a quarter of the worl
    \label{fig:geohash}
 \end{figure}
 
-There are several implementations of this algorithm in Python. I used the GeoHash library written in 2009 by Hiroaki Kawai because of the good documentation and excellent features. The function to calculate the GeoHash of a location requires the desired accuracy, latitude and longitude of that location and returns the GeoHash for that location. The library also provides functions to calculate the neighboring GeoHashes, this is useful because in a grid clustering approach border cases can occur and with this function neighboring GeoHashes can be explored to see if it contains tweets with the same topic and can merge them if necessary. 
+There are several implementations of this algorithm in Python. I used the GeoHash library written in 2009 by Hiroaki Kawai because of the good documentation and excellent features. The function to calculate the GeoHash of a location requires the desired accuracy, latitude and longitude of that location and returns the GeoHash for that location. The library also provides functions to calculate the neighboring GeoHashes, this is useful because in a grid clustering approach border cases can occur and with this function neighboring GeoHashes can be explored to see if it contains tweets with the same topic and can merge them if necessary. For clustering based on time the UNIX timestamp can be used. That is a system to represent time using the number of seconds since 1 January 1970. Python has build-in functions to deal with UNIX timestamps.
 
 \subsection{NLTK}
 Python has a lot of functions to use while doing NLP tasks but for more advanced tasks it is not powerful enough. Therefore we have chosen the Natural Language Tookit (NLTK) %link naar bron.
-NLTK has a lot of modules that can be used for a wide range of NLP tasks. It is also really easy to use and well documented. 
+NLTK has a lot of modules that can be used for a wide range of NLP tasks. It is also really easy to use and well documented. Another advantage is that NLTK is modular, meaning you can use small portions of the toolkit that work together with other libraries.
 
 \subsection{Classification}
 After forming the potential events (Event Candidates) the Event Candidates have to be classified as a specific event category or not an event.  NLTK provides excellent documentation and functions for classifying. \\\\  NLTK provides several classifier types:
@@ -156,7 +156,7 @@ After forming the potential events (Event Candidates) the Event Candidates have 
 \item WekaClassifier
 \end{itemize}
 
-In the next chapter I describe the results using the different classifiers. Some classifiers where not used because they are used together with other software.
+In the next chapter I describe the results using the different classifiers. Some classifiers where not used because they have to be used together with other software.
 
 
 \subsection{Named Entity Reconinigzion}
@@ -173,34 +173,7 @@ Current NER tools were designed to process large texts and perform badly with tw
 %----------------------------------------------------------------------------------------
 \newpage
 \section{Experiment and Evaluation}
-For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams.  Events that take place on a larger scale like elections and extreme weather conditions are ignored. The input for this system are tweets that have coordinates that we afterwards try to cluster based on proximity, time and topic. These clusters of tweets are potential events that are system should classify as event/no event. The final goal was to plot these events on a map.
-\subsection{System architecture}
-Python was uded for this system because of the excellent tools available to build a machine learning system. NLTK and Scikit learn are used for classifying the event candidates.
-
-We designed several classes for building our system but there are 3 main modules:
-
-\begin{description}
-
-\item[EventCandidates] 
-The module that processes the tweets by giving each tweet a GeoHash, tokenizes the tweet and passes it through to the clusterCreator module that clusters the tweets using the geoHash and the timestamp resulting in event candidates. Finally the module clusterMerger checks for each event candidate if there are any neighboring event candidates that belong to each other and merges them. Finally the event candidates are saved as a datafile.
-
-
-\item[Annotater] 
-This module makes it possible for multiple judges to annotate the data created with the EventCandidates module. After finishing the annotation by both judges it calculates the Kappa score and other statistics and saves the annotation in a datafile.
-
-
-\item[EventDetective] 
-This module uses classification to detect events in the given event candidates and generates a Google map of events with corresponding category icons and wikified text.
-
-
-\end{description}
-
-\subsection{Data collection}
-For the experiment tweets are used that have coordinates. Using a simple Grep command it was possible to retrieve only tweets with this information from the Karora machine. We collected two datasets. One set for testing and training and one for the final test (devset). 
-The first dataset consisted of Dutch tweets from March 2015 that we have downloaded from the Karora machine. In total there where 566549 tweets with geo information. That is about 3procent of the total number of tweets published in that month. The Devset consists of 165848 tweets from the second half of April 2015.
-
-\subsection{Annotation}
-The data is annotated by two judges. The kappa score was 0.79 for the trainset and 0.8 for the devset. We defined the following categories:
+For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams and recognize the named entities in the tweets.  Events that take place on a larger scale like elections and extreme weather conditions are ignored. The input for this system are tweets that have coordinates that we cluster based on proximity and time. These clusters of tweets are potential events (eventCandidates) that the system classifies using the following categories: \\
 
 \begin{itemize}[noitemsep] % [noitemsep] removes whitespace between the items for a compact look
 \item \textbf{Other (OTH)} All events that are other then the following categories 
@@ -209,6 +182,42 @@ The data is annotated by two judges. The kappa score was 0.79 for the trainset a
 \item \textbf{No Event (NOE)} No Event
 \item \textbf{Sport (SPO)} All events that have to do with sport 
 \end{itemize}
+
+
+
+\subsection{System architecture}
+Python was used for this system because of the excellent tools available to build a machine learning system. NLTK and Scikit learn are used for classifying eventCandidates.
+
+We designed several classes for building our system but there are 4 main modules:
+
+\begin{description}
+
+\item[EventCandidates] 
+This module processes the tweets by giving each tweet a GeoHash, tokenizes the tweet and passes it through to the clusterCreator module that clusters the tweets using the geoHash and the timestamp resulting in event candidates. Finally the module clusterMerger checks for each eventCandidate if there are any neighboring event candidates that belong to each other and merges them. Finally the event candidates are saved as a JSON datafile.
+
+
+\item[Annotater] 
+This module makes it possible for multiple judges to annotate the data created with the EventCandidates module. After finishing the annotation by both judges it calculates the Kappa score and other statistics and saves the annotation in a JSON datafile.
+
+\item[ClassifierCreator] 
+This module trains the classifier(s) using the annotation and eventCandidates using NLTK. This module can be used in two modes. The standard modus let you select a dataset (that is annotated)  and the module splits the dataset in a train set (80\%) and testset(20\&). It uses the train set to train the classifier and the test set to test the performance of the classifier. In this modus the training is done ten times while shuffling the dataset for each iteration.
+The test modus uses the same code but lets you select two annotated datasets. One for training and one for testing. We used this module to test our system on data we annotated at the end of the period. This module outputs in both modes statistics to evaluate the classifier that can be found in the result section. The explanation of the classifiers can be found in the Event Detection section of this paper.
+
+\item[EventDetective] 
+This module uses the classifier trained in the ClassifierCreator module. This module classifies a dataset and adds them to a Google map. It also uses the NER module to find named entities and adds that to the Google map marker.
+
+\item[NER]
+This module uses the NER classifier that is explained in the Named Entity Recognition section of this chapter.  This module returns the named entities given an eventCandidate.
+
+\end{description}
+
+\subsection{Data collection}
+For the experiment tweets are used that have coordinates. Using a simple Grep command it was possible to retrieve only tweets with this information from the Karora machine. We collected two datasets. One set for testing and training and one for the final test (devset). 
+The first dataset consisted of Dutch tweets from March 2015 that we have downloaded from the Karora machine. In total there where 566549 tweets with geo information. That is about 3procent of the total number of tweets published in that month. The Devset consists of 165848 tweets from the second half of April 2015.
+
+\subsection{Annotation}
+The data is annotated by two judges. The kappa score was 0.79 for the trainset and 0.8 for the devset. According to book IR is dat fair/good. We discarded the eventCandidates we did not agree on.
+
 For the testset we annotated 1350 event candidates with these categories. In 87\% of the cases the judges agreed.
 
 \begin{table}[h]
@@ -219,7 +228,7 @@ For the testset we annotated 1350 event candidates with these categories. In 87\
 \multicolumn{1}{l|}{\textbf{ENT}} & \multicolumn{1}{c|}{3} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{\textless20\textgreater} & \multicolumn{1}{c|}{5} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{.} \\ \cline{2-7} 
 \multicolumn{1}{l|}{\textbf{NOE}} & \multicolumn{1}{c|}{14} & \multicolumn{1}{c|}{27} & \multicolumn{1}{c|}{18} & \multicolumn{1}{c|}{\textless619\textgreater} & \multicolumn{1}{c|}{9} & \multicolumn{1}{c|}{9} \\ \cline{2-7} 
 \multicolumn{1}{l|}{\textbf{INC}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{2} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{12} & \multicolumn{1}{c|}{\textless178\textgreater} & \multicolumn{1}{c|}{.} \\ \cline{2-7} 
-\multicolumn{1}{l|}{\textbf{SPO}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{5} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{60\textgreater} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{SPO}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{5} & \multicolumn{1}{c|}{.} & \multicolumn{1}{c|}{\textless60\textgreater} \\ \cline{2-7} 
 \end{tabular}
 \caption[Table caption text]{Confusion matrix testset annotation }
 \end{table}
@@ -234,7 +243,7 @@ For the devset we annotated 500 event candidates with these categories. In 86\% 
 \multicolumn{1}{l|}{\textbf{ENT}} & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{\textless8\textgreater} & \multicolumn{1}{c|}{2}                        & \multicolumn{1}{c|}{.}                       & \multicolumn{1}{c|}{.}              \\ \cline{2-7} 
 \multicolumn{1}{l|}{\textbf{NOE}} & \multicolumn{1}{c|}{3}                      & \multicolumn{1}{c|}{19}                       & \multicolumn{1}{c|}{4}                      & \multicolumn{1}{c|}{\textless199\textgreater} & \multicolumn{1}{c|}{4}                       & \multicolumn{1}{c|}{2}              \\ \cline{2-7} 
 \multicolumn{1}{l|}{\textbf{INC}} & \multicolumn{1}{c|}{1}                      & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{.}                        & \multicolumn{1}{c|}{\textless78\textgreater} & \multicolumn{1}{c|}{.}              \\ \cline{2-7} 
-\multicolumn{1}{l|}{\textbf{SPO}} & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{1}                        & \multicolumn{1}{c|}{2}                      & \multicolumn{1}{c|}{2}                        & \multicolumn{1}{c|}{.}                       & \multicolumn{1}{c|}{60\textgreater} \\ \cline{2-7} 
+\multicolumn{1}{l|}{\textbf{SPO}} & \multicolumn{1}{c|}{.}                      & \multicolumn{1}{c|}{1}                        & \multicolumn{1}{c|}{2}                      & \multicolumn{1}{c|}{2}                        & \multicolumn{1}{c|}{.}                       & \multicolumn{1}{c|}{\textless60\textgreater} \\ \cline{2-7} 
 \end{tabular}
 \caption[Table caption text]{Confusion matrix devset annotation }
 \end{table}
@@ -271,22 +280,90 @@ With the use of GeoHash it is possible to have cases where the event is on a bor
 
 
 \subsection{Event detection}
-\lipsum[10]
-
-\subsubsection{Feature selection}
-\lipsum[12]
-
-\subsection{Named Entity Recognizion}
-Because the available classifiers in the Stanford NER are not suitable for Tweets i trained my own classifier. First i collected a list of Dutch words of each category (Location, Persons, Organizations and Miscellaneous) I used the wordlist of Alpino,  software that is developed by Professor Gert-jan van Noord. Then i collected one million tweets that have at least one of the words. The second step was to automatically annotate the tweets. I wrote a Python script that processes each tweet and assigns the correct class based on the wordlists to each token and creates the training file. The training file was split to make a testfile (4/5 for the training and 1/5 for testing)
-
-
+For the event detection I trained two classifiers using NLTK. The first classifier trains using the words (800 most common words with stopwords removed) as features. Several values were tried but 800 resulted in the best performance. Also several types of classifiers were tried. Naive Bayes produced the best result and was also the quickest. The output of that classifier (a category) was used as a feature for the second classifier that used more features as described in the next section.
 \newpage
-\subsection{Results}
+\subsubsection{Feature selection}
+The first classifier only uses the words as features. The second classifier uses the output of the first classifier as a feature. This feature is by far the most valuable for the system. In the table below the performance of the features are described. In appendix x the complete results can be found.
 
 
-
-\subsubsection{Classifier}
 \begin{table}[h]
+\begin{tabular}{|l|l|}
+\hline
+                          & Accuracy \\ \hline
+All features              & 0.84     \\ \hline
+Category                  & 0.81     \\ \hline
+Location                  & 0.51     \\ \hline
+WordOverlapSimple         & 0.63     \\ \hline
+WordOverlapUser           & 0.6      \\ \hline
+WordOverlapUser, Category & 0.82     \\ \hline
+\end{tabular}
+\caption[Table caption text]{Effect of features  }
+\end{table}
+
+\begin{description}
+
+\item[Category]
+The result of the classifier that uses the most common words as features. 
+
+\item[Location]
+The first 5 characters in the geoHash are used as a feature. It will be easier to detect events on locations were events often take place.
+
+\item[wordOverlapSimple]
+This feature is a numeric value that represents how many tweets consist of the same words. The score is calculated by counting the occurrences of each type and dividing it by the number of tweets. Hashtags get a bonus score.
+
+\begin{python}
+def _wordOverlapSimple(self, candidate):
+        types = Counter()
+        for tweet in candidate:
+            types.update(set(tweet['tokens']))
+        score = 0
+        for t in types:
+            if types[t] > 1:
+                if t[0] == '#':
+                    score += (types[t] * 2)
+                else:
+                    score += types[t]
+
+        return round((score / len(candidate)) * 2) / 2
+\end{python}
+\newpage
+\item[WordOverlapUser]
+This feature calculates the overlap of types among users. The score is the highest when all users use the same words. The result is the log of the score and rounded to 0.5.
+
+\begin{python}
+def _wordOverlapUser(self, candidate):
+        '''Calculate the overlap of features among users'''
+        userTypes = defaultdict(list)
+        types = Counter()
+
+        for row in candidate:
+            userTypes[row['user']].extend(row['tokens'])
+        
+        for user in userTypes:
+            types.update(set(userTypes[user]))
+        score = 0
+        for t in types:
+            if types[t] > 1: #ignore if only in one tweet
+                if t[0] == '#':
+                    score += (types[t] * 2)
+                else:
+                    score += types[t]
+
+        if score > 1:
+            s = log(float(score) * float(len(userTypes.keys()) )) 
+            #return round((score * 2) / len(candidate))
+            return round((s / len(candidate) )* 2 ) /2 
+        else:
+            return 0.0
+\end{python}
+
+\end{description}
+
+\subsubsection{Results event detection}
+The event classifier performs good. It is a few procent less then the Upper bound  of 87\%. 
+
+\begin{table}[h]
+\caption[Table caption text]{Results using all features }
 \begin{tabular}{l|l|l|l|l|l|l|l|l|l|}
 \cline{2-10}
                           & \multicolumn{3}{c|}{Naive Bayes}                                         & \multicolumn{3}{c|}{Maximum Entropy}                                     & \multicolumn{3}{c|}{SVM}             \\ \cline{2-10} 
@@ -299,11 +376,14 @@ Because the available classifiers in the Stanford NER are not suitable for Tweet
 \multicolumn{1}{|l|}{INC} & 0.97                   & 0.97                   & 0.97                   & 0.94                   & 0.94                   & 0.94                   & 1.00       & 0.97       & 0.99       \\ \hline
 \multicolumn{1}{|l|}{OTH} & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00       & 0.00       & 0.00       \\ \hline
 \end{tabular}
-\caption[Table caption text]{Results using all features }
+
 \end{table}
 
 
+The different classifiers perform almost the same. The 
+
 \begin{table}[h]
+\caption[Table caption text]{Confusion Matrix Naive Bayes }
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
     & \multicolumn{1}{l|}{OTH} & \multicolumn{1}{l|}{MEE} & \multicolumn{1}{l|}{ENT} & \multicolumn{1}{l|}{NOE} & \multicolumn{1}{l|}{INC} & \multicolumn{1}{l|}{SPO} \\ \hline
@@ -315,10 +395,11 @@ INC & .                        & .                        & .                   
 SPO & .                        & 1                        & 1                        & 2                        & 1                        & \textless16\textgreater  \\ \hline
 \end{tabular}
 
-\caption[Table caption text]{Confusion Matrix Naive Bayes }
+
 \end{table}
 
 \begin{table}[h]
+\caption[Table caption text]{Confusion Matrix Maximum Entropy }
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
     & \multicolumn{1}{l|}{OTH} & \multicolumn{1}{l|}{MEE} & \multicolumn{1}{l|}{ENT} & \multicolumn{1}{l|}{NOE} & \multicolumn{1}{l|}{INC} & \multicolumn{1}{l|}{SPO} \\ \hline
@@ -329,10 +410,11 @@ NOE & .                        & 26                       & 5                   
 INC & .                        & 1                        & .                        & 4                        & \textless73\textgreater  & .                        \\ \hline
 SPO & .                        & 1                        & 1                        & 2                        & 1                        & \textless16\textgreater  \\ \hline
 \end{tabular}
-\caption[Table caption text]{Confusion Matrix Maximum Entropy }
+
 \end{table}
 
 \begin{table}[h]
+\caption[Table caption text]{SVM }
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
     & \multicolumn{1}{l|}{OTH} & \multicolumn{1}{l|}{MEE} & \multicolumn{1}{l|}{ENT} & \multicolumn{1}{l|}{NOE} & \multicolumn{1}{l|}{INC} & \multicolumn{1}{l|}{SPO} \\ \hline
@@ -343,8 +425,25 @@ NOE & .                        & 19                       & 5                   
 INC & .                        & .                        & .                        & .                        & \textless73\textgreater  & .                        \\ \hline
 SPO & .                        & 1                        & 1                        & 2                        & 1                        & \textless17\textgreater  \\ \hline
 \end{tabular}
-\caption[Table caption text]{SVM }
+
 \end{table}
+
+\subsection{Named Entity Recognition}
+The default NER tagger in NLTK is the Stanford NER classifier. This is according to many researches the best available. Unfortunately there are no classifiers trained using Dutch tweets and the performance of the available classifiers was so poor (see table x) i decided to train my own classifier. Because of limited time I decided to automatically annotate the training data creating a silver standard.
+
+\subsubsection{Data collection}
+I used the wordlists that are used in Alpino(LINK), that are four lists with dutch words categorized in (LOCATIONS, PERSONS, ORGANIZATIONS and MISC). I used those list to download tweets that at least contain one word from these lists. I then used the wordlists to annotate the tweets automatically in de the desired training data format. This resulted in a dataset of one million annotated tweets. 
+
+\subsubsection{Training}
+For training the classifier the dataset was divided in a train set and a test set. The Stanford NER tagger trained with several features, NGR
+
+
+\newpage
+\subsection{Results}
+In this section the results of the two components, the classifier and the NER tagger are discussed.
+
+
+
 
 
 
@@ -353,32 +452,28 @@ SPO & .                        & 1                        & 1                   
 I compare my results with the standard Stanford 4 class classifier. This classifier is trained on xxx and uses the same classes as my classifier.
 
 \begin{table}[h]
-\begin{tabular}{|l|l|l|l|l|l|l|}
-\hline
-Entity       & P      & R      & F1     & TP    & FP  & FN   \\ \hline
-LOCATION     & 0,9623 & 0,9363 & 0,9491 & 4718  & 185 & 321  \\ \hline
-MISC         & 0,9744 & 0,8964 & 0,9338 & 1903  & 50  & 220  \\ \hline
-ORGANIZATION & 0,9711 & 0,9315 & 0,9509 & 4241  & 126 & 312  \\ \hline
-PERSON       & 0,9031 & 0,8773 & 0,8900 & 4583  & 492 & 641  \\ \hline
-Totals       & 0,9477 & 0,9118 & 0,9294 & 15445 & 853 & 1494 \\ \hline
-\end{tabular}
 \caption[Table caption text]{Classifier trained with Tweets }
-\end{table}
-
-\begin{table}[h]
 \begin{tabular}{|l|l|l|l|l|l|l|}
 \hline
-Entity       & P      & R      & F1     & TP   & FP   & FN    \\ \hline
-LOCATION     & 0,5779 & 0,2239 & 0,3227 & 1128 & 824  & 3911  \\ \hline
-MISC         & 0,0280 & 0,0118 & 0,0166 & 25   & 869  & 2098  \\ \hline
-ORGANIZATION & 0,2485 & 0,2554 & 0,2519 & 1163 & 3517 & 3390  \\ \hline
-PERSON       & 0,2627 & 0,3084 & 0,2837 & 1611 & 4521 & 3613  \\ \hline
-Totals       & 0,2875 & 0,2318 & 0,2567 & 3927 & 9731 & 13012 \\ \hline
+Entity       & P      & R      & F1     & TP & FP & FN   \\ \hline
+LOCATION     & 0,7333 & 0,7333 & 0,7333 & 11 & 4  & 4    \\ \hline
+MISC         & 0,0909 & 0,500  & 0,1538 & 1  & 10 & 1    \\ \hline
+ORGANIZATION & 0,7500 & 0,8824 & 0,8108 & 15 & 5  & 2    \\ \hline
+PERSON       & 0,6154 & 0,5517 & 0,5818 & 16 & 10 & 13   \\ \hline
+Totals       & 0,5972 & 0,6825 & 0,6370 & 43 & 29 & 20 \\ \hline
 \end{tabular}
-\caption[Table caption text]{Stanford 4-class classifier }
+
 \end{table}
 
 
+\clearpage
+\newpage
+\section{Conclusion and discussion}
+\lipsum[10]
+\lipsum[10]
+
+\newpage
+\section{Appendix}
 
 \begin{landscape}
 \begin{table}[h]
