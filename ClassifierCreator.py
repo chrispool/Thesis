@@ -50,7 +50,8 @@ class ClassifierCreator:
         self.__loadDataSet()
         self.featureSelector = FeatureSelector(self.candidates)
         self._trainClassifiers()
-        #self._saveClassifiers()
+        if self.realTest:
+            self._saveClassifiers()
 
     def __loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
@@ -154,12 +155,10 @@ class ClassifierCreator:
                 self.featureKeys = featuresB.keys()
                 self.trainB.append((featuresB, label))
 
-
             # SVM zou een logische keuze zijn zijn voor de event/non-event classifier (2 categorieen, 
             # maar dit werkt in de praktijk minder goed dan NLTK Naive Bayes!
             # nltk.SklearnClassifier(LinearSVC()).train(self.trainB)
             self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
-
 
             self.calculateStats(i)
             
