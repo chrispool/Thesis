@@ -33,6 +33,7 @@ class EventDetective:
         for h in self.candidates:
             for t in self.candidates[h]:
                 candidate = self.candidates[h][t] 
+                
                 featuresCat = featureSelector.getFeatures(candidate, ['wordFeatures'])
                 featureSelector.addCategoryClassifier(self.classifierCat)
                 label = self.classifierCat.classify(featuresCat)
@@ -40,7 +41,6 @@ class EventDetective:
                 featuresBi = featureSelector.getFeatures(candidate,['category', 'location','wordOverlapSimple','wordOverlapUser'])
                 classifierBiLabel = self.classifierBi.classify(featuresBi)
                 if classifierBiLabel != "geen_event":
-                    print(self.classifierBi.classify(featuresBi))
                     self.events.append((candidate,classifierBiLabel))                          
         
     def _loadDataSet(self):
