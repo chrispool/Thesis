@@ -69,11 +69,12 @@ class EventDetectiveChart(EventDetective):
             self.events[i] = (tweets,label,eventTitle)
         print(eventAugCount, "event clusters have been augmented with new tweets.")
        
-    # geeft de n hoogste tf waarden
+    # geeft de n hoogste df waarden
     def _getImportantWords(self, tweets, n=3):
         result = Counter()
         for tweet in tweets:
-            for word in tweet['tokens']:
+            types = set(tweet['tokens'])
+            for word in types:
                 if word.startswith('#') or (word.startswith('@') and word[1:] in result):
                     # hashtag-termen zijn belangrijk, ze tellen dubbel
                     result[word[1:]] += 2
