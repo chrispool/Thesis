@@ -144,9 +144,9 @@ class ClassifierCreator:
             self.featureSelector.addCategoryClassifier(self.classifierA)
                 
             print("### TRAINING STEP 2: Training event/non-event classifier (Naive Bayes with category & other features) ###")
-            # second step train the event/no event classifier
+            # second step train the event/no event classifier (a second category classifier)
             for candidate, label in self.testData:
-                featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures )   
+                featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures)   
                 self.featureKeys = featuresB.keys()
                 self.testB.append((featuresB, label)) 
             
@@ -155,9 +155,6 @@ class ClassifierCreator:
                 self.featureKeys = featuresB.keys()
                 self.trainB.append((featuresB, label))
 
-            # SVM zou een logische keuze zijn zijn voor de event/non-event classifier (2 categorieen, 
-            # maar dit werkt in de praktijk minder goed dan NLTK Naive Bayes!
-            # nltk.SklearnClassifier(LinearSVC()).train(self.trainB)
             self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
 
             self.calculateStats(i)
