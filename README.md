@@ -1,6 +1,6 @@
-# Event Detective
+# EventDetective
 
-This is a system for event detection on Twitter. It was (mainly) written in Python by Chris Pool and David de 
+This is a system for event detection in Twitter. It was (mainly) written in Python by Chris Pool and David de 
 Kleer for our bachelor project. You can find our accompanying theses in the folders *scriptie Chris Pool* 
 (English) and *scriptie David de Kleer* (Dutch). Now, we will describe how to run a basic experiment with our software.
 
