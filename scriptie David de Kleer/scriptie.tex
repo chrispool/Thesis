@@ -6,29 +6,36 @@
 
 \usepackage{listings}
 % listing (voor programmeercode, in dit geval Python)
-\lstset{language=Python, basicstyle=\ttfamily, keywordstyle=\bfseries, breaklines=true, morekeywords={then},
-	showstringspaces=false, xleftmargin=5pt, xrightmargin=5pt, aboveskip=12pt, belowskip=12pt}
+\lstset{language=Python, basicstyle=\small\ttfamily, keywordstyle=\bfseries, breaklines=true, morekeywords={then},
+	showstringspaces=false, aboveskip=10pt, belowskip=10pt, columns=fullflexible}
 % dotted table of contents
 \usepackage{tocloft}
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+% meer ruimte in table of contents
+\setlength{\cftbeforesecskip}{10pt}
+\setlength{\cftbeforesubsecskip}{10pt}
+\setlength{\cftbeforesubsubsecskip}{2pt}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{apacite}
 \usepackage[dutch]{babel}
 \usepackage{graphicx}
-\usepackage{natbib}
+\usepackage[sort]{natbib}
 \usepackage{eurosym} % euro symbolen
 \usepackage[hyphens]{url}
-%Plaats footnotes helemaal onderaan de pagina, niet alleen onderaan de tekst (waardoor voetnoten tussen de tekst en een 
-%figuur terecht kunnen komen).
-\usepackage[bottom]{footmisc}
+% Plaats footnotes helemaal onderaan de pagina, niet alleen onderaan de tekst 
+% (waardoor voetnoten tussen de tekst en een figuur terecht kunnen komen).
+\usepackage[bottom,hang,flushmargin]{footmisc}
 \usepackage{wallpaper}
+\usepackage[font={it}]{caption} % onderschriften in italics
 \usepackage{float}
 \usepackage[hypcap]{caption}
 \usepackage[hidelinks]{hyperref}
 \usepackage[compact]{titlesec}
 \usepackage{enumitem}
 \setlength\parindent{0pt} % gebruik nooit indents
-% titlespacing* zorgt ervoor dat er geen indents worden geplaatst na het begin van een sectie
+% titlespacing* zorgt ervoor dat er geen indents worden geplaatst na het begin 
+% van een sectie
 \titlespacing{\section}{0pt}{10pt}{10pt}
 \titlespacing{\subsection}{0pt}{10pt}{10pt}
 \titlespacing{\subsubsection}{0pt}{10pt}{10pt}
@@ -36,19 +43,25 @@
 
 \addtolength{\topmargin}{-.5in}
 \addtolength{\textheight}{1.06in}
-\setcitestyle{round}                          % gebruik ronde haken bij citeren
-\setcounter{secnumdepth}{5}                   % voor subsubsubsections: gebruik paragraph
-\setcounter{tocdepth}{5}                      % blijf de inhoud van de PDF juist weergeven
-\def\wl{\par \vspace{\baselineskip}\noindent} % white space tussen alinea's: gebruik \wl
-\def\vl{\\[9pt]}                              % 8pt verticale ruimte, alternatief voor \wl
+\setcounter{secnumdepth}{5}                   % voor subsubsubsections: gebruik 
+                                              % paragraph
+\setcounter{tocdepth}{5}                      % blijf de inhoud van de PDF 
+                                              % juist weergeven
+                                              
+\def\wl{\par \vspace{\baselineskip}\noindent} % white space tussen alinea's: 
+                                              % gebruik \wl
+\def\vl{\\[9pt]}                              % 9pt verticale ruimte, 
+                                              % alternatief voor \wl
 \def\s{\section}                              % \s voor een section
 \def\ss{\subsection}                          % \ss voor een subsection
 \def\sss{\subsubsection}                      % \sss voor een subsubsection
-\def\p{\paragraph}                            % \p voor een paragraph (subsubsubsection)
+\def\p{\paragraph}                            % \p voor een paragraph 
+                                              % (of subsubsubsection)
 \def\ttt{\texttt}                             % teletype text
 
-\newenvironment{bullets}%                     % bullets in plaats van itemize (ik vergeet
-{\begin{itemize}}%                            % itemize altijd xD
+\newenvironment{bullets}                      % bullets in plaats van itemize 
+                                              % (ik vergeet
+{\begin{itemize}}                             % itemize altijd xD
 {\end{itemize}}
 
 \def\image{\includegraphics}                  % image makkelijker te onthouden
@@ -90,32 +103,65 @@
 \newpage
 \tableofcontents
 \newpage
-
-\phantomsection % phantomsection voor goede link in de table of contents, voor de sectie!
+% phantomsection voor goede link in de table of contents, VOOR de sectie!
+\phantomsection 
 \s*{Voorwoord}
-\addcontentsline{toc}{section}{Voorwoord} % toevoegen van s(ection)* aan inhoudsopgave moet in de sectie zelf!
+% toevoegen van s(ection)* aan inhoudsopgave moet in de sectie zelf!
+\addcontentsline{toc}{section}{Voorwoord}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis justo, id rhoncus libero. Sed tincidunt odio eget nulla faucibus facilisis. Vivamus egestas mauris sit amet vehicula laoreet. Aenean commodo pharetra turpis ac euismod. Integer tristique eu tortor at dignissim. Vestibulum libero purus, tincidunt sed mollis eu, dapibus eu tellus. Quisque dolor eros, cursus sed diam vel, fringilla lobortis mauris. Phasellus vel arcu ac nisl vestibulum venenatis pellentesque eget lacus. In mauris ex, convallis vitae neque venenatis, pretium mattis mi. Nulla laoreet egestas enim, porttitor fringilla enim vehicula vitae. Nunc rhoncus ligula risus, quis gravida quam dapibus eu. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis 
+justo, id rhoncus libero. Sed tincidunt odio eget nulla faucibus facilisis. 
+Vivamus egestas mauris sit amet vehicula laoreet. Aenean commodo pharetra 
+turpis ac euismod. Integer tristique eu tortor at dignissim. Vestibulum libero 
+purus, tincidunt sed mollis eu, dapibus eu tellus. Quisque dolor eros, cursus 
+sed diam vel, fringilla lobortis mauris. Phasellus vel arcu ac nisl vestibulum 
+venenatis pellentesque eget lacus. In mauris ex, convallis vitae neque 
+venenatis, pretium mattis mi. Nulla laoreet egestas enim, porttitor fringilla 
+enim vehicula vitae. Nunc rhoncus ligula risus, quis gravida quam dapibus eu. 
+Cum sociis natoque penatibus et magnis dis parturient montes, nascetur 
+ridiculus mus.
 \null
 
 \null
 
-Curabitur sollicitudin fringilla elementum. Vestibulum tincidunt volutpat ligula, a lobortis massa eleifend ac. Duis sit amet libero purus. Donec sed dictum nunc. Sed vel erat eu urna ullamcorper aliquam. Morbi vitae volutpat tellus. Quisque justo dolor, semper eu consectetur ut, mattis at nunc. Aliquam id tellus rhoncus, lobortis velit sed, tempus erat.
+Curabitur sollicitudin fringilla elementum. Vestibulum tincidunt volutpat 
+ligula, a lobortis massa eleifend ac. Duis sit amet libero purus. Donec sed 
+dictum nunc. Sed vel erat eu urna ullamcorper aliquam. Morbi vitae volutpat 
+tellus. Quisque justo dolor, semper eu consectetur ut, mattis at nunc. Aliquam 
+id tellus rhoncus, lobortis velit sed, tempus erat.
 \null
 
 \null
 
-Nunc a quam sed nunc blandit dignissim. Aliquam pharetra orci ex, eu dictum nibh aliquam ut. Maecenas quis accumsan felis, a fermentum purus. Vivamus dignissim odio eu est malesuada, a suscipit enim accumsan. Proin sit amet hendrerit velit. Praesent sem elit, finibus in ligula ut, eleifend vulputate orci. Praesent varius cursus purus. Ut enim lectus, blandit ut eros rutrum, aliquam varius ipsum. Vestibulum vel orci venenatis, ornare ligula vitae, egestas tortor. Vestibulum ut tincidunt nulla. Phasellus nec ligula id mi pulvinar tincidunt. Pellentesque non lobortis velit.
+Nunc a quam sed nunc blandit dignissim. Aliquam pharetra orci ex, eu dictum 
+nibh aliquam ut. Maecenas quis accumsan felis, a fermentum purus. Vivamus 
+dignissim odio eu est malesuada, a suscipit enim accumsan. Proin sit amet 
+hendrerit velit. Praesent sem elit, finibus in ligula ut, eleifend vulputate 
+orci. Praesent varius cursus purus. Ut enim lectus, blandit ut eros rutrum, 
+aliquam varius ipsum. Vestibulum vel orci venenatis, ornare ligula vitae, 
+egestas tortor. Vestibulum ut tincidunt nulla. Phasellus nec ligula id mi 
+pulvinar tincidunt. Pellentesque non lobortis velit.
 \null
 
 \null
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per 
+inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. 
+Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at 
+eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, 
+tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. 
+Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce 
+accumsan justo non lacinia rhoncus.
 \null
 
 \null
 
-Praesent tristique molestie nibh, eget dapibus ipsum consequat vitae. Duis at magna a felis mollis mollis a viverra libero. Nam lobortis gravida consequat. Praesent faucibus dui nulla, a vehicula elit convallis vel. Morbi nec nisl sed ante consectetur tincidunt sollicitudin sit amet elit. Morbi at sollicitudin ex. Nulla ullamcorper, lorem faucibus malesuada tristique, purus turpis sagittis augue, sit amet condimentum est quam quis quam. 
+Praesent tristique molestie nibh, eget dapibus ipsum consequat vitae. Duis at 
+magna a felis mollis mollis a viverra libero. Nam lobortis gravida consequat. 
+Praesent faucibus dui nulla, a vehicula elit convallis vel. Morbi nec nisl sed 
+ante consectetur tincidunt sollicitudin sit amet elit. Morbi at sollicitudin 
+ex. Nulla ullamcorper, lorem faucibus malesuada tristique, purus turpis 
+sagittis augue, sit amet condimentum est quam quis quam. 
 
 \newpage
 \null\vspace{\fill}
@@ -124,53 +170,575 @@ Praesent tristique molestie nibh, eget dapibus ipsum consequat vitae. Duis at ma
 \s*{\hfill Samenvatting \hfill}
 \addcontentsline{toc}{section}{Samenvatting}
 \begin{center}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis justo, id rhoncus libero. Sed tincidunt odio eget nulla faucibus facilisis. Vivamus egestas mauris sit amet vehicula laoreet. Aenean commodo pharetra turpis ac euismod. Integer tristique eu tortor at dignissim. Vestibulum libero purus, tincidunt sed mollis eu, dapibus eu tellus. Quisque dolor eros, cursus sed diam vel, fringilla lobortis mauris. Phasellus vel arcu ac nisl vestibulum venenatis pellentesque eget lacus. In mauris ex, convallis vitae neque venenatis, pretium mattis mi. Nulla laoreet egestas enim, porttitor fringilla enim vehicula vitae. Nunc rhoncus ligula risus, quis gravida quam dapibus eu. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis 
+justo, id rhoncus libero. Sed tincidunt odio eget nulla faucibus facilisis. 
+Vivamus egestas mauris sit amet vehicula laoreet. Aenean commodo pharetra 
+turpis ac euismod. Integer tristique eu tortor at dignissim. Vestibulum libero 
+purus, tincidunt sed mollis eu, dapibus eu tellus. Quisque dolor eros, cursus 
+sed diam vel, fringilla lobortis mauris. Phasellus vel arcu ac nisl vestibulum 
+venenatis pellentesque eget lacus. In mauris ex, convallis vitae neque 
+venenatis, pretium mattis mi. Nulla laoreet egestas enim, porttitor fringilla 
+enim vehicula vitae. Nunc rhoncus ligula risus, quis gravida quam dapibus eu. 
+Cum sociis natoque penatibus et magnis dis parturient montes, nascetur 
+ridiculus mus.
 \null
 
 \null
 
-Curabitur sollicitudin fringilla elementum. Vestibulum tincidunt volutpat ligula, a lobortis massa eleifend ac. Duis sit amet libero purus. Donec sed dictum nunc. Sed vel erat eu urna ullamcorper aliquam. Morbi vitae volutpat tellus. Quisque justo dolor, semper eu consectetur ut, mattis at nunc. Aliquam id tellus rhoncus, lobortis velit sed, tempus erat.
+Curabitur sollicitudin fringilla elementum. Vestibulum tincidunt volutpat 
+ligula, a lobortis massa eleifend ac. Duis sit amet libero purus. Donec sed 
+dictum nunc. Sed vel erat eu urna ullamcorper aliquam. Morbi vitae volutpat 
+tellus. Quisque justo dolor, semper eu consectetur ut, mattis at nunc. Aliquam 
+id tellus rhoncus, lobortis velit sed, tempus erat.
 \null
 
 \null
 
-Nunc a quam sed nunc blandit dignissim. Aliquam pharetra orci ex, eu dictum nibh aliquam ut. Maecenas quis accumsan felis, a fermentum purus. Vivamus dignissim odio eu est malesuada, a suscipit enim accumsan. Proin sit amet hendrerit velit. Praesent sem elit, finibus in ligula ut, eleifend vulputate orci. Praesent varius cursus purus. Ut enim lectus, blandit ut eros rutrum, aliquam varius ipsum. Vestibulum vel orci venenatis, ornare ligula vitae, egestas tortor. Vestibulum ut tincidunt nulla. Phasellus nec ligula id mi pulvinar tincidunt. Pellentesque non lobortis velit.
+Nunc a quam sed nunc blandit dignissim. Aliquam pharetra orci ex, eu dictum 
+nibh aliquam ut. Maecenas quis accumsan felis, a fermentum purus. Vivamus 
+dignissim odio eu est malesuada, a suscipit enim accumsan. Proin sit amet 
+hendrerit velit. Praesent sem elit, finibus in ligula ut, eleifend vulputate 
+orci. Praesent varius cursus purus. Ut enim lectus, blandit ut eros rutrum, 
+aliquam varius ipsum. Vestibulum vel orci venenatis, ornare ligula vitae, 
+egestas tortor. Vestibulum ut tincidunt nulla. Phasellus nec ligula id mi 
+pulvinar tincidunt. Pellentesque non lobortis velit.
 \null
 
 \null
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per 
+inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. 
+Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at 
+eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, 
+tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. 
+Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce 
+accumsan justo non lacinia rhoncus.
 \null
 
 \null
 
-Praesent tristique molestie nibh, eget dapibus ipsum consequat vitae. Duis at magna a felis mollis mollis a viverra libero. Nam lobortis gravida consequat. Praesent faucibus dui nulla, a vehicula elit convallis vel. Morbi nec nisl sed ante consectetur tincidunt sollicitudin sit amet elit. Morbi at sollicitudin ex. Nulla ullamcorper, lorem faucibus malesuada tristique, purus turpis sagittis augue, sit amet condimentum est quam quis quam. 
+Praesent tristique molestie nibh, eget dapibus ipsum consequat vitae. Duis at 
+magna a felis mollis mollis a viverra libero. Nam lobortis gravida consequat. 
+Praesent faucibus dui nulla, a vehicula elit convallis vel. Morbi nec nisl sed 
+ante consectetur tincidunt sollicitudin sit amet elit. Morbi at sollicitudin 
+ex. Nulla ullamcorper, lorem faucibus malesuada tristique, purus turpis 
+sagittis augue, sit amet condimentum est quam quis quam. 
 \end{center}
 \vspace{\fill}
 \newpage
 
 \s{Inleiding}
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per 
+inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. 
+Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at 
+eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, 
+tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. 
+Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce 
+accumsan justo non lacinia rhoncus.
 
-\s{Implementatie}
+\s{Theoretisch kader}
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+Het onderwerp van deze scriptie valt binnen de wetenschappelijke literatuur 
+onder het thema \it{event detection} (in sociale media), waarbij dit thema op zijn beurt weer is in te 
+passen binnen \it{Information Retrieval}. Volgens \citeauthor{manning2008introduction} is Information 
+Retrieval \it{“het vinden van ongestructureerd materiaal in grote 
+informatiecollecties, waarbij dit materiaal tegemoet komt aan een 
+informatiebehoefte”}. In event detection willen we binnen een grote collectie 
+ongestructureerde data (in ons systeem gaat het om tweets) 
+gebeurtenissen of \it{events} detecteren om mensen van events in de wereld op de 
+hoogte te kunnen houden (de informatiebehoefte). 
+\vl
+De oorsprong van event detection is het door DARPA\footnote{Defense Advanced Research Projects Agency, het instituut voor onderzoek naar geavanceerde technologie van het Amerikaanse Ministerie van Defensie.} gesponsorde TDT-programma, 
+oftewel \it{Topic Detection and Tracking} (\citealt{atefeh2013survey}). Het idee achter TDT was om 
+de grote hoeveelheid informatie afkomstig uit verschillende 
+nieuwsbronnen (in tekstvorm) op te delen in samenhangende nieuwsberichten, ontwikkelingen in 
+reeds bestaande \it{news events} te detecteren en nieuwe news events te 
+ontdekken ({\citealt{allan2002introduction}). Het TDT-programma bestond dus oorspronkelijk uit 
+respectivelijk drie taken: de \it{segmentatie}, \it{detectie} en \it{opsporing} van events 
+(\citealt{atefeh2013survey}). Het doel hiervan was om gebruikers inzicht te bieden in (de 
+ontwikkeling van) nieuwe en interessante gebeurtenissen die op de wereld 
+plaatsvinden ({\citealt{allan2002introduction}).
+\vl
+Een systeem dat in staat is om event detection uit te voeren moet dus volgens 
+TDT nieuwe of oudere, niet eerder ge\"identificeerde events kunnen ontdekken. 
+Event detection kan dus uit respectievelijk twee taken bestaan: \it{on-line} (dus 
+\it{real-time}) \it{detection} en \it{retrospective detection} (\citealt{yang1998study}). Het systeem dat 
+wordt beschreven in deze scriptie valt onder retrospective detection, 
+omdat we events in tweets uit het verleden willen ontdekken. Na enige aanpassing 
+zou het mogelijk zijn om ons systeem ook on-line detection te laten uitvoeren, door te 
+zorgen dat er constant input van de Twitter stream kan worden geanalyseerd. 
+Hieruit blijkt dus dat een systeem voor event detection zowel een on-line als een retrospective 
+component zou kunnen hebben.
+\vl
+\citeauthor{atefeh2013survey} geven aan dat het wat betreft de types events die kunnen worden 
+gedetecteerd kan gaan om \it{specified} of \it{unspecified} events. Wanneer een systeem 
+specified events detecteert, is het type event dat wordt gedetecteerd door het 
+systeem bekend, of gaat het om een gepland event (\citealt{atefeh2013survey}). Voorbeelden 
+uit de wetenschappelijke literatuur zijn systemen voor de detectie van 
+aardbevingen (\citealt{sakaki2010earthquake}), concerten (\citealt{benson2011event}) en festivals (\citealt{lee2010measuring}). 
+Wanneer het gaat om de detectie van unspecified events is het onbekend wat 
+de events die we willen detecteren precies inhouden, of in gaan houden. Dit is 
+het geval in bijvoorbeeld het laatste nieuws, denk aan een ongeval 
+of een onderwerp dat onverwachts veel aandacht krijgt. Voorbeelden uit de 
+wetenschappelijke literatuur zijn systemen voor de detectie van news events
+(\citealt{sankaranarayanan2009twitterstand}) of algemene (ook kleinschalige) events die in de wereld
+plaatsvinden (\citealt{walther2013geo} en \citealt{becker2011beyond}). Omdat we in ons systeem de laatstgenoemde
+algemene events willen detecteren, richten we ons op de detectie van unspecified
+events.
+\vl
+Onze aanpak van event detection vertoont overeenkomsten met de aanpak van 
+\citeauthor{walther2013geo}. We gebruiken hetzelfde achterliggende idee: wanneer tweets 
+binnen een bepaald tijdsinterval en op dezelfde locatie qua inhoud gerelateerd 
+zijn, zou het goed kunnen dat ze een event bespreken. \citeauthor{walther2013geo} gebruiken 
+daarnaast een aantal nuttige \it{features}\footnote{Eigenschappen van in ons geval
+tweets, waarin een algoritme patronen moet ontdekken om een model te kunnen maken van wat een event is.} in 
+hun event detection waarop onze features zijn geïnspireerd. Onze classificiatie 
+is daarentegen niet \it{binair} (wel/geen event), maar \it{categorisch}, omdat we algemene 
+events in categorieën (zoals \it{sport} of \it{bijeenkomst}) willen indelen. Daarnaast gebruiken we een andere 
+representatie voor de locatie (geen radius rondom tweets, maar \it{GeoHash}\footnote{zie 
+figuur \ref{geohash} en de uitleg daarboven}, en probeer ik events te verrijken met tweets zonder geo-informatie en 
+Chris Pool met named \it{entity recognition}.
 
-\s{Resultaten}
+\s{Methode: van data tot detective}\label{methode}
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+Nu volgt een beschrijving van de werking van ons systeem, van het verzamelen 
+van de data tot de uiteindelijke detectie, verrijking en visualisatie van 
+events. Het grootste gedeelte van deze processen wordt afgehandeld door een 
+serie programma's in de programmeertaal Python, die in dit hoofdstuk behandeld 
+zullen gaan worden. Wanneer er wordt verwezen naar een bestand (binnen een 
+repository), is dit bestand te vinden in de git-repository 
+\url{https://github.com/chrispool/Thesis/}. Als er geen uitleg over het gebruik 
+van een programma wordt gegeven, is dit gewoon uit te voeren als 
+\ttt{./programmaNaam.py}. Ik zal ten eerste beschrijven hoe we aan een van de 
+meest fundamentele delen van ons systeem zijn gekomen: de data.
 
-\s{Discussie/Evaluatie}
+\ss{Verzamelen van data}\label{dataverzamelen}
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+We willen ons systeem trainen op retrospective data, dus op tweets uit het 
+verleden. Onze tweet datasets zijn afkomstig van de Linuxserver \it{Karora}
+(\ttt{karora.let.rug.nl}) van de Rijksuniversiteit Groningen. Deze server 
+filtert constant 
+(grotendeels) Nederlandstalige tweets uit de Twitter stream. De gefilterde 
+tweets worden samen met hun metadata per uur in gecomprimeerde (\ttt{.out.gz}) 
+bestanden in de map \ttt{/net/corpora/twitter2/Tweets} (op Karora) geplaatst. 
+Met het volgende commando is het nu mogelijk om bijvoorbeeld de tweets 
+(inclusief alle 
+metadata) van 27 maart 2015, om 3 uur 's middags, te verkrijgen.
+\begin{lstlisting}
+$ zcat /net/corpora/twitter2/Tweets/2015/03/20150327:15.out.gz}
+\end{lstlisting}
+\ttt{zcat} is identiek aan \ttt{gunzip -c}, dit betekent dat het bestand met 
+tweets gedecomprimeerd wordt en de gedecomprimeerde data wordt weggeschreven 
+naar standard output.
+\vl
+Het programma \ttt{tweet2tab} (zie ook \ttt{scripts/tweet2tab} in de 
+repository) is in 
+staat om een aantal velden uit de zojuist verkregen gedecomprimeerde data te 
+filteren en te scheiden met tabs, zodat deze velden eenvoudig door programma's
+kunnen worden ingelezen. Voor ons systeem hebben we tweets nodig die beschikken 
+over de velden:
+
+\begin{bullets}
+\item \ttt{text}: de tekst van de tweet
+\item \ttt{coordinates}: breedte- en lengtegraad van de gebruiker toen de tweet 
+werd
+gepost
+\item \ttt{user}: de naam van de gebruiker
+\item \ttt{date}: datum en tijd
+\end{bullets}
+
+Om deze velden te verkrijgen kan het volgende commando worden gebruikt op de 
+output van het zojuist genoemde \ttt{zcat}-commando (op Karora):
+
+\begin{lstlisting}
+/net/corpora/twitter2/tools/tweet2tab -i text coordinates user date
+\end{lstlisting}
+
+Dit is in feite alle tweet data die we nodig hebben voor verdere verwerking. Er 
+is alleen nog een probleem: alle tweets worden meegenomen in het vorige 
+commando, niet alleen de tweets die voorzien zijn van een locatie! Het formaat 
+van een tweet zonder locatie is (\ttt{<tab>} is het scheidingsteken):
+
+\begin{lstlisting}
+Kan niet slapen.<tab><tab>HOIIKBENMERLE<tab>2015-05-05 01:03:20 CEST Tue 
+\end{lstlisting}
+
+Er is dus nog een derde stap nodig om alleen de tweets met locatie te 
+verkrijgen: alle tweets die een leeg locatieveld hebben moeten worden 
+overgeslagen. Dit kan zowel met een \ttt{grep}-commando als een klein script 
+geschreven in Python (zie \ttt{scripts/get\_geotweets} in de repository):
+
+\begin{bullets}
+\item \ttt{grep}: Gebruik de Perl reguliere expressie (optie -P) 
+\verb|^[^\t]+\t[^\t]+}|. Deze reguliere expressie is waar wanneer er aan het 
+begin van een regel 1 of meerdere keren een karakter staat dat geen tab is, 
+vervolgens 1 keer een karakter dat wel een tab is en daarna weer 1 of meerdere 
+keren een karakter dat geen tab is.
+\item \ttt{get\_geotweets.py}: splitst alle regels in standard input op tabs en 
+kijkt of 
+het tweede element niet leeg is. De tweet wordt geprint als dit het geval is.
+\end{bullets}
+
+Nu volgen twee voorbeeldcommando's die alle commando's combineren en laten zien 
+hoe alle tweets van 27 maart op Karora kunnen worden verzameld in het bestand 
+\ttt{march27.txt}.
+\vl
+Met \ttt{get\_geotweets.py}:
+\begin{lstlisting}
+$ zcat /net/corpora/twitter2/Tweets/2015/03/20150327???.out.gz | 
+/net/corpora/twitter2/tools/tweet2tab -i text coordinates user date | 
+python3 get_geotweets.py > march27.txt
+\end{lstlisting}
+
+Met \ttt{grep}:
+\begin{lstlisting}
+$ zcat /net/corpora/twitter2/Tweets/2015/03/20150327???.out.gz | 
+/net/corpora/twitter2/tools/tweet2tab -k text coordinates user date | 
+grep -P "^[^\t]+\t[^\t]+" > march27.txt
+\end{lstlisting}
+
+Het formaat van de verzamelde tweets is nu (\ttt{<tab>} is het scheidingsteken):
+\begin{lstlisting}
+Ik moet slapen	<tab>4.584649 51.854845<tab>tundraful<tab>2015-03-27 00:01:17 CET Fri 
+\end{lstlisting}
+\vspace*{-10pt}
+
+\ss{\ttt{EventCandidates} - Generatie van event candidates}\label{EventCandidates}
+
+Net als Walther, et al. willen we in ons systeem \it{event candidates} verzamelen: 
+groepen of clusters van tweets die een gebeurtenis zouden kunnen zijn. Hiervoor 
+groeperen we tweets die binnen een bepaalde tijd en plaats gepost zijn. We maken 
+dus eigenlijk gebruik van \it{spatiotemporal clustering}: \it{“a process of grouping 
+objects based on their spatial and temporal similarity”} (Kisilevich, et al.). 
+\vl
+Om event candidates te kunnen verzamelen is het van belang om eerst de 
+verzamelde tweets en hun metadata om te zetten in een geschikte datastructuur in 
+Python, de taak van de \ttt{Tweet\-Pre\-pro\-ces\-sor} (\ref{TweetPreprocessor}). Spatiotemporal clustering 
+vindt in ons systeem plaats in twee stappen: de \ttt{ClusterCreator} (3.2.2) maakt 
+clusters van tweets binnen een bepaalde locatie en een bepaald tijdsinterval, de 
+\ttt{ClusterMerger} (3.2.3) voegt sommige gevonden clusters samen en selecteert event 
+candidates.  Het idee achter de \ttt{ClusterCreator} en de \ttt{ClusterMerger} lijkt op het 
+idee achter de \ttt{ClusterCreator} en de \ttt{ClusterUpdater} van Walther, et al.
+\vl
+Het programma \ttt{EventCandidates} accepteert als argumenten een bestand met tweets 
+die gegenereerd zijn door een van de laatste twee commando's in sectie 3.1, en 
+de naam van de dataset met event candidates die het programma moet generen.
+
+\begin{lstlisting}
+use: ./eventCandidates.py tweetfile datasetname
+\end{lstlisting}
+\vspace*{-10pt}
+
+\sss{\ttt{TweetPreprocessor} – Tweets representeren in Python}\label{TweetPreprocessor}
+
+We hebben ervoor gekozen om tweets op te slaan als Python \ttt{dictionaries} (in een 
+\ttt{list}), waarbij de \ttt{keys} strings zijn en de \ttt{values} de verzamelde tweet (meta)data 
+in de vorm van strings. Een \it{tweet dictionary} ziet er nu dus zo uit:
+
+\begin{lstlisting}[language=Python]
+tweetDict = {"text" : "tekst van tweet", "lon" : "lengtegraad", "lat" : "breedtegraad", 
+"user" : "gebruikersnaam", "localTime" : "tijd in UTC"}
+\end{lstlisting}
+
+Het is belangrijk om in deze stap alvast na te denken over de volgende stap: hoe 
+gaan we tweets clusteren op locatie en tijd, en wat is daarbij een handige en 
+effici\"ente representatie van deze clusters? Hoe locatie- en tijdsdata in tweet 
+dictionaries worden opgeslagen beïnvloedt immers hoe we deze data kunnen 
+clusteren! 
+\vl
+De \bf{tijd} van tweets wordt standaard weergegeven als \ttt{jaar-maand-dagnummer 
+uur:minuut:se\-con\-de tijdszone dag}. Wanneer uit deze string \ttt{jaar-maand-dagnummer 
+uur:minuut:seconde} wordt gefilterd is het mogelijk tijd en datum met behulp van 
+de time- en datetime-module in \bf{\it{Unix Time}} om te zetten, oftewel het aantal 
+seconden dat is verstreken sinds 1 januari 1970. Hierdoor is het mogelijk om te 
+rekenen met seconden wanneer tijden van tweets met elkaar vergeleken moeten 
+worden, wat eenvoudiger is dan rekenen met een datum of tijd. Er kunnen direct 
+wiskundige operatoren worden toegepast op tijden in Unix Time (omdat het 
+integers zijn) en event candidates kunnen onder één enkel getal worden 
+opgeslagen. Bezwaar tegen deze aanpak zou betrekking kunnen hebben op het geval 
+wanneer tweets van twee verschillende events op dezelfde plaats op exact 
+dezelfde seconde gepost worden. Wanneer dit het geval is, overschrijft één van 
+beide events het andere event. Omdat dit waarschijnlijk niet vaak voor zal 
+komen, nemen we dit risico.
+\vl
+De \bf{locatie} van tweets wordt standaard weergegeven als een co\"ordinaat (lengte- en 
+breedtegraad). Een representatie van locatie-informatie waarin coordinaten 
+binnen hetzelfde gebied onder dezelfde identifier kunnen worden geplaatst is 
+\bf{\it{GeoHash}}. Dit systeem deelt de wereld als het ware op in “hokjes” in een raster, 
+waarbij een locatie dus niet meer bestaat uit een specifieke coordinaat, maar 
+uit een specifiek hokje (dat dus meerdere coordinaten omvat). Ieder hokje heeft 
+een alfanumerieke code, waarbij de precisie van het hokje hoger wordt (en 
+daarmee het betreffende gebied op aarde kleiner) wanneer de code langer is. 
+Figuur \ref{geohash} geeft weer hoe dit ongeveer werkt.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.6\textwidth]{geohash.png}
+    \caption{GeoHash, de wereld binnen een raster}
+  \label{geohash}
+\end{figure}
+
+We hebben gekozen om een GeoHash van precisie 7 (7 alfanumerieke karakters) te gebruiken. 
+Hierbij is de grootte van de hokjes in het raster kleiner of gelijk aan 173x173 
+meter\footnote{\url{http://www.movable-type.co.uk/scripts/geohash.html}}. We maken voor de omzetting van lengte- en breedtegraden naar GeoHashes 
+gebruik van de Python-module \ttt{python-geohash}\footnote{\url{https://code.google.com/p/python-geohash/} (zie ook \ttt{modules/geohash.py} in de repository)}.
+\vl
+Nu het probleem van locatie en tijd is opgelost, is het handig om te kijken naar 
+de \bf{tokenisatie} van de tekst van een tweet. Wanneer we bijvoorbeeld de tekst van 
+tweets met elkaar willen vergelijken komt het van pas om beschikking te hebben 
+over een lijst met tokens die in deze tweets voorkomen. Om tokens te kunnen 
+extraheren is het nodig om woordgrenzen te vinden, waarvoor we een simpele 
+tokenizer hebben geschreven die gebaseerd is op de volgende reguliere expressie: 
+\verb|[^a-zA-Z0-9#@]+|. Alle tekens in een string waarvoor niet geldt dat ze 1 of 
+meerdere keren \ttt{a-z}, \ttt{A-9}, \ttt{0-9}, \ttt{\#}, of \ttt{@} bevatten, worden vervangen door een spatie 
+(met behulp van \ttt{pattern.sub} in de {re}-module van Python). We hebben besloten om 
+vóór het toepassen van de reguliere expressie links uit tweets te verwijderen 
+(we willen puur te kijken naar de tekst). Wanneer er vervolgens een lijst van 
+woorden zonder links overblijft, filteren we stopwoorden uit tweets met behulp 
+van een lijst van stopwoorden die is samengesteld door de Nederlandse 
+stopwoorden van de \ttt{nltk}-module\footnote{\url{http://www.nltk.org/}} van Python te combineren met een lijst van 
+stopwoorden op internet (zie \ttt{corpus/stopwords.txt} in de repository).
+\vl
+Als we nu locatie, tijd en tokenisatie toevoegen aan het bestaande tweet 
+dictionary ziet deze er als volgt uit:
+
+\begin{lstlisting}[language=Python]
+tweetDict = {"text" : "tekst van tweet", "tokens" : "getokeniseerde tekst", 
+"lon" : "lengtegraad", "lat" : "breedtegraad", "user" : "gebruikersnaam", 
+"localTime" : "datum en tijd", "unixTime" : "Unix Time in seconden", 
+"geoHash" : "GeoHash behorend bij lengte- en breedtegraad van tweet"}
+\end{lstlisting}
+\vspace*{-10pt}
+
+\sss{\ttt{ClusterCreator} – Tweets clusteren op GeoHash en tijd}\label{ClusterCreator}
+
+We moeten nu op basis van de gegenereerde tweet dictionaries tijd- en 
+locatieclusters in een datastructuur zetten die we in het verdere systeem zullen 
+gaan gebruiken. Omdat locaties met tijden gebruikt kunnen worden als (redelijk) 
+unieke identifiers, zijn ze in combinatie geschikt als keys voor een dictionary. 
+Er kunnen op verschillende tijden gebeurtenissen plaatsvinden binnen dezelfde 
+locatie, dus is een logische en efficiënte representatie van clusters een 
+dictionary met als keys de locaties (GeoHash) en als values dictionaries met als 
+keys tijden (Unix Time) en als value een lijst van tweet dictionaries.  
+\vl
+Merk hierbij op dat lijsten van tweet dictionaries binnen onze gekozen 
+representatie clusters of \it{candidate clusters} zijn. Candidate clusters zijn 
+clusters van tweets die binnen een bepaalde GeoHash en een bepaald tijdsinterval 
+gepost zijn. Een candidate cluster kan blijven groeien in (tweet) omvang zolang 
+dit cluster “in leven is”, wat betekent dat er een nieuwe tweet wordt gepost 
+binnen de tijd van de laatste tweet op de locatie van het \ttt{cluster + 60 minuten}.
+\vl
+De structuur van een candidate cluster dictionary is dus als volgt:
+
+\begin{lstlisting}[language=Python]
+clusters = { "GeoHash 1" : { "Unix Time laatste_tweet" : [ tweetDict1, ...], ...}, ...}
+\end{lstlisting}
+\vspace*{-10pt}
+
+\sss{\ttt{ClusterMerger} – Clusters samenvoegen en event candidates selecteren}
+
+De clusters die we hebben verzameld vallen binnen een vrij klein gebied (kleiner 
+of gelijk aan 173x173 meter), wat niet voldoende is voor events waarvan de 
+deelnemers over grotere gebieden zijn verspreid. Daarom hebben we drie stappen 
+aan het clusterproces toegevoegd die zorgen dat clusters worden samengevoegd met 
+andere clusters in de buurt wanneer ze qua locatie (\bf{stap 1}), tijd (\bf{stap 2}) en 
+inhoud (\bf{stap 3}) overlappen. Dit werkt als volgt:
+
+\begin{bullets}
+\item \bf{Stap 1 - Overlap op locatie}: Omdat locaties bestaan uit GeoHashes of 
+“hokjes”, is het mogelijk om voor deze hokjes te bepalen wat de “buurhokjes” 
+zijn. Dit zijn de 8 hokjes die ieder hokje kunnen omringen (zie figuur \ref{geoneigh}). Buren 
+van een GeoHash zijn eenvoudig te vinden door de \ttt{neigbors}-methode van de 
+\ttt{geohash}-module te gebruiken: \ttt{geohash.neigbors(GeoHash)}.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.4\textwidth]{geoneigh.png}
+    \caption{Een GeoHash van precisie 5 met zijn 8 buren}
+  \label{geoneigh}
+\end{figure}
+
+Een goede vraag om nu te stellen is: wanneer stop je met het kijken naar buren? 
+Het is immers mogelijk om voor de buren van een GeoHash weer te kijken naar hun 
+buren, voor die buren weer, etcetera... We hebben ervoor gekozen om maar een 
+keer de buren van een GeoHash op te zoeken, omdat een gebied van zo'n 400x400 
+meter ons een goed formaat leek voor een gemiddeld event. 
+\vl
+We kunnen nu de clusters in alle buren (wanneer aanwezig) van een GeoHash 
+bijlangs gaan om te kijken of ze qua tijd en inhoud overlappen met een cluster 
+in de oorspronkelijke GeoHash.
+
+\item \bf{Stap 2 - Overlap in tijd}: We kijken of clusters in tijd overlappen door de 
+begin- en eindtijd van een cluster in de oorspronkelijke GeoHash met de begin- 
+en eindtijden van clusters in een naburige GeoHash te vergelijken. Figuur \ref{overlap} laat 
+zien hoe in slechts vier vergelijkingen te bepalen is of twee clusters in tijd 
+overlappen.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.65\textwidth]{overlap.png}
+    \caption{Tijdsoverlap van twee clusters in vier vergelijkingen}
+  \label{overlap}
+\end{figure}
+
+\item \textbf{Stap 3 – Overlap op inhoud}: Om te kunnen zien of twee clusters op inhoud 
+overlappen bepalen we per cluster de 10 woorden met de hoogste \it{tf-idf score}. De 
+tf-idf score wordt berekend door eerst te tellen hoe vaak een woord in een 
+cluster voorkomt. Deze uitkomst wordt vermenigvuldigd met het logaritme van de 
+totale hoeveelheid clusters gedeeld door hoe vaak een woord in alle clusters 
+voorkomt (\it{idf}, zie figuur \ref{idf}). idf is een compensatie voor woorden die vaak in 
+veel documenten voorkomen, denk hierbij aan stopwoorden.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.4\textwidth]{idf.png}
+    \caption{Berekening van idf voor een term t in documenten D}
+  \label{idf}
+\end{figure}
+
+\end{bullets}
+
+Omdat na deze stappen de clusters zijn samengevoegd kunnen we nu event 
+candidates gaan selecteren. Een samengevoegde cluster is in ons systeem een 
+event candidate wanneer er minstens \bf{twee tweets} in staan van minstens \bf{twee 
+gebruikers}. Deze event candidates worden door \ttt{EventCandidates} met behulp van de 
+\ttt{json}-module\footnote{Met \ttt{json} kunnen datastructuren in Python eenvoudig 
+in leesbaar formaat worden opgeslagen en later worden gebruikt door andere
+programma's, zie ook \url{https://docs.python.org/3/library/json.html}} opgeslagen
+als \ttt{data/datasetnaam/Event\-Can\-di\-da\-tes.json}.
+\vl
+Het verschil tussen candidate clusters en event candidates is dus dat:
+
+\begin{bullets}
+\item \it{candidate clusters} (\ttt{ClusterCreator}) alleen aan de voorwaarde moeten voldoen 
+dat ze tweets binnen dezelfde GeoHash en hetzelfde tijdsinterval bevatten
+\item \it{event candidates} (\ttt{ClusterMerger}) kunnen \bf{bestaan} uit (samengevoegde) candidate 
+clusters afkomstig uit een GeoHash \bf{en} zijn buren, waarbij een voorwaarde is dat 
+ze minstens twee tweets en twee gebruikers bevatten
+\end{bullets}
+
+\ss{Annotatie van event candidates}\label{annotatie}
+
+We willen events uit event candidates filteren met behulp van \it{supervised 
+learning}. Binnen supervised learning is een leeralgoritme in staat om patronen 
+vinden in gelabelde data, en op deze manier zelf in staat om labels aan nieuwe 
+data toe te kennen. Om een leeralgoritme voor supervised learning toe te kunnen 
+passen moeten we dus als eerste de door \ttt{EventCandidates} (\ref{EventCandidates}) gevonden event 
+candidates voorzien van een label. Dit gebeurt met behulp van de \ttt{Annotator}
+(\ref{Annotator}). We gebruiken de \ttt{Annotator} om allebei dezelfde dataset te annoteren, 
+zodat we objectiever labels toe kunnen kennen aan event candidates. De evaluatie 
+van onze annotatie en het opschonen van event candidates op basis van de 
+evaluatie vindt plaats in \ttt{AnnotationEvaluation} (\ref{AnnotationEvaluation}).
+
+\sss{\ttt{Annotator}: Interactieve annotatie van event candidates}\label{Annotator}
+
+De annotatie van event candidates is een interactief proces. Eerst moet er een 
+door EventCandidates gegenereerd dataset met event candidates worden ingelezen. 
+Daarna worden alle event candidates één voor één weergegeven en kan een 
+annotator voor iedere event candidate een label toekennen. We hebben besloten om 
+event candidates niet binair te labelen (event/geen event), maar om categorieën 
+toe te kennen aan events. Het gaat hierbij om de volgende 5 categorieën:
+
+\begin{enumerate}
+\item \ttt{geen\_event}
+\item \ttt{sport}
+\item \ttt{entertainment}
+\item \ttt{bijeenkomst}
+\item \ttt{incident}
+\item \ttt{anders}
+\end{enumerate}
+
+De datastructuur waarin annotaties worden opgeslagen lijkt erg veel op de 
+datastructuur waarin event candidates zijn opgeslagen. In feite zijn de lijsten 
+met tweet dictionaries vervangen door nummers van event types:
+
+\begin{lstlisting}[language=Python]
+clusters = {geoHash : { unix_time_laatste_tweet : categorie_nummer, ... }, ... }
+\end{lstlisting}
+
+De \ttt{Annotator} accepteert als argument de naam van een annotator, waardoor voor 
+een \ttt{json}-bestand met annotaties (dit bestand staat voor iedere annotator in 
+\ttt{data/datasetnaam/an\-no\-ta\-ti\-on\_Name-judge.json}) kan worden ge\"identificeerd wie de 
+annotator was, en annotaties op deze manier een unieke naam kunnen krijgen.
+
+\begin{lstlisting}
+use: Annotator.py Name-judge
+\end{lstlisting}
+\vspace*{-10pt}
+
+\sss{\ttt{AnnotationEvaluation}: Annotatie evalueren en event candidates opschonen}\label{AnnotationEvaluation}
+
+Omdat we event candidates door twee annotatoren laten annoteren, kunnen we voor 
+annotaties de \it{interannotator agreement} bepalen – de mate waarin twee annotatoren 
+het eens zijn – met behulp van de \it{Kappa-score}, zie figuur \ref{kappa}. Hierin staat $Pr(a)$ 
+voor de hoeveelheid gevallen waarin annotatoren het met elkaar eens zijn en 
+$Pr(e)$ voor de kans dat ze het eens zijn.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.25\textwidth]{kappa.png}
+    \caption{Berekening van de kappa-score}
+  \label{kappa}
+\end{figure}
+
+\ttt{AnnotationEvaluation} vraagt als input een dataset met annotaties van twee 
+annotatoren. Daarna bereiden we voor beide annotatoren twee lijsten voor, 
+waarvan in lijst 1 de labels 0 t/m 5 (kappa-score voor categorie\"en) staan en in 
+lijst 2 de labels 0 en 1 (kappa-score voor event of geen event). Deze lijsten 
+staan voor beide annotatoren in dezelfde volgorde, waarna door een eigen 
+implementatie van formule 2 de Kappa-score voor categorie\"en en event/geen event 
+wordt berekend, met daarbij een \it{confusion matrix} voor categorieën en de 
+\it{accuracy}. De laatste twee statistieken kunnen we enigszins vergelijken met de prestaties van 
+ons systeem (als mensen het al in een bepaald percentage van de gevallen niet 
+eens zijn, is het moeilijk om van een kunstmatig systeem te verwachten dat het 
+deze gevallen goed identificeert).
+\vl
+Wanneer we het in onze annotatie oneens waren over de categorie van een event 
+candidate wordt deze event candidate samen met de bijbehorende annotatie 
+weggegooid. De overblijvende event candidates en annotaties worden in 
+\ttt{data/datasetnaam/sanitizedEventCandidates.json} en 
+\ttt{data/datasetnaam/sanitizedAnnotation.json} opgeslagen. Dit is onze \it{ground truth}, 
+de \it{gold standard data} waaraan een leeralgoritme zich moet gaan aanpassen 
+(\citealt{kobielus2014}).
+
+\ss{Trainen van categorie en event classifiers}\label{train}
+
+Omdat we met behulp van de annotatieprogramma's van sectie \ref{annotatie} train- en 
+testdata kunnen annoteren, kunnen we na het annotatieproces \it{classifiers} gaan 
+trainen. Een \it{classifier} is in supervised learning een functie die met behulp van 
+een leeralgoritme automatisch klassen/labels toekent aan documenten, op basis 
+van training op geannoteerde data (\citealt{manning2008introduction}). Om classifiers te kunnen 
+genereren moeten we eerste een verzameling eigenschappen van event candidates 
+identificeren. Daarin moeten onze classifiers patronen kunnen vinden die kunnnen 
+helpen bij de identificatie van labels van (nieuwe) event candidates. Om deze 
+reden moet de verzameling eigenschappen waarop we de classifiers trainen dus 
+worden geëxtraheerd uit alle event candidates waarop we onze classifiers willen 
+toepassen. De extractie van deze eigenschappen of features is de taak van de 
+\ttt{FeatureSelector} (3.4.1). Het daadwerkelijke trainen, testen en evalueren van 
+classifiers gebaseerd op verschillende leeralgoritmen vindt plaats in de 
+\ttt{ClassifierCreator} (3.4.2).
+
+\s{Resultaten en discussie}
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per 
+inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. 
+Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at 
+eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, 
+tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. 
+Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce 
+accumsan justo non lacinia rhoncus.
 
 \s{Conclusie}
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per 
+inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. 
+Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at 
+eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, 
+tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. 
+Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce 
+accumsan justo non lacinia rhoncus.
 
-\s{Slot}
-
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce ut massa ac metus bibendum ullamcorper sed eu risus. Vestibulum iaculis nunc velit, ut aliquam turpis consequat non. Sed finibus at eros congue facilisis. Phasellus eget nunc fermentum, aliquet mauris nec, tristique dui. Fusce interdum imperdiet sem, eu tempor mauris tincidunt ut. Praesent ut tellus molestie, scelerisque quam ullamcorper, malesuada dui. Fusce accumsan justo non lacinia rhoncus.
-
+\bibliographystyle{apacite}
+\bibliography{bibliografie}
 \end{document}

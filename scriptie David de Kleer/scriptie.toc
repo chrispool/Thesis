@@ -2,8 +2,16 @@
 \contentsline {section}{Voorwoord}{2}{section*.1}
 \contentsline {section}{Samenvatting}{3}{section*.2}
 \contentsline {section}{\numberline {1}Inleiding}{4}{section.1}
-\contentsline {section}{\numberline {2}Implementatie}{4}{section.2}
-\contentsline {section}{\numberline {3}Resultaten}{4}{section.3}
-\contentsline {section}{\numberline {4}Discussie/Evaluatie}{4}{section.4}
-\contentsline {section}{\numberline {5}Conclusie}{4}{section.5}
-\contentsline {section}{\numberline {6}Slot}{4}{section.6}
+\contentsline {section}{\numberline {2}Theoretisch kader}{4}{section.2}
+\contentsline {section}{\numberline {3}Methode: van data tot detective}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Verzamelen van data}{5}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}\texttt {EventCandidates} - Generatie van event candidates}{6}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}\texttt {TweetPreprocessor} \IeC {\textendash } Tweets representeren in Python}{6}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}\texttt {ClusterCreator} \IeC {\textendash } Tweets clusteren op GeoHash en tijd}{8}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.3}\texttt {ClusterMerger} \IeC {\textendash } Clusters samenvoegen en event candidates selecteren}{8}{subsubsection.3.2.3}
+\contentsline {subsection}{\numberline {3.3}Annotatie van event candidates}{10}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}\texttt {Annotator}: Interactieve annotatie van event candidates}{10}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}\texttt {AnnotationEvaluation}: Annotatie evalueren en event candidates opschonen}{11}{subsubsection.3.3.2}
+\contentsline {subsection}{\numberline {3.4}Trainen van categorie en event classifiers}{11}{subsection.3.4}
+\contentsline {section}{\numberline {4}Resultaten en discussie}{11}{section.4}
+\contentsline {section}{\numberline {5}Conclusie}{12}{section.5}

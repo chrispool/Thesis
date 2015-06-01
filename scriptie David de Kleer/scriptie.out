@@ -1,8 +1,16 @@
 \BOOKMARK [1][-]{section*.1}{Voorwoord}{}% 1
 \BOOKMARK [1][-]{section*.2}{Samenvatting}{}% 2
 \BOOKMARK [1][-]{section.1}{Inleiding}{}% 3
-\BOOKMARK [1][-]{section.2}{Implementatie}{}% 4
-\BOOKMARK [1][-]{section.3}{Resultaten}{}% 5
-\BOOKMARK [1][-]{section.4}{Discussie/Evaluatie}{}% 6
-\BOOKMARK [1][-]{section.5}{Conclusie}{}% 7
-\BOOKMARK [1][-]{section.6}{Slot}{}% 8
+\BOOKMARK [1][-]{section.2}{Theoretisch kader}{}% 4
+\BOOKMARK [1][-]{section.3}{Methode: van data tot detective}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Verzamelen van data}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{EventCandidates - Generatie van event candidates}{section.3}% 7
+\BOOKMARK [3][-]{subsubsection.3.2.1}{TweetPreprocessor \205 Tweets representeren in Python}{subsection.3.2}% 8
+\BOOKMARK [3][-]{subsubsection.3.2.2}{ClusterCreator \205 Tweets clusteren op GeoHash en tijd}{subsection.3.2}% 9
+\BOOKMARK [3][-]{subsubsection.3.2.3}{ClusterMerger \205 Clusters samenvoegen en event candidates selecteren}{subsection.3.2}% 10
+\BOOKMARK [2][-]{subsection.3.3}{Annotatie van event candidates}{section.3}% 11
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Annotator: Interactieve annotatie van event candidates}{subsection.3.3}% 12
+\BOOKMARK [3][-]{subsubsection.3.3.2}{AnnotationEvaluation: Annotatie evalueren en event candidates opschonen}{subsection.3.3}% 13
+\BOOKMARK [2][-]{subsection.3.4}{Trainen van categorie en event classifiers}{section.3}% 14
+\BOOKMARK [1][-]{section.4}{Resultaten en discussie}{}% 15
+\BOOKMARK [1][-]{section.5}{Conclusie}{}% 16
