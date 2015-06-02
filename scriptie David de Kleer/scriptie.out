@@ -12,5 +12,11 @@
 \BOOKMARK [3][-]{subsubsection.3.3.1}{Annotator: Interactieve annotatie van event candidates}{subsection.3.3}% 12
 \BOOKMARK [3][-]{subsubsection.3.3.2}{AnnotationEvaluation: Annotatie evalueren en event candidates opschonen}{subsection.3.3}% 13
 \BOOKMARK [2][-]{subsection.3.4}{Trainen van categorie en event classifiers}{section.3}% 14
-\BOOKMARK [1][-]{section.4}{Resultaten en discussie}{}% 15
-\BOOKMARK [1][-]{section.5}{Conclusie}{}% 16
+\BOOKMARK [3][-]{subsubsection.3.4.1}{FeatureSelector: Extractie van features uit event candidates}{subsection.3.4}% 15
+\BOOKMARK [3][-]{subsubsection.3.4.2}{ClassifierCreator: Training en evaluatie van classifiers}{subsection.3.4}% 16
+\BOOKMARK [2][-]{subsection.3.5}{Detectie, verrijking en visualisatie van events}{section.3}% 17
+\BOOKMARK [3][-]{subsubsection.3.5.1}{EventDetective \205 detectie van events}{subsection.3.5}% 18
+\BOOKMARK [3][-]{subsubsection.3.5.2}{EventDetectiveChart \205 verrijking van events}{subsection.3.5}% 19
+\BOOKMARK [3][-]{subsubsection.3.5.3}{generateMarkers en vis/map/ \205 visualisatie van events}{subsection.3.5}% 20
+\BOOKMARK [1][-]{section.4}{Resultaten en discussie}{}% 21
+\BOOKMARK [1][-]{section.5}{Conclusie}{}% 22

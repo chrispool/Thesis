@@ -18,6 +18,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{apacite}
+\usepackage{upquote} % voor enkele quotes in listings
 \usepackage[dutch]{babel}
 \usepackage{graphicx}
 \usepackage[sort]{natbib}
@@ -59,9 +60,8 @@
                                               % (of subsubsubsection)
 \def\ttt{\texttt}                             % teletype text
 
-\newenvironment{bullets}                      % bullets in plaats van itemize 
-                                              % (ik vergeet
-{\begin{itemize}}                             % itemize altijd xD
+\newenvironment{bullets}                      % bullets in plaats van itemize
+{\begin{itemize}}                             % (ik vergeet itemize altijd xD)
 {\end{itemize}}
 
 \def\image{\includegraphics}                  % image makkelijker te onthouden
@@ -109,7 +109,7 @@
 % toevoegen van s(ection)* aan inhoudsopgave moet in de sectie zelf!
 \addcontentsline{toc}{section}{Voorwoord}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ut lobortis 
+\ttt{Lorem ipsum dolor sit amet}, consectetur adipiscing elit. Nullam ut lobortis 
 justo, id rhoncus libero. Sed tincidunt odio eget nulla faucibus facilisis. 
 Vivamus egestas mauris sit amet vehicula laoreet. Aenean commodo pharetra 
 turpis ac euismod. Integer tristique eu tortor at dignissim. Vestibulum libero 
@@ -262,7 +262,7 @@ plaatsvinden ({\citealt{allan2002introduction}).
 \vl
 Een systeem dat in staat is om event detection uit te voeren moet dus volgens 
 TDT nieuwe of oudere, niet eerder ge\"identificeerde events kunnen ontdekken. 
-Event detection kan dus uit respectievelijk twee taken bestaan: \it{on-line} (dus 
+Event detection kan voor TDT dus uit respectievelijk twee taken bestaan: \it{on-line} (dus 
 \it{real-time}) \it{detection} en \it{retrospective detection} (\citealt{yang1998study}). Het systeem dat 
 wordt beschreven in deze scriptie valt onder retrospective detection, 
 omdat we events in tweets uit het verleden willen ontdekken. Na enige aanpassing 
@@ -282,17 +282,32 @@ de events die we willen detecteren precies inhouden, of in gaan houden. Dit is
 het geval in bijvoorbeeld het laatste nieuws, denk aan een ongeval 
 of een onderwerp dat onverwachts veel aandacht krijgt. Voorbeelden uit de 
 wetenschappelijke literatuur zijn systemen voor de detectie van news events
-(\citealt{sankaranarayanan2009twitterstand}) of algemene (ook kleinschalige) events die in de wereld
+(\citealt{sankaranarayanan2009twitterstand}), incidenten (\citealt{abel2012twitcident}), of algemene (ook kleinschalige) events die in de wereld
 plaatsvinden (\citealt{walther2013geo} en \citealt{becker2011beyond}). Omdat we in ons systeem de laatstgenoemde
 algemene events willen detecteren, richten we ons op de detectie van unspecified
 events.
+\vl
+Volgens \citeauthor{atefeh2013survey} bestaat event detection uit drie hoofdprocessen: \it{``data 
+preprocessing, data representation and data organization or clustering''}. \it{Data 
+preprocessing} heeft alles te maken met de voorbereiding van ``rauwe'' data voordat 
+deze door een systeem kan worden gebruikt (denk aan het filteren van 
+stopwoorden, tokenisatie van tekst en het kiezen van goede datastructuren). 
+\it{Data representation} gaat om het selecteren van voor event detection nuttige 
+eigenschappen binnen de voorbereide data, bijvoorbeeld dat twee berichten binnen 
+een bepaald tijdsinterval zijn gepubliceerd en qua inhoud op elkaar lijken. \it{Data 
+organization} heeft betrekking op het daadwerkelijk indelen of organiseren van 
+berichten in events, waarbij een systeem een model (gebaseerd op regels of 
+\it{machine learning}\footnote{Binnen machine learning kunnen algoritmes worden 
+gebruikt om patronen in een datarepresentatie te bepalen en aan de hand daarvan
+data te classificeren}) gebruikt om de gekozen datarepresentatie te organiseren. 
+Deze eigenschappen kunnen soms vaker voorkomen: in ons systeem komt data organization
+bijvoorbeeld drie keer voor.
 \vl
 Onze aanpak van event detection vertoont overeenkomsten met de aanpak van 
 \citeauthor{walther2013geo}. We gebruiken hetzelfde achterliggende idee: wanneer tweets 
 binnen een bepaald tijdsinterval en op dezelfde locatie qua inhoud gerelateerd 
 zijn, zou het goed kunnen dat ze een event bespreken. \citeauthor{walther2013geo} gebruiken 
-daarnaast een aantal nuttige \it{features}\footnote{Eigenschappen van in ons geval
-tweets, waarin een algoritme patronen moet ontdekken om een model te kunnen maken van wat een event is.} in 
+daarnaast een aantal nuttige \it{features} (eigenschappen binnen de datarepresentatie) in 
 hun event detection waarop onze features zijn geïnspireerd. Onze classificiatie 
 is daarentegen niet \it{binair} (wel/geen event), maar \it{categorisch}, omdat we algemene 
 events in categorieën (zoals \it{sport} of \it{bijeenkomst}) willen indelen. Daarnaast gebruiken we een andere 
@@ -586,7 +601,7 @@ overlappen.
 overlappen bepalen we per cluster de 10 woorden met de hoogste \it{tf-idf score}. De 
 tf-idf score wordt berekend door eerst te tellen hoe vaak een woord in een 
 cluster voorkomt. Deze uitkomst wordt vermenigvuldigd met het logaritme van de 
-totale hoeveelheid clusters gedeeld door hoe vaak een woord in alle clusters 
+totale hoeveelheid clusters gedeeld door gedeeld door in hoeveel clusters een woord
 voorkomt (\it{idf}, zie figuur \ref{idf}). idf is een compensatie voor woorden die vaak in 
 veel documenten voorkomen, denk hierbij aan stopwoorden.
 
@@ -715,9 +730,289 @@ helpen bij de identificatie van labels van (nieuwe) event candidates. Om deze
 reden moet de verzameling eigenschappen waarop we de classifiers trainen dus 
 worden geëxtraheerd uit alle event candidates waarop we onze classifiers willen 
 toepassen. De extractie van deze eigenschappen of features is de taak van de 
-\ttt{FeatureSelector} (3.4.1). Het daadwerkelijke trainen, testen en evalueren van 
+\ttt{FeatureSelector} (\ref{FeatureSelector}). Het daadwerkelijke trainen, testen en evalueren van 
 classifiers gebaseerd op verschillende leeralgoritmen vindt plaats in de 
-\ttt{ClassifierCreator} (3.4.2).
+\ttt{ClassifierCreator} (\ref{ClassifierCreator}).
+
+\sss{\ttt{FeatureSelector}: Extractie van features uit event candidates}\label{FeatureSelector}
+
+Als we willen dat onze classifiers goed presteren, is het van belang om een 
+nuttige verzameling features van event candidates te bepalen. We hebben voor 
+onze experimenten 9 features ge\"identificeerd:
+
+\begin{bullets}
+\item \ttt{wordOverlapUser}: Berekent de overlap van woorden tussen gebruikers binnen een 
+event candidate, waarbij de score hoger wordt wanneer overlappende woorden een 
+hoge df-waarde hebben. In hoe meer documenten per gebruiker een woord staat, des 
+te hoger de score wordt, waarbij hashtags een bonus krijgen omdat ze een 
+gemeenschappelijk thema of onderwerp aan kunnen geven. De score wordt 
+vermenigvuldigd met de hoeveelheid gebruikers, gedeeld door de hoeveelheid 
+tweets binnen de event candidate, en afgerond op 0.5 zodat de kans op overlap 
+met andere event candidates groter is.
+\item \ttt{wordOverlapSimple}: Simpele score voor woordoverlap: de hoeveelheid woorden die 
+overlappen voor elke tweet binnen een event candidate (hashtags krijgen wederom 
+een bonus) wordt gedeeld door de hoeveelheid tweets binnen deze event candidate 
+en afgerond op 0.5.
+\item \ttt{wordOverlap}: Lijkt vrij veel op \ttt{wordOverlapSimple}, het verschil is dat de 
+overlaptellingen van woorden worden vermenigvuldigd met de idf-scores van deze 
+woorden binnen een event candidate.
+\item \ttt{location}: De gemiddelde locatie van de gebruikers in een event candidate wordt 
+bepaald door het (\it{Cartesisiaans}\footnote{Officieel moet er bij berekening van 
+een gemiddelde coördinaat rekening worden gehouden met de
+kromming van het aardoppervlak, anders ontstaat er een afwijking in het 
+uiteindelijke coördinaat. Omdat het bij een event candidate gaat om een klein 
+vlak op aarde zal de afwijking van dit coördinaat waarschijnlijk niet zo groot 
+zijn, dus berekenen we gewoon het “standaard” gemiddelde van de coördinaten (net 
+alsof ze punten in een Cartesiaans coördinatenstelsel zijn: een platte aarde!)}) 
+gemiddelde van de lengte- en breedtegraden van de tweets binnen de event 
+candidate te berekenen. Dit coördinaat wordt omgezet naar een GeoHash van 
+precisie 6 met behulp van de \ttt{geohash}-module: \ttt{geohash.encode(breedtegraad, 
+lengtegraad, precisie)}.
+\item \ttt{uniqueUsers}: De hoeveelheid unieke gebruikers binnen een event candidate.
+\item \ttt{nTweets}: De hoeveelheid tweets binnen een event candidate.
+\item \ttt{wordFeatures}: Binaire features die aangeven of de top n woorden met de hoogste 
+tf-idf score wel of niet in een event candidate voorkomen. Deze word features 
+gebruiken we om een classifier voor event candidate categorieën (\it{category 
+classifier}) te trainen.
+\item \ttt{category}: In welke categorie een getrainde category classifier een event 
+candidate indeelt.
+\end{bullets}
+
+Wanneer een programma de features uit een event candidate wil extraheren, is het 
+mogelijk om \ttt{getFeatures(candidate, features)} te gebruiken. \ttt{candidate} is hierin 
+een event candidate, \ttt{features} is een lijst van de zojuist genoemde features in 
+de vorm van strings. Deze methode levert een dictionary op, met als keys de namen 
+van features en als values de waarden van deze features voor een event 
+candidate.
+
+\sss{\ttt{ClassifierCreator}: Training en evaluatie van classifiers}\label{ClassifierCreator}
+
+Om classifiers te kunnen trainen moeten eerst de geannoteerde data en 
+bijbehorende event candidates worden ingelezen in een geschikte representatie. 
+Welke data precies wordt ingelezen hangt af van de \it{modus} waarin de 
+ClassifierCreator wordt gebruikt. Er zijn twee modi, namelijk \bf{DEVTEST} en \bf{TEST}:
+
+\begin{bullets}
+\item \bf{DEVTEST modus}: De input bestaat uit één enkel geannoteerd dataset. Deze 
+dataset wordt opgesplitst door een willekeurige \it{80/20 split} (80\% traindata en 
+20\% testdata) toe te passen. De DEVTEST modus doorloopt tien iteraties waarin 
+classifiers worden getraind en geëvalueerd op de testdata.
+
+\item \bf{TEST modus}: De input bestaat uit twee geannoteerde datasets, namelijk een 
+train- en een testdataset. Deze modus doorloopt één iteratie, waarbij 
+classifiers getraind kunnen worden op de gehele dataset van de DEVTEST modus en 
+getest op een nieuwe dataset dat ons programma nooit eerder heeft “gezien”. 
+Features kunnen voor een DEVTEST namelijk helemaal worden geoptimaliseerd, 
+waarbij de keuze van features misschien helemaal niet geschikt is voor 
+toepassing op een nieuwe dataset: dit komt naar voren in de “echte” test. Dit 
+geeft een eerlijkere indicatie van de prestaties van het systeem.
+\end{bullets}
+
+De train- en testdata worden in het programma opgeslagen als een lijst van 
+tuples, waarbij de tuples bestaan uit een event candidate (herinnering: dit was 
+een lijst van tweet dictionaries) en het bijbehorende label afkomstig van de 
+annotaties. De structuur is dus als volgt:
+
+\begin{lstlisting}[language=Python]
+dataset = [ ([{"text" : "tweet text", ...}, ...], "bijbehorend label"), ...]
+\end{lstlisting}
+
+Nu de train- en testdata in een geschikte representatie zijn opgeslagen, kunnen 
+we classifiers trainen. We hebben ervoor gekozen om gebruik te maken van twee 
+classifiers in ons systeem:
+
+\begin{bullets}
+\item \ttt{categoryClassifier}: De eerste classifier die het systeem traint probeert op 
+basis van woorden in een event candidate de categorie (zie \ref{Annotator} voor de labels) 
+van een event candidate te achterhalen. Voor de training extraheren we eerst de 
+\ttt{wordFeatures} (\ref{FeatureSelector}) uit de train- en testdata. Features hebben de volgende 
+structuur:
+
+\begin{lstlisting}[language=Python]
+features = [( {"wordFeatures": ["word1" : False, ...]}, "bijbehorend label"), ...]
+\end{lstlisting}
+
+De \ttt{nltk}-module kan classifiers trainen met dergelijke lijsten van \ttt{tuples} met 
+\ttt{feature dictionaries} en labels. De classifier die we voor categorieen gebruiken 
+is een \it{Naive Bayes} classifier van de python-module \ttt{scikit-learn}\footnote{\url{http://scikit-learn.org}}, die kan worden 
+getraind met behulp van een eenvoudige wrapper van de \ttt{nltk}-module: 
+\ttt{SklearnClassifier}. Deze wrapper kan worden gebruikt om \ttt{scikit-learn} classifiers 
+te trainen die data in hetzelfde formaat als \ttt{nltk}-classifiers accepteren. De 
+reden dat we niet de standaard Naive Bayes implementatie van \ttt{nltk} gebruiken is 
+dat de implementatie van \ttt{scikit-learn} sneller blijkt te werken en vrijwel 
+identieke resultaten oplevert.
+\item \ttt{eventClassifier}: Voor de tweede classifier extraheren we wederom features 
+(\ref{FeatureSelector}) uit event candidates, die op dezelfde manier worden opgeslagen als voor 
+de eerste classifier. De \ttt{eventClassifier} gebruikt de door de \ttt{categoryClassifier} 
+toegekende labels met daarbij andere features (zoals \ttt{wordOverlapUser} of 
+\ttt{location}) om nogmaals te bepalen onder welke categorie een event thuishoort. We 
+hebben besloten om voor deze classifier te kiezen voor de Naive Bayes classifier 
+van \ttt{nltk}.
+\end{bullets}
+
+De \ttt{categoryClassifier} is te zien als een soort basisclassifier die alleen \it{word 
+features} gebruikt om event candidates in categorie\"en in te delen. De 
+\ttt{eventClassifier} past \it{finetuning} toe op de categorielabels van de 
+\ttt{categoryClassifier}, met behulp van features die meer betrekking hebben op de 
+\it{metadata} van event candidates. We willen hiermee een conceptuele scheiding aangeven.
+\vl
+Wanneer beide classifiers zijn getraind berekent het programma een aantal 
+statistieken voor de evaluatie. Deze statistieken omvatten de \it{precision}, \it{recall}, 
+\it{f-score}, \it{accuracy} en \it{confusion matrix} voor iedere training van de classifiers 
+(iteratie). De statistieken worden met behulp van de \ttt{metrics} van \ttt{nltk} bepaald en 
+een aantal daarvan met behulp van de \ttt{tabulate}-module (\ttt{zie modules/tabulate.py}) 
+in een tabel gezet.
+\vl
+Als het programma in de TEST modus wordt uitgevoerd worden de (laatst) getrainde 
+classifiers opgeslagen als binaire bestanden in 
+\ttt{data/datasetnaam/eventClassifier.bin} en \ttt{data/da\-ta\-set\-naam/categoryClassifier.bin}, 
+met behulp van de pickle-module\footnote{\url{https://docs.python.org/3/library/pickle.html}}.
+\ttt{pickle} is vergelijkbaar met ttt{json}, alleen worden bestanden in binair in plaats van
+leesbaar formaat opgeslagen. Het doel van beide modules is gelijkwaardig, namelijk
+\it{serialisatie}\footnote{datastructuren of objecten opslaan zodat ze later weer kunnen 
+worden opgebouwd}.
+
+\ss{Detectie, verrijking en visualisatie van events}
+
+De in \ref{train} getrainde classifiers kunnen nu worden toegepast om events te 
+detecteren op basis van nieuwe event candidates. Dit is het proces dat het aan 
+ons systeem gelijknamige (hoofd)programma \ttt{EventDetective} (3.5.1) uitvoert. De 
+verrijking van events door middel van tweets zonder geo-informatie vindt plaats 
+in \ttt{EventDetectiveChart} (3.5.2). De bestanden in de map \ttt{/vis/map} (3.5.3) handelen 
+de visualisatie van events af. \ttt{EventDetective} en \ttt{EventDetectiveChart} hebben een 
+visualisatiecomponent (\ttt{generateMarkers}, zie 3.5.3) omdat ze de input voor de 
+visualisatie moeten geven.
+
+\sss{\ttt{EventDetective} – detectie van events}\label{EventDetective}
+
+De naam \ttt{EventDetective} is afkomstig van event detection, het centrale thema van 
+het onderzoek onderliggend aan het onderwerp van deze scriptie, en een soort 
+\it{``detective-metafoor''}. Een detective (\it{classifier}) krijgt vaak een grote 
+hoeveelheid bewijsmateriaal (\it{event candidates met geëxtraheerde features}) waaruit 
+hij moet bepalen welke bewijzen leiden naar de juiste conclusie, de oorzaak van 
+het misdrijf (\it{of een event candidate wel of geen event is}).
+\vl
+Om events te kunnen detecteren vereist de \ttt{EventDetective} als input eerst een 
+dataset met classifiers en vervolgens een dataset met nieuwe event candidates, 
+waarin events moeten worden gedetecteerd.  
+Vervolgens wordt de FeatureSelector (\ref{FeatureSelector}) toegepast om features voor de \ttt{category-} 
+en de \ttt{eventClassifier} uit de nieuwe event candidates te halen. Beide 
+classifiers bepalen daarna een categorielabel voor de event candidates. Wanneer 
+ze onder een categorie vallen die niet gelijk is aan \ttt{geen\_event} worden ze aan 
+een lijst met events toegevoegd.
+
+\sss{\ttt{EventDetectiveChart} – verrijking van events}\label{EventDetectiveChart}
+
+EventDetectiveChart erft over van EventDetective en bevat qua detectie van 
+events dezelfde funcionaliteit. De extra stap die in dit programma plaatsvindt 
+is de toevoeging van tweets zonder geo-informatie. Omdat er niet meer zoveel 
+tijd was voor een uitgebreide extra componenent heb ik voor deze stap een \it{Proof 
+of Concept} of versimpeld prototype ontwikkeld.
+\vl
+Het is van belang dat tweets zonder geo-informatie vóór volledige processing met 
+behulp van \it{heuristieken} kunnen worden gescand op overeenkomst met een event, 
+omdat we hiervoor \it{alle} Nederlandse tweets in een periode moeten scannen. Op \bf{de 
+dag} 5 mei 2015 zijn er bijvoorbeeld 760000 tweets gepost (100 MB), waarbij de 
+hoeveelheid tweets over \bf{de hele maand} maart ter vergelijking ongeveer 570000 
+tweets (79 MB) bedraagt. Wanneer een maand aan tweets zonder geo-informatie moet 
+worden gescand, gaat het al gauw om ongeveer 10 GB(!) aan tweets.
+\vl
+Een schaalbare benadering van dit probleem is om eerst de belangrijkste woorden 
+uit een event te verzamelen. Onder belangrijke woorden versta ik simpelweg de n 
+woorden met de hoogste \it{df-waarden} (in hoeveel tweets een woord voorkomt) binnen 
+een event, waarbij termen met hashtags (belangrijk) dubbel worden geteld. Vervolgens
+kunnen steeds alle tweets binnen het tijdsinterval van een event worden ingelezen 
+(bijvoorbeeld de tweets van die dag of van de uren waarin het event nog ``in leven
+was''). In een echte toepassing is het van belang dat ingelezen tweets na 
+verwerking steeds worden uitgelezen om te voorkomen dat het geheugen helemaal volloopt. 
+\vl
+Een eenvoudige heuristiek die aangeeft dat tweets verder moeten worden verwerkt 
+is wanneer ze twee van de top drie woorden uit de lijst van woorden met de 
+hoogste df-waarden van een event bevatten. Een woord uit die top drie mag in een 
+tweet voorkomen als \ttt{"\ woord"} (let op de spatie!), \ttt{"@woord"} of \ttt{"\#woord"}. Op deze 
+manier is het zelfs niet eens nodig om de velden van de tweet te splitsen om ze 
+apart in te kunnen lezen. De velden van tweets die genoeg woorden bevatten om 
+verder te worden verwerkt worden wel gesplitst en in een tweet dictionary gezet. 
+Hiervoor was een aanpassing aan de \ttt{TweetPreprocessor} (\ref{TweetPreprocessor}) nodig, omdat de 
+tweet data zonder geo-informatie het veld voor locatie mist. Eventuele stappen 
+die hierna nog plaats zouden kunnen vinden is het berekenen van een \it{similarity 
+score} met de tweets in een event, maar hier ben ik verder niet meer aan 
+toegekomen.
+
+\sss{\ttt{generateMarkers} en \ttt{vis/map/} – visualisatie van events}
+
+Om events te visualiseren en de resultaten van ons systeem te kunnen presenteren 
+hebben we gebruik gemaakt van \it{markers} met een \ttt{InfoWindow} op een \it{Google Map}, zie 
+figuur \ref{mapmarker}.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.5\textwidth]{mapmarker.png}
+    \caption{Voorbeeld van een Google Map Marker met een InfoWindow}
+  \label{mapmarker}
+\end{figure}
+
+De inhoud van het \ttt{InfoWindow} bestaat uit \it{de tweets die horen bij een event, 
+samen met hun metadata (tijd, gebruiker, locatie)}, in chronologische volgorde. 
+Om de coordinaten van een marker te bepalen maken we net als voor de 
+\ttt{location}-feature (\ref{FeatureSelector}) gebruik van het \it{Cartesiaans gemiddelde van de lengte- 
+en breedtegraden} van de tweets binnen een cluster. We hebben de \it{categorie} van 
+een event nodig omdat we voor elke categorie een uniek icoon willen gebruiken, 
+zodat gelijk aan een marker te identificeren is om welk type event het gaat (zie 
+figuur \ref{markers}). Al deze data wordt door de \ttt{EventDetective} (\ref{EventDetective}) in \ttt{generateMarkers} 
+opgeslagen als een variabele in een Javascriptbestand (\ttt{vis/map/js/markers.js}) 
+met het formaat:
+
+% eigenlijk niet Python, maar dit werkt ook prima
+\begin{lstlisting}[language=Python]
+locations = [['tweet tekst en metadata', gemiddeldeBreedtegraad, gemiddeldeLengtegraad, 'categorielabel'], ...] 
+\end{lstlisting}
+
+Elke lijst binnen deze \ttt{locations}-lijst is een event dat met behulp van 
+\ttt{vis/map/map.html} kan worden gevisualiseerd. De werking van \ttt{vis/map/map.html} is 
+vrij vanzelfsprekend, er wordt een Google Map gemaakt met behulp van de Google 
+Maps API en markers (met iconen per categorie) worden gegenereerd aan de hand 
+van de lijsten in locations.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.6\textwidth]{markers.png}
+    \caption{Marker iconen: entertainment, incident, bijeenkomst, anders, sport}
+  \label{markers}
+\end{figure}
+
+Naast de standaard visualisatie heb ik nog een extra visualisatie-optie aan het systeem 
+toegevoegd: een Google map met staafdiagram, met behulp van het \it{jQuery framework} van 
+\ttt{High\-Charts}\footnote{\url{http://www.highcharts.com/products/highcharts}}. 
+Het idee hierachter is als volgt: wanneer events worden verrijkt 
+met tweets zonder geo-informatie, en er wordt bijvoorbeeld een belangrijke 
+voetbalwedstrijd gevonden is het makkelijk om overspoeld te raken door de 
+hoeveelheid tweets bij een dergelijk event. Daarom leek het me handig om tweets te 
+groeperen per twee minuten\footnote{Dit is mogelijk door de Unix Time van tweets 
+te delen door 120, af te ronden en weer vermenigvuldigen met 120. Deze afgeronde 
+Unix Times kunnen als keys in een dictionary met als values lijsten van tweet 
+dictionaries worden gebruikt om tweets op twee minuten te groeperen.} en in een 
+staafdiagram te laten zien, waarbij maximaal 10 tweets uit die periode worden 
+weergegeven wanneer de muiscursor op een staaf wordt gezet. Op deze manier is 
+het eenvoudig om trends in grote hoeveelheden tweets te ontdekken.
+\vl
+\ttt{EventDetectiveChart} genereert met behulp van zijn (\it{overridden}) \ttt{generateMarkers} 
+dezelfde data als de \ttt{EventDetective}, met daarbij als toevoeging de \it{x- en 
+y-coordinaten} ($x$ is de tijd, $y$ de hoeveelheid tweets binnen twee minuten) van 
+het staafdiagram, de \it{titel van het event} in de vorm van de drie woorden met de 
+hoogste df-waarde en de \it{ondertitel} in de vorm van de dag waarop het event 
+plaatsvond. De in \ref{EventDetectiveChart} gevonden tweets zonder locatie-informatie worden 
+\bf{dikgedrukt} weergegeven in de \ttt{InfoWindow}s bij markers op de kaart. De structuur 
+van de eerder genoemde \ttt{locations}-lijst is afgezien van de toevoeging van deze 
+data precies hetzelfde.
+\vl
+De visualisatie van events met hun bijbehorende staafdiagrammen vindt plaats in 
+\ttt{vis/map/\\map\_chart.html}. Het verschil met \ttt{vis/map/chart.html} is dat de pagina nu 
+in twee delen wordt verdeeld, waarbij aan de linkerkant de Google Map met 
+markers wordt weergegeven en aan de rechterkant de \ttt{HighCharts}-grafiek die hoort 
+bij een aangeklikte marker.
+
+
 
 \s{Resultaten en discussie}
 
