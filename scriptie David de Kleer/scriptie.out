@@ -18,5 +18,8 @@
 \BOOKMARK [3][-]{subsubsection.3.5.1}{EventDetective \205 detectie van events}{subsection.3.5}% 18
 \BOOKMARK [3][-]{subsubsection.3.5.2}{EventDetectiveChart \205 verrijking van events}{subsection.3.5}% 19
 \BOOKMARK [3][-]{subsubsection.3.5.3}{generateMarkers en vis/map/ \205 visualisatie van events}{subsection.3.5}% 20
-\BOOKMARK [1][-]{section.4}{Resultaten en discussie}{}% 21
-\BOOKMARK [1][-]{section.5}{Conclusie}{}% 22
+\BOOKMARK [1][-]{section.4}{Experimenten en evaluatie}{}% 21
+\BOOKMARK [2][-]{subsection.4.1}{Data verzamelen event candidates genereren}{section.4}% 22
+\BOOKMARK [2][-]{subsection.4.2}{Het annotatieproces}{section.4}% 23
+\BOOKMARK [2][-]{subsection.4.3}{Event detection: Trainen en testen van classifiers}{section.4}% 24
+\BOOKMARK [1][-]{section.5}{Conclusie}{}% 25

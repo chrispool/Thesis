@@ -8,16 +8,19 @@
 \contentsline {subsection}{\numberline {3.2}\texttt {EventCandidates} - Generatie van event candidates}{6}{subsection.3.2}
 \contentsline {subsubsection}{\numberline {3.2.1}\texttt {TweetPreprocessor} \IeC {\textendash } Tweets representeren in Python}{7}{subsubsection.3.2.1}
 \contentsline {subsubsection}{\numberline {3.2.2}\texttt {ClusterCreator} \IeC {\textendash } Tweets clusteren op GeoHash en tijd}{8}{subsubsection.3.2.2}
-\contentsline {subsubsection}{\numberline {3.2.3}\texttt {ClusterMerger} \IeC {\textendash } Clusters samenvoegen en event candidates selecteren}{9}{subsubsection.3.2.3}
+\contentsline {subsubsection}{\numberline {3.2.3}\texttt {ClusterMerger} \IeC {\textendash } Clusters samenvoegen en event candidates selecteren}{8}{subsubsection.3.2.3}
 \contentsline {subsection}{\numberline {3.3}Annotatie van event candidates}{10}{subsection.3.3}
-\contentsline {subsubsection}{\numberline {3.3.1}\texttt {Annotator}: Interactieve annotatie van event candidates}{11}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.1}\texttt {Annotator}: Interactieve annotatie van event candidates}{10}{subsubsection.3.3.1}
 \contentsline {subsubsection}{\numberline {3.3.2}\texttt {AnnotationEvaluation}: Annotatie evalueren en event candidates opschonen}{11}{subsubsection.3.3.2}
-\contentsline {subsection}{\numberline {3.4}Trainen van categorie en event classifiers}{12}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.4}Trainen van categorie en event classifiers}{11}{subsection.3.4}
 \contentsline {subsubsection}{\numberline {3.4.1}\texttt {FeatureSelector}: Extractie van features uit event candidates}{12}{subsubsection.3.4.1}
-\contentsline {subsubsection}{\numberline {3.4.2}\texttt {ClassifierCreator}: Training en evaluatie van classifiers}{13}{subsubsection.3.4.2}
+\contentsline {subsubsection}{\numberline {3.4.2}\texttt {ClassifierCreator}: Training en evaluatie van classifiers}{12}{subsubsection.3.4.2}
 \contentsline {subsection}{\numberline {3.5}Detectie, verrijking en visualisatie van events}{14}{subsection.3.5}
 \contentsline {subsubsection}{\numberline {3.5.1}\texttt {EventDetective} \IeC {\textendash } detectie van events}{14}{subsubsection.3.5.1}
 \contentsline {subsubsection}{\numberline {3.5.2}\texttt {EventDetectiveChart} \IeC {\textendash } verrijking van events}{14}{subsubsection.3.5.2}
 \contentsline {subsubsection}{\numberline {3.5.3}\texttt {generateMarkers} en \texttt {vis/map/} \IeC {\textendash } visualisatie van events}{15}{subsubsection.3.5.3}
-\contentsline {section}{\numberline {4}Resultaten en discussie}{16}{section.4}
-\contentsline {section}{\numberline {5}Conclusie}{16}{section.5}
+\contentsline {section}{\numberline {4}Experimenten en evaluatie}{16}{section.4}
+\contentsline {subsection}{\numberline {4.1}Data verzamelen event candidates genereren}{16}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Het annotatieproces}{16}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Event detection: Trainen en testen van classifiers}{17}{subsection.4.3}
+\contentsline {section}{\numberline {5}Conclusie}{17}{section.5}
