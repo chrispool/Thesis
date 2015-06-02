@@ -1,0 +1,11 @@
+\begin{thebibliography}{1}
+
+\bibitem{geohash-module}
+Hiroaki Kawai.
+\newblock Geohash - fast, accurate python geohashing library.
+
+\bibitem{NTLK-website}
+NLTK.
+\newblock Natural language toolkit.
+
+\end{thebibliography}

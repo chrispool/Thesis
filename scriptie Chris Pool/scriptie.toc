@@ -1,22 +1,26 @@
-\contentsline {section}{\numberline {1}Introduction}{4}{section.1}
-\contentsline {section}{\numberline {2}Related literature}{4}{section.2}
-\contentsline {section}{\numberline {3}Method}{5}{section.3}
-\contentsline {subsection}{\numberline {3.1}Clustering}{5}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}NLTK}{5}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Classification}{6}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Named Entity Reconinigzion}{6}{subsection.3.4}
-\contentsline {section}{\numberline {4}Experiment and Evaluation}{7}{section.4}
-\contentsline {subsection}{\numberline {4.1}System architecture}{7}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Data collection}{8}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Annotation}{8}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}Creating Event Candidates}{8}{subsection.4.4}
-\contentsline {subsection}{\numberline {4.5}Event detection}{9}{subsection.4.5}
-\contentsline {subsubsection}{\numberline {4.5.1}Feature selection}{10}{subsubsection.4.5.1}
-\contentsline {subsubsection}{\numberline {4.5.2}Results event detection}{11}{subsubsection.4.5.2}
-\contentsline {subsection}{\numberline {4.6}Named Entity Recognition}{12}{subsection.4.6}
-\contentsline {subsubsection}{\numberline {4.6.1}Data collection}{12}{subsubsection.4.6.1}
-\contentsline {subsubsection}{\numberline {4.6.2}Training}{12}{subsubsection.4.6.2}
-\contentsline {subsection}{\numberline {4.7}Results}{13}{subsection.4.7}
-\contentsline {subsubsection}{\numberline {4.7.1}NER}{13}{subsubsection.4.7.1}
-\contentsline {section}{\numberline {5}Conclusion and discussion}{14}{section.5}
-\contentsline {section}{\numberline {6}Appendix}{15}{section.6}
+\contentsline {section}{\numberline {1}Introduction}{6}{section.1}
+\contentsline {section}{\numberline {2}Related literature}{7}{section.2}
+\contentsline {section}{\numberline {3}Method}{8}{section.3}
+\contentsline {subsection}{\numberline {3.1}Clustering}{8}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}NLTK}{9}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Classification}{9}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Named Entity Reconinigzion}{11}{subsection.3.4}
+\contentsline {section}{\numberline {4}Experiment and Evaluation}{12}{section.4}
+\contentsline {subsection}{\numberline {4.1}System architecture}{12}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Data collection}{12}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Creating Event Candidates}{13}{subsection.4.3}
+\contentsline {paragraph}{TweetPreprocessor.py}{13}{subsection.4.3}
+\contentsline {paragraph}{ClusterCreator.py}{13}{lstnumber.-2.8}
+\contentsline {paragraph}{ClusterMerger.py}{14}{lstnumber.-4.21}
+\contentsline {paragraph}{EventCandidates.py}{15}{lstnumber.-5.19}
+\contentsline {subsection}{\numberline {4.4}Annotation}{15}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Event detection}{16}{subsection.4.5}
+\contentsline {subsubsection}{\numberline {4.5.1}Feature selection}{17}{subsubsection.4.5.1}
+\contentsline {subsubsection}{\numberline {4.5.2}Results event detection}{18}{subsubsection.4.5.2}
+\contentsline {subsection}{\numberline {4.6}Named Entity Recognition}{19}{subsection.4.6}
+\contentsline {subsubsection}{\numberline {4.6.1}Data collection}{19}{subsubsection.4.6.1}
+\contentsline {subsubsection}{\numberline {4.6.2}Training}{19}{subsubsection.4.6.2}
+\contentsline {subsection}{\numberline {4.7}Results}{20}{subsection.4.7}
+\contentsline {subsubsection}{\numberline {4.7.1}NER}{20}{subsubsection.4.7.1}
+\contentsline {section}{\numberline {5}Conclusion and discussion}{21}{section.5}
+\contentsline {section}{\numberline {6}Appendix}{22}{section.6}
