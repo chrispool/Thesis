@@ -69,6 +69,7 @@ BCOR5mm, % Binding correction
 %----------------------------------------------------------------------------------------
 %	Title page
 %----------------------------------------------------------------------------------------
+\begin{titlepage}
 
 \maketitle % Print the title/author/date block
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
@@ -76,36 +77,50 @@ BCOR5mm, % Binding correction
    \includegraphics[width=4.5in]{voorkant.png} 
    \label{fig:gui}
 \end{figure}
-
+\thispagestyle{empty}
+\end{titlepage}
 
 %----------------------------------------------------------------------------------------
 %	Preface
 %----------------------------------------------------------------------------------------
 \newpage
 \section*{Preface} % This section will not appear in the table of contents due to the star (\section*)
-
-
-
+This thesis is written as part of my Bachelor Information sciences at the University of Groningen that is part of my one year pre-master.  
+\vl
+I would like to thank my supervisors Malvina Nissim and Johan Bos for helping me during my research. I would also like to thank Rob van der Goot, PhD at the University of Groningen who helped me with creating a Named Entity Classifier.
+\vl
+Most of the programming is done together with David de Kleer, I would especially like to thank him for the pleasant collaboration.
+\vl
+\textit{Chris Pool}
 
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LISTS OF FIGURES AND TABLES
 %----------------------------------------------------------------------------------------
 \newpage
-\setcounter{tocdepth}{2} % Set the depth of the table of contents to show sections and subsections only
+\setcounter{tocdepth}{3} % Set the depth of the table of contents to show sections and subsections only
 \tableofcontents % Print the table of contents
 
 \listoffigures % Print the list of figures
 
 \listoftables % Print the list of tables
 
+\lstlistoflistings
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
 \newpage
 \section*{Abstract} % This section will not appear in the table of contents due to the star (\section*)
-
-\lipsum[1] % Dummy text
-
+With the growing number of people using social media services like Twitter and the enormous amount of data available makes it interesting to use this data as a source of information about events that are taking place at a certain time and location. The goal of my research is to develop a system using tweets with geo-information that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams and recognize the named entities in those events. Events that take place on a larger scale like elections and extreme weather conditions are ignored. 
+\vl
+The first step is collecting the data. I used the tweets available on the Karora server\footnote{Linux server available for students and staff of the University of Groningen}. This server stores all Dutch tweets and can be easily accessed. I downloaded all tweets with geo-information from May 2015 to use in developing the system. Tweets from the last two weeks in April 2015 are used to test the system.
+\vl
+The second step is to create clusters of these tweets, these clusters are potential \textit{event candidates}. We create these clusters by location and time. To make these \textit{event candidates} a algorithm is used called GeoHash, this  algorithm converts latitude and longitude coordinates into a hash, this hash indicates an area where the location is in. The more digits used for this hash, the smaller the area, and thus more accurate. For clustering by time I use the UNIX timestamp, this timestamp is a system that represents time in seconds since 1 January 1970.
+\vl
+The next step is to annotate the data, I and David de Kleer annotated the same datasets making it possible to calculate the inter-annotater agreement. With this annotated data we trained a Naive Bayes classifier. Using the development dataset as training data and the test dataset as test data this resulted in an accuracy of 84\%, with a upperbound of 86\& and baseline of 46\%\footnote{Baseline: Every event candidate is regarded as no event which is the largest category} we see this as a good result.
+\vl
+With the classified \textit{event candidates} using the categories: No event, Meeting, Entertainment, Incident, Sport and Other I try to detect named entities within those events. The Stanford Named Entity Recognizer was trained using automatically annotated tweets. The results are reasonable, but it shows the difficulty in detected entities in such short and noisy pieces of text.
+\vl
+The events, Including the named entities, are plotted on a Google map making it easy to check out the events.
 
 %----------------------------------------------------------------------------------------
 
@@ -118,26 +133,26 @@ BCOR5mm, % Binding correction
 \section{Introduction}
 
 %waarom
-With the growing number of people using social media services like Twitter and the enormous amount of data available makes it interesting to use as a source of information about events that are taking place at a certain time and location. This real-time information in combination with user sentiment can be very informative, for example to provide news items with more information about the opinion of people present.
-
-%wat
-This thesis describes a method of finding local events based on tweets with geo-information and categorize them into 5 categories (No-event, Sport, Entertainment, Meeting and Incident) and to find relevant information within those tweets about the location and people involved. Local events are events that take place in a certain radius (\begin{math}Z\end{math}) within a certain time interval (\begin{math}X\end{math}). For this research \begin{math}z= 0.5km , x= 5 hours\end{math}.
-
-My research question is: Is it possible to detect local events from the Twitter stream that take place in the Netherlands based on Tweets with geo-information, to see if you can detect what type of events take place and who the important people/organizations or topics are to make an interactive map of these events.
-
-%hoe
-You can find in the first chapter the discussion of existing research. In the second chapter I describe the techniques that i use for my research and in the final chapter my experiment and results.
-
+With the growing number of people using social media services like Twitter and the enormous amount of data available makes it interesting to use this data as a source of information about events that are taking place at a certain time and location. About 3\% of all tweets contains geo-information\footnote{Based on my own data, see chapter 2 for literature research}. That looks like a small portion but because of the enormous amount of tweets available this gives great insights about the opinion of users at a certain location and can be very informative, for example to provide news items with more information about the opinion of people. 
+\vl
+This thesis describes a method of finding local events based on tweets with geo-information and categorizes them into 5 categories (No-event, Sport, Entertainment, Meeting and Incident). Also a method to find relevant information within those events about the location and people involved is described. Local events are events that take place in a certain radius (\begin{math}Z\end{math}) within a certain time interval (\begin{math}X\end{math}). For this research \begin{math}z= 0.5km , x= 2 hours\end{math}. 
+\vl
+My research question is: Is it possible to detect local events in the Twitter stream that take place in the Netherlands based on Tweets with geo-information, to see if you can detect what type of events take place and who the important people/organizations or topics are to make an interactive map of these events.
+\vl
+This thesis is devided in four chapters. The first chapter, related literature, describes the research that is done about this subject. The second chapter is the method section where I describe the methods I use for my experiment. In the third chapter i describe my experiment, all code I am referring to can also be found in my GitHub repository \footnote{http://www.github.com/chrispool/thesis}. In the final chapter you can find my conclusion.
 %----------------------------------------------------------------------------------------
 %	Related literature
 %----------------------------------------------------------------------------------------
 \newpage
 \section{Related literature}
-Walter and Kaisser[1] describe in their paper Geo-spatial event detection in the Twitter stream a way to recognize geo-spatial events. They focus on small events that take place in a small area like fires and traffic jams. It differs from my research because I want to focus on locations where events of different sizes can take place but the features they use can be useful for my research. Especially how they calculate the clusterscore (cluster of tweets from a region) can be useful. Unfortunately they do not describe how they make clusters of locations.
 
-Amineh Amini et al.: Density-Based Data Streams Clustering Survey[2] is a paper about different clustering techniques and is interesting to see which ones I can use to make clusters of the locations and the events. DBSCAN is one of the density-based clustering algorithms I maybe can use.  DBSCAN (Density-Based Spatial Clustering of Applications with Noise) is developed for clustering large spatial databases with noise, based on connected regions with high density. The density of each point is defined based on the number of points close to that particular point called the point's neighborhood.
-The dense neighborhood is defined based on two user-specified parameters: the radius (of the neighborhood, and the number of the objects in the neighborhood 
-
+%twitter
+Since the launch of Twitter in 2006 the popularity of this micro-blogging service is increasing rapidly (\citealt{statista}). With 302 million users sending about 500 million tweets per day this is a huge source of information. 
+In the Netherlands the number of active users was 2.8 million in 2015 according to the research conducted by (\citealt{newcom}). The Netherlands still one of the countries with the highest twitter accounts to population ratio (\citealt{dawson}).
+\vl
+Using geo-information from tweets has been done in several researches, for example \citeauthor{sakaki2010earthquake} used geo-information of tweets to detect earthquakes by analyzing all tweets that contain certain keywords like \textit{earthquake} or \textit{shaking}. In literature this method of event detection is often referred to as spatio-temporal event detection. In the research by \cite{walther2013geo} they describe the process of detecting events in the Twitter stream, this research was the inspiration of my research and builds on several techniques they discuss. 
+\vl
+Current NER tools were designed to process large texts and perform poorly with tweets due to the noisy and short style of tweets, also the limit of 140 characters makes it difficult to recognize entities because the lack of context (\citealt{ner2011} and \citealt{liu2011ner}). A key feature for named entity recognition is the use of capital letters, unfortunately the use of capital letters in tweets if often less reliably and make it hard to recognize entities. According to \citeauthor{ner2011} the Stanford NER, a state of the art classifier, focusses to much on capital letters making it perform poorly with tweets.
 
 
 
@@ -146,22 +161,20 @@ The dense neighborhood is defined based on two user-specified parameters: the ra
 %----------------------------------------------------------------------------------------
 \newpage
 \section{Method}
-In this chapter the used methods for the experiment are described. 
+The goal of my research is to develop a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams and recognize the named entities in those events. Events that take place on a larger scale like elections and extreme weather conditions are ignored. This chapter describes the methods used in my system and the motivation why I chose these methods.
 
 \subsection{Clustering}
-The first task is to cluster the tweets based on their location and the time the tweets are published. There are several approaches in location clustering that can be used as discussed in the previous chapter. Because the aim of the research was to make something that could work in real-time it was necessary to look for an approach that was quick. GeoHash is is a system invented by Gustavo Niemeyer \cite{geohash} that converts latitude and longitude coordinates into a \textit{geoHash}. The hash represents an area where in the location is present. The more digits used indicates a smaller area, and thus a higher precision. If two locations share the same prefix it indicates (not always) that the locations are nearby. 
-
+The first task is to cluster the tweets by location and time. There are several approaches in location clustering that can be used as discussed in the previous chapter. I wanted to use a clustering algorithm that potentially could work in real-time so it was necessary to look for an approach that was quick and accurate. GeoHash is is a system invented by Gustavo Niemeyer\footnote{http://en.wikipedia.org/wiki/Geohash} that converts latitude and longitude coordinates into a \textit{geoHash}. The hash represents an area where in the location is present. The length of the hash indicates the precision, more digits used indicates a smaller area, and thus a higher precision. If two locations share the same prefix it indicates (not always) that the locations are nearby. 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=4.5in]{geohash.jpg} 
    \caption{Geohash}
    \label{fig:geohash}
 \end{figure}
-Figure 1 illustrates how geoHash works. The first digit indicates which halve of the earth the area is on. The second digit divides that area in four areas and that continues resulting in the table below that show the different lengths of the \textit{geoHash} and the accuracy of that length. Because the dimensions of the area are different at each latitude the values represent the worst-case scenario at the equator.
-
+\hfill \break Figure 1 illustrates how geoHash works. The first digit indicates which halve of the earth the area is on. The second digit divides that area in four areas and that continues resulting in table 1 that show the different lengths of the \textit{geoHash} and the accuracy of that length. Because the dimensions of the area are different at each latitude the values represent the worst-case scenario at the equator.
 
 \begin{table}[h]
-\caption[Geohash Precision]{Geohash Precision \cite{elasticsearch} }
+\caption[Geohash Precision]{Geohash Precision}
 \begin{tabular}{|c|c|}
 \hline
 GeoHash length & Area width x height   \\ \hline
@@ -179,11 +192,10 @@ GeoHash length & Area width x height   \\ \hline
 12             & 3.7cm x 1.9cm         \\ \hline
 \end{tabular}
 \end{table}
-
 \newpage
-There are several implementations of this algorithm in Python. I used the GeoHash library written in 2009 by Hiroaki Kawai\cite{geohash-module} because of the good documentation and excellent features. The function to calculate the \textit{geoHash} of a location requires the desired accuracy, latitude and longitude of that location and returns the \textit{geoHash} for that location. 
+There are several implementations of this algorithm in Python. I used the GeoHash library written in 2009 by Hiroaki Kawai\footnote{https://github.com/hkwi/python-geohash} because of the good documentation and excellent features. The function to calculate the \textit{geoHash} of a location requires the desired accuracy, latitude and longitude of that location and returns the \textit{geoHash} for that location as can be seen in code example 1. \vl
 
-\begin{python}
+\begin{lstlisting}[language=Python, caption=Example of geoHash encoding]
 lon = 52.348
 lat = 6.2342
 accuracy = 7
@@ -191,20 +203,13 @@ accuracy = 7
 hash = geohash.encode(lon,lat,accuracy)
 >>> print(hash)
 u1k3y1c
-\end{python}
+\end{lstlisting}
+The library also provides functions to calculate the neighboring geoHashes. This is useful because in a grid clustering approach border cases can occur.  This functionality can be used to merge those border cases as described in 4.3 Creating eventCandidates. \vl
+For clustering timestamps the UNIX timestamp can be used. This is a system to represent time using the number of seconds since 1 January 1970. Python has build-in functions to deal with UNIX timestamps. The tweets are sorted on timestamp making it easy to make clusters of time series. The implementation of these functions can be found in chapter 3.3 Event Detection.
 
-The library also provides functions to calculate the neighboring geoHashes, this is useful because in a grid clustering approach border cases can occur.  This  functionality can be used to merge those border cases. \newline
-
-For clustering based on time the UNIX timestamp can be used. That is a system to represent time using the number of seconds since 1 January 1970. Python has build-in functions to deal with UNIX timestamps. The tweets are sorted on timestamp making it easy to make clusters of time series.
-
-
-\subsection{NLTK}
-Python has a lot of functions to use while doing NLP tasks but for more advanced tasks it is not powerful enough. Therefore I have chosen to use the Natural Language Tookit (NLTK)\cite{NTLK-website}%link naar bron.
-NLTK has a lot of modules that can be used for a wide range of NLP tasks. It is also really easy to use and well documented. Another advantage is that NLTK is modular, meaning you can use small portions of the toolkit that work together with other libraries. 
-
-
+\newpage
 \subsection{Classification}
-After forming the potential events (\textit{Event Candidates}) the Event Candidates have to be classified as a specific event category or not an event.  NLTK provides excellent documentation and functions for classifying. \newline  NLTK enables you to use several classifiers:
+After forming the potential events (\textit{eventCandidates}) the Event Candidates have to be classified as a specific event category or not an event.  NLTK provides excellent documentation and functions for classifying. \newline  NLTK enables you to use several classifiers:
 
 \begin{itemize}[noitemsep]
 \item ConditionalExponentialClassifier
@@ -214,28 +219,22 @@ After forming the potential events (\textit{Event Candidates}) the Event Candida
 \item WekaClassifier
 \item SVMClassifier (using scikit-learn)
 \end{itemize}
+In my experiment I have chosen to use the MaxEntClassifier, NaiveBayes and a SVM classifier. Using NLTK it was easy to train the classifiers. Each classifier requires the same format of train data making it easy to compare the results of the different classifiers.
 
-In my experiment I have chosen to use the MaxEntClassifier, NaiveBayes and a SVM classifier. Training the different classifiers is easily done with NLTK. The format of the training file is the same for the different classifiers. Also functions to calculate accuracy, precision and recall are standard NLTK functions. I tested these three classifiers because their different approaches.
-
-\newpage
-\subsection{Named Entity Reconinigzion}
-For finding the important persons, organizations and locations I want to use Named Entity Reconinigzion(NER). NER is the proces of labeling data with corresponding categories like person, organization or location. For example:
+\subsection{Named Entity Recognition}
+For finding the important persons, organizations and locations I want to use Named Entity Recognition(NER). NER is the proces of labeling data with corresponding categories like person, organization or location. For example:
 
 \begin {quote}
-Klaar voor \textbf{Ajax(organization)} - \textbf{NAC(organization)} @\textbf{Amsterdam(location)} @\textbf{ArenAPoort(location) }in \textbf{Amsterdam(location)} Zuidoost, \textbf{Noord-Holland(location)}
+Na 14 minuten is het raak! 1-0 voor \textbf{Woudrichem(Organization)}. Doelpunt \textbf{Roy van Sonsbeek(Person)}
 \end{quote}
 
-Current NER tools were designed to process large texts and perform poorly with tweets due to the noisy and short style of tweets. One of the most used NER tools is Stanford NER. This Java implementation is also known as CRFClassifier. The software comes with 3 trained classifiers that perform particularly well for the three classes persons, organizations and locations. Some experiments are done with using labeled tweets as train data but mostly in English.
-
-Because there is no classifier trained with Dutch tweets I want to train my own classifier that I describe in detail in the next chapter.
-
-
+As discussed in chapter 2 the standard NER classifiers perform poorly with tweets, therefore I decided to train my own classifier to detect named entities. With help from Rob van der Goot, PhD student at the University of Groningen I created an automatically annotated dataset. In the next chapter this process is explained in detail.
 %----------------------------------------------------------------------------------------
 %	Experiment and Evaluation
 %----------------------------------------------------------------------------------------
 \newpage
 \section{Experiment and Evaluation}
-For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams and recognize the named entities in the tweets.  Events that take place on a larger scale like elections and extreme weather conditions are ignored. The input for this system are tweets that have coordinates that we cluster based on proximity and time. These clusters of tweets are potential events (\textit{eventCandidates}) that the system classifies using the following categories: \newline
+For my experiment I worked together with David de Kleer in collecting the data and building the Python modules. The goal was to build a system that can detect events that take place at a specific location, for example concerts, football matches, fires and traffic jams and recognize the named entities in those events.  Events that take place on a larger scale like elections and extreme weather conditions are ignored. The input for this system are tweets that have coordinates that we cluster by location and time. These clusters of tweets are potential events (\textit{eventCandidates}) that the system classifies using the following categories: \newline
 
 \begin{itemize}[noitemsep] % [noitemsep] removes whitespace between the items for a compact look
 \item \textbf{Other (OTH)} All events that are other then the following categories 
@@ -246,46 +245,44 @@ For my experiment I worked together with David de Kleer in collecting the data a
 \end{itemize}
 
 
-
 \subsection{System architecture}
-Python was used for this system because of the excellent tools available to build a machine learning system. NLTK and Scikit learn are used for classifying eventCandidates. GitHub was used as file repository. The system consists of five different modules each containing multiple scripts. In this section the main properties of the modules are described. In the following sections the modules are explained in detail.
+Python was used as the programming language for this system because of the excellent tools available to build a machine learning system. NLTK and Scikit learn are used for classifying \textit{eventCandidates}. GitHub\footnote{http://www.gitHub.com/chrispool/thesis} was used as file repository. The system consists of five different modules each containing multiple scripts. In this section the main properties of the modules are described. In the following sections the modules are explained in detail.
 
 \begin{description}
 
 \item[EventCandidates] 
-This is the module that generates the EventCandidates by clustering the tweets on geoHash and timestamp and saves the result as a JSON file.  
+The module that generates the \textit{eventCandidates} by clustering the tweets by \textit{geoHash} and timestamp and saves the result as a JSON file.  
 
 \item[Annotater] 
-This module makes it possible for multiple judges to annotate the data created with the EventCandidates module. 
+The module that makes it possible for multiple judges to annotate the data created with the EventCandidates module and calculates the inter annotator agreement. 
 
 \item[ClassifierCreator] 
-This module creates/trains the classifier(s) using the annotated eventCandidates.
+The module that creates/trains the classifier(s) using the annotated \textit{eventCandidates.}
 
 \item[EventDetective] 
-This module uses the trained classifier to classify eventCandidates and generate markers for the Google map.
+The module that uses the trained classifier to classify eventCandidates and generate markers for the Google map.
 
 \item[NER]
-This module uses the NER classifier that is explained in the Named Entity Recognition section of this chapter.  
+The module that uses the NER classifier that is explained in the Named Entity Recognition section of this chapter.  
 
 \end{description}
 
+\newpage
 \subsection{Data collection}
-For the experiment tweets are used that have coordinates. Using a simple Grep\footnote{Command-line utility for searching plain-text data sets for lines matching a regular expression } command it was possible to retrieve only tweets with this information from the Karora machine\footnote{karora.rug.nl} . For our system we need two datasets. One for training and developing our system that we call \textit{devset} and one for testing our final system that we call \textit{testset}
-The first dataset consisted of Dutch tweets from March 2015 that we have downloaded from the Karora machine. In total there where 566.549 tweets with geo information. That is about 3\% of the total number of tweets published in that month. The trainset consists of 165.848 tweets from the second half of April 2015. The tweets are stored in a tab seperated text file with the fields tweet, latitude, longitude, username and timestamp
+For the experiment tweets are used that have geo-information. Using a simple Grep\footnote{Command-line utility for searching plain-text data sets for lines matching a regular expression } command it was possible to retrieve only tweets with this information from the Linux server \textit{Karora} \footnote{karora.let.rug.nl} that is available for students and staff of the University of Groningen. For our system we retrieved two datasets. One for training and developing our system that we call \textit{devset} and one for testing our final system that we call \textit{testset}
+The \textit{devset} consists of Dutch tweets posted in March 2015 that we have downloaded from \textit{Karora}. In total there where 566.549 tweets with geo-information. That is about 3\% of the total number of tweets published in that month. The \textit{testset} consists of 165.848 tweets published in the second half of April 2015. The tweets are stored in a tab separated text file with the fields tweet, latitude, longitude, username and timestamp
+
 \begin{quote}
 @jokiecroky heb ze terug gebracht naar de plek waar ik ze heb opgehaald... volgende dag werd ik gebeld dat ze samen een mooi huisje hadden	5.106646 52.06455	TonyJuniorLive	2015-04-15 00:01:37 CEST Wed
 \end{quote}
 
 
-
-
-
 \subsection{Creating Event Candidates}
 For clustering the tweets and preparing them for annotation and classification we use the EventCandidates module. This module processes all tweets from a given dataset and generates the \textit{eventCandidates} using four scripts. TweetPreprocessor.py, ClusterCreator.py, ClusterMerger.py and EventCandidates.py
 
-\paragraph{TweetPreprocessor.py}reads the file with tweets and tokenizes the tweets and removes the frequent occuring words from the tokens, convert the timestring to a Unix timestamp and converts the latitude en longitude in a geoHash. The output of this script is a list of dictionaries where each dictionary is a tweet with the following structure:
+\paragraph{TweetPreprocessor.py}reads the text file with tweets and tokenizes the tweets and removes the frequent occurring words from the tokens, convert the time string to a Unix timestamp and converts the latitude en longitude into a geoHash. The output of this script is a list of dictionaries where each dictionary is a tweet with the structure as found in code example 2.
 
-\begin{python}
+\begin{lstlisting}[language=Python, caption=Tweet dictionary]
 {'text': '@MrFrankLegs Daar gaan we. Een vicieuze cirkel ??', 
 'lat': 52.964285, 
 'geoHash': 'u1kjqcc', 
@@ -294,16 +291,14 @@ For clustering the tweets and preparing them for annotation and classification w
 'tokens': ['@mrfranklegs', 'gaan', 'vicieuze', 'cirkel'], 
 'lon': 5.923195, 
 'unixTime': 1429865656}
-\end{python}
-
-\paragraph{ClusterCreator.py} iterates over all tweets and adds the tweet to a new dictionary that uses two keys. The first is the geoHash and the second is the timestamp of the last added tweet.
-
-\begin{python}
-clusters['u15y07t']['1429604082'] = [...list of tweets that have the same geoHash and have the same timestamp +/- 60 minutes...]
-\end{python}
-
-We create this dictionary using the following function:
-\begin{python}
+\end{lstlisting}
+\newpage
+\paragraph{ClusterCreator.py} iterates over all tweet dictionaries and adds the tweet dictionary to a list in the new two-dimensional dictionary as seen in code example 3. With as first key the geoHash and the second key the Unix timestamp of the last added tweet. 
+\begin{lstlisting}[language=Python, caption=Result dictionary]
+clusters['u15y07t']['1429604082'] = [...list of tweet dictionaries...]
+\end{lstlisting}
+With this two-dimensional dictionary we can check for each tweet if we can add it to an existing \textit{eventCandidate} or that we have to create a new \textit{eventCandidate}. The code in code example 4 shows the clustering of the tweets.
+\begin{lstlisting}[language=Python, caption=Cluster tweets]
 
 #setting used for this experiment
 self.MINUTES = 60
@@ -325,24 +320,25 @@ def __createClusters(self):
                 self.clusters[geoHash][tweetTime] = self.clusters[geoHash][foundTime]
                 # Remove old key
                 del self.clusters[geoHash][foundTime] 
-\end{python}
-The output of this script is a dictionary with all clusters with the structure described in script x.
+\end{lstlisting}
 
-\paragraph{ClusterMerger.py} checks if there are clusters that are neighbors and refer to the same event like the example below where a lot of tweets are published in the same time period but in two different geoHashes.
+The output of this script is a dictionary with all clusters with the structure described in code example 3.
+\newpage
+\paragraph{ClusterMerger.py} checks if there are clusters that overlap in time and subject and are neighboring areas. For example the situation in figure 2, the tweets (red dots) are all about the same event and published in the same period but they are in two different areas.  
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{bordercase.png} 
-   \caption{Geohash border case(Red dots are tweets)}
+   \includegraphics[width=3in]{bordercase.png} 
+   \caption{Geohash border case}
    \label{Geohash border case}
 \end{figure}
+The ClusterMerger.py script tries to merge situations as described.  We do this by iterating over the \textit{eventCandidates} and calculate all neighbors of the current \textit{eventCandidate}. We then iterate over all neighboring areas, if an \textit{eventCandidate} is found we calculate the word overlap (code example 5) to see if the \textit{eventCandidates} is the same event. If that is the case we merge the cluster and continue the loop till all neighboring areas are checked.
+\vl
+We decided to iterate only once over all \textit{eventCandidates} because otherwise the area will be to big.
+\vl
+We calculate the word overlap to see if the two \textit{eventCandidates} have the same topic.  The function \textit{calculteWordOverlap}(code example 5) does that by looking at the 10 most common word in both clusters. For each word that overlaps a score of one point is awarded. If a hashtag or username overlaps two points are awarded. If a score exceeds the threshold the function returns true. 
 
-In the output from the clusterCreator.py script we be in this case two different clusters. To merge events that refer to the same event but have different geohashes (and are neighbors) we use this script to merge these cases. We do this by iterating over all clusters and calculate the neighboring geohashes. For each neigboring geohash we check if there is an cluster within the same time period. If we find a cluster with a neighboring geoHash and with the same timestamp +/- 60 minutes we calculate the word overlap because it can also be a different event that is coincidental taking place at the same time and close to current geoHash. We calculate this wordoverlap by looking at the 10 most common word in both clusters. For each word that overlaps a score of one point is awarded. If a hashtag or username overlaps two points are awarded. If a score exceeds the threshold the function returns true. The threshold is determined by experimenting with a lot of different values.\newline
-We discussed the number of iterations needed because it is also possible to look at the neighbors of the neighbors but we concluded that one iteration was sufficient. The area you get when you look at the neighbors for one iterations is big enough and if you go bigger you get events that are not local.
-
-
-
-\begin{python}
+\begin{lstlisting}[language=Python, caption=Calculate word overlap]
 def _calculateWordOverlap(self,clusterA, clusterB):      
     wordsClusterA = self._getImportantWords(10, clusterA)
     wordsClusterB = self._getImportantWords(10, clusterB)
@@ -362,17 +358,34 @@ def _calculateWordOverlap(self,clusterA, clusterB):
         return True
     else:
         return False
-\end{python}
+\end{lstlisting}
 
-The output of this script is an updated dictionary where neighboring clusters about the same event will be merged.
 
-\paragraph{EventCandidates.py} is the wrapper class for this module. This script generates all eventCandidates using the scripts described above. This function requires two parameters. The first is the name of the text file with the unprocessed tweets. The second is the desired name of the dataset. This script saves a JSON file with all eventCandidates.
-
+\paragraph{EventCandidates.py} is the wrapper class for this module. This script generates all \textit{eventCandidates} using the scripts described above. This function requires two parameters. The first is the name of the text file with the unprocessed tweets. The second is the desired name of the dataset. This script saves a JSON file with all \textit{eventCandidates}.
+\newpage
 \subsection{Annotation}
-We created two datasets. One for developing and one for testing. We annotated the testing dataset in the final period of our research.
-The data is annotated  with an interactive tool by two judges. This tool also calculates the kappa score: was 0.79 for the development dataset and 0.8 for the test dataset. According to book IR is dat fair/good. We discarded the eventCandidates we did not agree on.
+This tool was used to annotate the two datasets: \textit{devset} and \textit{testset}. We annotated the \textit{devtest} in the beginning of our research, the \textit{testset} dataset in the final period of our research. The datasets where annotated with an interactive tool by two judges (figure 3). This tool also calculates the kappa score that can be used to determine the quality of annotation. The results of the annotation can be found in table 2. 
 
-For the development dataset we annotated 1350 event candidates with these categories. In 87\% of the cases the judges agreed.
+\begin{table}[h]
+\caption[Annotation result]{Annotation result }
+\begin{tabular}{|c|c|c|}
+\hline
+              & Kappa score & Accuracy \\ \hline
+{\it devset}  & 0.79  & 87\%     \\ \hline
+{\it testset} & 0.80  & 86\%     \\ \hline
+\end{tabular}
+\end{table}
+
+The Kappa score indicates a good annotation. We regard the accuracy of 86\% as our upperbound.
+
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=4in]{annotation.png} 
+   \caption{Annotation tool}
+   \label{fig:annotation}
+\end{figure}
+
 
 \begin{table}[h]
 \caption[Confusion matrix testset annotation]{Confusion matrix development dataset annotation }
@@ -387,9 +400,7 @@ For the development dataset we annotated 1350 event candidates with these catego
 \end{tabular}
 
 \end{table}
-
-For the devset we annotated 500 event candidates with these categories. In 86\% of the cases the judges agreed.
-
+For the \textit{devset} we annotated 500 event candidates with these categories. In 86\% of the cases the judges agreed.
 \begin{table}[h]
 \caption[Confusion matrix devset annotation]{Confusion matrix test dataset annotation }
 \begin{tabular}{lcccccc}
@@ -403,15 +414,58 @@ For the devset we annotated 500 event candidates with these categories. In 86\% 
 \end{tabular}
 
 \end{table}
-
-
-
-
-\subsection{Event detection}
-For the event detection I trained two classifiers using NLTK. The first classifier trains using the words (800 most common words with stopwords removed) as features. Several values were tried but 800 resulted in the best performance. Also several types of classifiers were tried. Naive Bayes produced the best result and was also the quickest. The output of that classifier (a category) was used as a feature for the second classifier that used more features as described in the next section.
 \newpage
+\subsection{Training classifiers}
+With the annotation and the \textit{eventCandidates} ready we started with training the classifiers using the script ClassifierCreator.py. This module can be used in normal mode and in test mode. The first mode lets you select one dataset and the script divides the dataset in a 80/20 train / test set. The test mode lets you select two different datasets, one for training and the other for testing. The test mode was used for calculating the final statistics about our classifier.
+\vl
+Using the annotation and the \textit{eventCandidates} we start by preparing the training data. We have chosen to use two classifiers, one for classifying using words as features(\textit{categoryClassifier}). And a second classifier using metadata as features (\textit{eventClassifier}). The output of the \textit{categoryClassifer} is used as a feature in the eventClassifier.
+\vl
+We created featureSelector.py as a module that generates the features in the format required by NLTK. We designed this very modular so we could experiment with using different features and combinations of features. 
+\vl
+This function, as seen in code example 6, requires a list of the desired features and returns the features in a format suitable for training the classifier for a given cluster(\textit{eventCandidate}).\vl
+The \textit{categoryClassifier} uses the N most frequent words as features. In order to calculate this feature the system needs to know all used words in the \textit{eventCandidates}, this is done while initializing the features module.
+
+\begin{lstlisting}[language=Python, caption=Selecting features]
+def getFeatures(self, candidate, features):
+        returnFeatures = {}
+        for feature in features:
+            if feature in self.featureTypes:
+                method = getattr(self, "_" + feature)
+                if feature == 'wordFeatures':
+                    wordFeatures = method(candidate)
+                    #add word features to dictionary to be able to combine features
+                    for key in wordFeatures:
+                        returnFeatures[key] = wordFeatures[key]
+                else:
+                    returnFeatures[feature] = method(candidate)
+            else:
+                print("The feature", feature, "is not available.")
+
+        return returnFeatures
+\end{lstlisting}
+
+With the features in the correct format we can train the classifiers. The code in code example 7 shows that adjusting the features is easy and allows us to experiment with different settings. The first for loop iterates over all test data and makes a tuple with two values from each \textit{eventCandidate} with at index 0 the features and at index 1 the label(category). It does the same for the train data. Training the classifier using NLTK can be done by using the train method that is available in the NLTK library. The classifierCreator module finally creates the statistics of the classifier that are used in the result section.
+
+\begin{lstlisting}[language=Python, caption=Selecting features]
+self.classifierBFeatures =  ['category', 'location','wordOverlapSimple','wordOverlapUser']
+for candidate, label in self.testData:
+            featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures)   
+            self.featureKeys = featuresB.keys()
+            self.testB.append((featuresB, label)) 
+            
+for candidate, label in self.trainData:
+    featuresB = self.featureSelector.getFeatures(candidate, self.classifierBFeatures)
+    self.featureKeys = featuresB.keys()
+    self.trainB.append((featuresB, label))
+
+self.classifierB = nltk.NaiveBayesClassifier.train(self.trainB)
+\end{lstlisting}
+
+
+
+
 \subsubsection{Feature selection}
-The first classifier only uses the words as features. The second classifier uses the output of the first classifier as a feature. This feature is by far the most valuable for the system. In the table below the performance of the features are described. In appendix x the complete results can be found.
+The \textit{categoryClassifier} uses the most frequent words as features. The \textit{eventClassifier} uses the output of the first classifier as one of the features. This feature is by far the most valuable for the system. In table 4 the performance of the different features can be found. In appendix x the complete results can be found.
 
 
 \begin{table}[h]
@@ -432,15 +486,15 @@ WordOverlapUser, Category & 0.82     \\ \hline
 \begin{description}
 
 \item[Category]
-The result of the classifier that uses the most common words as features. 
+The result of the classifier that uses the most frequent words as features. 
 
 \item[Location]
 The first 5 characters in the geoHash are used as a feature. It will be easier to detect events on locations were events often take place.
 
 \item[wordOverlapSimple]
 This feature is a numeric value that represents how many tweets consist of the same words. The score is calculated by counting the occurrences of each type and dividing it by the number of tweets. Hashtags get a bonus score.
-
-\begin{python}
+\newpage
+\begin{lstlisting}[language=Python, caption=Word overlap feature]
 def _wordOverlapSimple(self, candidate):
         types = Counter()
         for tweet in candidate:
@@ -454,12 +508,12 @@ def _wordOverlapSimple(self, candidate):
                     score += types[t]
 
         return round((score / len(candidate)) * 2) / 2
-\end{python}
-\newpage
+\end{lstlisting}
+
 \item[WordOverlapUser]
 This feature calculates the overlap of types among users. The score is the highest when all users use the same words. The result is the log of the score and rounded to 0.5.
 
-\begin{python}
+\begin{lstlisting}[language=Python, caption=User word overlap feature]
 def _wordOverlapUser(self, candidate):
         '''Calculate the overlap of features among users'''
         userTypes = defaultdict(list)
@@ -484,10 +538,10 @@ def _wordOverlapUser(self, candidate):
             return round((s / len(candidate) )* 2 ) /2 
         else:
             return 0.0
-\end{python}
+\end{lstlisting}
 
 \end{description}
-
+\newpage
 \subsubsection{Results event detection}
 The event classifier performs good. It is a few procent less then the Upper bound  of 87\%. 
 
@@ -509,7 +563,7 @@ The event classifier performs good. It is a few procent less then the Upper boun
 \end{table}
 
 
-The different classifiers perform almost the same. The 
+The different classifiers perform almost the same. This is mainly because the category feature is important for the results. If we don't use this feature the differences between the classifiers is bigger.
 
 \begin{table}[h]
 \caption[Confusion Matrix Naive Bayes]{Confusion Matrix Naive Bayes }
@@ -556,29 +610,68 @@ SPO & .                        & 1                        & 1                   
 \end{tabular}
 
 \end{table}
+\newpage
+\subsection{Event Detective}
+This module uses the trained classifiers to generate an interactive map and adds the results of the Named Entity Recognition classifier described in the next section. It first asks you to select a classifier you want to use. The second step is to select a dataset you want to classify.
+\vl
+To create an interactive map we have chosen to use Google map because of the good documentation and excellent features. We generate a javascript file with all information about the markers we want to plot on the map. 
+\begin{lstlisting}[language=Python, caption=Generate Javascript file]
+def generateMarkers(self):
+        print("Creating Google Maps markers & add WIKI links...")
+        
+        js = open('vis/map/js/markers.js','w')
+        js.write('var locations = [')
+
+        
+        for tweets,label in self.events:
+            writableCluster = ''
+            gh = []
+            i = 0
+            avgLon = 0
+            avgLat = 0
+            #tweets = sorted(tweets, key=itemgetter('unixTime'));
+                              
+            for tweet in tweets:
+                i = i + 1
+                gh.append(tweet['geoHash'])
+                avgLon += float(tweet["lon"])
+                avgLat += float(tweet["lat"])
+                # backslashes voor multiline strings in Javascript
+                writableCluster += "{} {} {} {}<br/><br/>".format(tweet['localTime'], tweet['geoHash'], tweet['user'], tweet['text']).replace("'", "\\'")
+            # Bepaal het Cartesiaans (normale) gemiddelde van de coordinaten, de afwijking (door vorm
+            # van de aarde) zal waarschijnlijk niet groot zijn omdat het gaat om een klein vlak op aarde...
+            # Oftewel, we doen even alsof de aarde plat is ;-)
+            avgLon /= i
+            avgLat /= i
+            #writableCluster += "</br>" + str(ngrams).replace("'", "\\'")
+            js.write("['{}', {}, {}, '{}'],".format(writableCluster,avgLat,avgLon,label))
+        js.write('];')
+        js.close()
+\end{lstlisting}
 
 \subsection{Named Entity Recognition}
-The default NER tagger in NLTK is the Stanford NER classifier. This is according to many researches the best available. Unfortunately there are no classifiers trained using Dutch tweets and the performance of the available classifiers was so poor (see table x) i decided to train my own classifier. Because of limited time I decided to automatically annotate the training data creating a silver standard.
+The default NER tagger in NLTK is the Stanford NER classifier. This is according to many researches the best available. Unfortunately there are no classifiers trained using Dutch tweets and the performance of the available classifiers was so poor I decided to train my own classifier. Because of limited time I decided to automatically annotate the training data creating a silver standard.
 
 \subsubsection{Data collection}
-I used the wordlists that are used in Alpino(LINK), that are four lists with dutch words categorized in (LOCATIONS, PERSONS, ORGANIZATIONS and MISC). I used those list to download tweets that at least contain one word from these lists. I then used the wordlists to annotate the tweets automatically in de the desired training data format. This resulted in a dataset of one million annotated tweets. 
+For creating the silver standard I used the approach described in xxx. by first selecting lists of Dutch words for each category I want to recognize (LOCATIONS, PERSONS, ORGANIZATIONS and MISC).  I used the word lists that also are used in the Alpino software\footnote{Alpino is a dependency parser for Dutch, developed in the context of the PIONIER Project Algorithms for Linguistic Processing. }
+The wordlists are used to retrieve tweets that contain one or more of those words from the Karora machine. I downloaded 1 million tweets and wrote a Python script to create the training file that can be used to train your own classifier.
 
 \subsubsection{Training}
-For training the classifier the dataset was divided in a train set and a test set. The Stanford NER tagger trained with several features, NGR
+The training file was used to train the classifier and by experimenting with the features. I also annotated about 100 tweets manually to calculate the precision and recall. The results can be found in table 12.
 
 
-\newpage
-\subsection{Results}
-In this section the results of the two components, the classifier and the NER tagger are discussed.
+\subsubsection{Results}
+There results are not great, compared to other researches .... the classifier misses a lot of entities. 
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=4in]{ner.png} 
+   \caption{NER example}
+   \label{fig:example}
+\end{figure}
 
 
 
-
-
-
-
-\subsubsection{NER}
-I compare my results with the standard Stanford 4 class classifier. This classifier is trained on xxx and uses the same classes as my classifier.
 
 \begin{table}[h]
 \caption[NER Classifier trained with Tweets]{NER Classifier trained with Tweets }
@@ -622,6 +715,6 @@ wordOverlapUser, category & 0.82     & 0.86 0.83 0.85 & 0.77 0.49 0.60 & 0.00 0.
 
 
 %----------------------------------------------------------------------------------------
-\bibliographystyle{plain}
+\bibliographystyle{authordate1}
 \bibliography{chris}
 \end{document}

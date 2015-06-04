@@ -1,10 +1,11 @@
 \deactivateaddvspace 
-\contentsline {table}{\numberline {1}{\ignorespaces Geohash Precision}}{9}{table.caption.4}
-\contentsline {table}{\numberline {2}{\ignorespaces Confusion matrix testset annotation}}{15}{table.caption.6}
-\contentsline {table}{\numberline {3}{\ignorespaces Confusion matrix devset annotation}}{15}{table.caption.7}
-\contentsline {table}{\numberline {4}{\ignorespaces Effect of features}}{17}{table.caption.8}
-\contentsline {table}{\numberline {5}{\ignorespaces Results using all features}}{18}{table.caption.9}
-\contentsline {table}{\numberline {6}{\ignorespaces Confusion Matrix Naive Bayes}}{18}{table.caption.10}
-\contentsline {table}{\numberline {7}{\ignorespaces Confusion Matrix Maximum Entropy}}{19}{table.caption.11}
-\contentsline {table}{\numberline {8}{\ignorespaces Confusion Matrix SVM classifier}}{19}{table.caption.12}
-\contentsline {table}{\numberline {9}{\ignorespaces NER Classifier trained with Tweets}}{20}{table.caption.13}
+\contentsline {table}{\numberline {1}{\ignorespaces Geohash Precision}}{10}{table.caption.4}
+\contentsline {table}{\numberline {2}{\ignorespaces Annotation result}}{17}{table.caption.6}
+\contentsline {table}{\numberline {3}{\ignorespaces Confusion matrix testset annotation}}{17}{table.caption.8}
+\contentsline {table}{\numberline {4}{\ignorespaces Confusion matrix devset annotation}}{18}{table.caption.9}
+\contentsline {table}{\numberline {5}{\ignorespaces Effect of features}}{19}{table.caption.10}
+\contentsline {table}{\numberline {6}{\ignorespaces Results using all features}}{21}{table.caption.11}
+\contentsline {table}{\numberline {7}{\ignorespaces Confusion Matrix Naive Bayes}}{21}{table.caption.12}
+\contentsline {table}{\numberline {8}{\ignorespaces Confusion Matrix Maximum Entropy}}{21}{table.caption.13}
+\contentsline {table}{\numberline {9}{\ignorespaces Confusion Matrix SVM classifier}}{22}{table.caption.14}
+\contentsline {table}{\numberline {10}{\ignorespaces NER Classifier trained with Tweets}}{23}{table.caption.16}

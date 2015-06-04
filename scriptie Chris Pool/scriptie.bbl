@@ -1,11 +1,50 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{}
 
-\bibitem{geohash-module}
-Hiroaki Kawai.
-\newblock Geohash - fast, accurate python geohashing library.
+\bibitem[\protect\citename{Alan~Ritter \& Etzioni, }2011]{ner2011}
+Alan~Ritter, Sam~Clark, Mausam, \& Etzioni, Oren. 2011.
+\newblock Named Entity Recognition in Tweets: An Experimental Study.
+\newblock {\em Pages  1524--1534 of:} {\em Proceedings of the 2011 Conference
+  on Empirical Methods in Natural Language Processing}.
+\newblock Computer Science and Engineering, University of Washington.
 
-\bibitem{NTLK-website}
-NLTK.
-\newblock Natural language toolkit.
+\bibitem[\protect\citename{Dawson, }2012]{dawson}
+Dawson, R. 2012.
+\newblock {\em Which countries have the most Twitter users per
+  capita?[online]}.
+\newblock [Online; accessed 3-June-2015].
+
+\bibitem[\protect\citename{Liu {\em et~al.\ }\relax, }2011]{liu2011ner}
+Liu, X., Zhang, S., Wei, F., \& Zhou, M. 2011.
+\newblock Recognizing named entities in tweets.
+\newblock {\em Pages  359--367 of:} {\em In Proceedings of the 49th Annual
+  Meeting of the Association for Computational Linguistics: Human Language
+  Technologies-Volume 1}.
+\newblock Computer Science and Engineering, University of Washington.
+
+\bibitem[\protect\citename{Sakaki {\em et~al.\ }\relax,
+  }2010]{sakaki2010earthquake}
+Sakaki, Takeshi, Okazaki, Makoto, \& Matsuo, Yutaka. 2010.
+\newblock Earthquake shakes Twitter users: real-time event detection by social
+  sensors.
+\newblock {\em Pages  851--860 of:} {\em Proceedings of the 19th international
+  conference on World wide web}.
+\newblock ACM.
+
+\bibitem[\protect\citename{Statista, }2015]{statista}
+Statista. 2015.
+\newblock {\em Number of monthly active Twitter users worldwide from 1st
+  quarter 2010 to 1st quarter 2015 (in millions)}.
+\newblock [Online; accessed 3-June-2015].
+
+\bibitem[\protect\citename{Turpijn {\em et~al.\ }\relax, }2013]{newcom}
+Turpijn, Loes, Kneefel, Samantha, \& van~der Veer, Neil. 2013.
+\newblock {\em Nationale Social Media Onderzoek 2015}.
+\newblock Newcom Research and Consultancy B.V.
+
+\bibitem[\protect\citename{Walther \& Kaisser, }2013]{walther2013geo}
+Walther, Maximilian, \& Kaisser, Michael. 2013.
+\newblock Geo-spatial event detection in the twitter stream.
+\newblock {\em Pages  356--367 of:} {\em Advances in Information Retrieval}.
+\newblock Springer.
 
 \end{thebibliography}

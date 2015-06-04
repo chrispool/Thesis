@@ -47,9 +47,8 @@ dottedtoc % Dotted lines leading to the page numbers in the table of contents
 \usepackage{color}
 \usepackage{listings}
 \usepackage{setspace}
-
 \usepackage{lscape}
-
+\usepackage[authoryear]{natbib}
 
 %----------------------------------------------------------------------------------------
 %	THEOREM STYLES
@@ -79,6 +78,9 @@ pdfcreator={pdfLaTeX}, % PDF Creator
 pdfproducer={LaTeX with hyperref and ClassicThesis} % PDF producer
 }
 
+
+\renewcommand{\lstlistingname}{Python code}% Listing -> Python
+\renewcommand{\lstlistlistingname}{List of \lstlistingname}% List of Listings -> List of Python
 \definecolor{Code}{rgb}{0,0,0}
 \definecolor{Decorators}{rgb}{0.5,0.5,0.5}
 \definecolor{Numbers}{rgb}{0.5,0,0}
@@ -93,13 +95,16 @@ pdfproducer={LaTeX with hyperref and ClassicThesis} % PDF producer
 \definecolor{Operators}{rgb}{0,0,0}
 \definecolor{Background}{rgb}{0.98,0.98,0.98}
 
-\lstnewenvironment{python}[1][]{
-\lstset{
+
+
+
+ 
+\lstdefinestyle{mystyle}{
 numbers=left,
 numberstyle=\footnotesize,
 numbersep=1em,
 xleftmargin=1em,
-framextopmargin=2em,
+framextopmargin=10em,
 framexbottommargin=2em,
 showspaces=false,
 showtabs=false,
@@ -124,6 +129,12 @@ morekeywords={[2]@invariant},
 keywordstyle={[2]\color{Decorators}\slshape},
 emph={self},
 emphstyle={\color{self}\slshape},
-%
-}}{}
+captionpos=b, 
+}
+ 
+\lstset{style=mystyle}
 
+
+
+
+\def\vl{\\[9pt]}    
