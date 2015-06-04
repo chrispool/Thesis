@@ -1,0 +1,90 @@
+%%%% PREAMBLE
+
+\documentclass[a4paper,10pt,titlepage]{article}
+
+\usepackage[a4paper]{geometry}
+
+\usepackage{listings}
+% listing (voor programmeercode, in dit geval Python)
+\lstset{language=Python, basicstyle=\small\ttfamily, keywordstyle=\bfseries, breaklines=true, morekeywords={then},
+	showstringspaces=false, aboveskip=10pt, belowskip=10pt, columns=fullflexible}
+% dotted table of contents
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+% meer ruimte in table of contents
+\setlength{\cftbeforesecskip}{10pt}
+\setlength{\cftbeforesubsecskip}{10pt}
+\setlength{\cftbeforesubsubsecskip}{2pt}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{apacite}
+\usepackage{upquote} % voor enkele quotes in listings
+\usepackage[dutch]{babel}
+\usepackage{graphicx}
+\usepackage[sort]{natbib}
+\usepackage{eurosym} % euro symbolen
+\usepackage[hyphens]{url}
+% Plaats footnotes helemaal onderaan de pagina, niet alleen onderaan de tekst 
+% (waardoor voetnoten tussen de tekst en een figuur terecht kunnen komen).
+\usepackage[bottom,hang,flushmargin]{footmisc}
+\usepackage{wallpaper}
+\usepackage[font={it}]{caption} % onderschriften in italics
+\usepackage{float}
+\usepackage[hypcap]{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage[compact]{titlesec}
+\usepackage{enumitem}
+\usepackage{lscape}
+\setlength\parindent{0pt} % gebruik nooit indents
+% titlespacing* zorgt ervoor dat er geen indents worden geplaatst na het begin 
+% van een sectie
+\titlespacing{\section}{0pt}{10pt}{10pt}
+\titlespacing{\subsection}{0pt}{10pt}{10pt}
+\titlespacing{\subsubsection}{0pt}{10pt}{10pt}
+\titlespacing{\paragraph}{0pt}{10pt}{10pt}
+
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.06in}
+\setcounter{secnumdepth}{5}                   % voor subsubsubsections: gebruik 
+                                              % paragraph
+\setcounter{tocdepth}{5}                      % blijf de inhoud van de PDF 
+                                              % juist weergeven
+                                              
+\def\wl{\par \vspace{\baselineskip}\noindent} % white space tussen alinea's: 
+                                              % gebruik \wl
+\def\vl{\\[9pt]}                              % 9pt verticale ruimte, 
+                                              % alternatief voor \wl
+\def\s{\section}                              % \s voor een section
+\def\ss{\subsection}                          % \ss voor een subsection
+\def\sss{\subsubsection}                      % \sss voor een subsubsection
+\def\p{\paragraph}                            % \p voor een paragraph 
+                                              % (of subsubsubsection)
+\def\ttt{\texttt}                             % teletype text
+
+\newenvironment{bullets}                      % bullets in plaats van itemize
+{\begin{itemize}}                             % (ik vergeet itemize altijd xD)
+{\end{itemize}}
+
+\def\image{\includegraphics}                  % image makkelijker te onthouden
+\def\it{\textit}                              % kortere italics
+\def\bf{\textbf}                              % bold, korter
+
+% Voorbeeld voor een plaatje met label
+
+%\begin{figure}[H] % H betekent: voeg HIER in, op deze plek
+%  \centering
+%    \image[width=0.5\textwidth]{zeemeeuw}
+%    \caption{Close-up van een meeuw}
+%  \label{meeuw}
+%\end{figure}
+ 
+%Figuur \ref{meeuw} toont een foto van een meeuw.
+
+% CTRL+D: comment
+% CTRL+SHIFT+D: uncomment
+
+% Monospace schrijven: texttt{Monospace!}
+
+% Underscore typen? Gebruik \_.
+
+% Geen ruimte tussen bullets/enumerates? Gebruik \itemsep0em.

@@ -1,92 +1,4 @@
-%%%% PREAMBLE
-
-\documentclass[a4paper,10pt,titlepage]{article}
-
-\usepackage[a4paper]{geometry}
-
-\usepackage{listings}
-% listing (voor programmeercode, in dit geval Python)
-\lstset{language=Python, basicstyle=\small\ttfamily, keywordstyle=\bfseries, breaklines=true, morekeywords={then},
-	showstringspaces=false, aboveskip=10pt, belowskip=10pt, columns=fullflexible}
-% dotted table of contents
-\usepackage{tocloft}
-\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
-% meer ruimte in table of contents
-\setlength{\cftbeforesecskip}{10pt}
-\setlength{\cftbeforesubsecskip}{10pt}
-\setlength{\cftbeforesubsubsecskip}{2pt}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{apacite}
-\usepackage{upquote} % voor enkele quotes in listings
-\usepackage[dutch]{babel}
-\usepackage{graphicx}
-\usepackage[sort]{natbib}
-\usepackage{eurosym} % euro symbolen
-\usepackage[hyphens]{url}
-% Plaats footnotes helemaal onderaan de pagina, niet alleen onderaan de tekst 
-% (waardoor voetnoten tussen de tekst en een figuur terecht kunnen komen).
-\usepackage[bottom,hang,flushmargin]{footmisc}
-\usepackage{wallpaper}
-\usepackage[font={it}]{caption} % onderschriften in italics
-\usepackage{float}
-\usepackage[hypcap]{caption}
-\usepackage[hidelinks]{hyperref}
-\usepackage[compact]{titlesec}
-\usepackage{enumitem}
-\setlength\parindent{0pt} % gebruik nooit indents
-% titlespacing* zorgt ervoor dat er geen indents worden geplaatst na het begin 
-% van een sectie
-\titlespacing{\section}{0pt}{10pt}{10pt}
-\titlespacing{\subsection}{0pt}{10pt}{10pt}
-\titlespacing{\subsubsection}{0pt}{10pt}{10pt}
-\titlespacing{\paragraph}{0pt}{10pt}{10pt}
-
-\addtolength{\topmargin}{-.5in}
-\addtolength{\textheight}{1.06in}
-\setcounter{secnumdepth}{5}                   % voor subsubsubsections: gebruik 
-                                              % paragraph
-\setcounter{tocdepth}{5}                      % blijf de inhoud van de PDF 
-                                              % juist weergeven
-                                              
-\def\wl{\par \vspace{\baselineskip}\noindent} % white space tussen alinea's: 
-                                              % gebruik \wl
-\def\vl{\\[9pt]}                              % 9pt verticale ruimte, 
-                                              % alternatief voor \wl
-\def\s{\section}                              % \s voor een section
-\def\ss{\subsection}                          % \ss voor een subsection
-\def\sss{\subsubsection}                      % \sss voor een subsubsection
-\def\p{\paragraph}                            % \p voor een paragraph 
-                                              % (of subsubsubsection)
-\def\ttt{\texttt}                             % teletype text
-
-\newenvironment{bullets}                      % bullets in plaats van itemize
-{\begin{itemize}}                             % (ik vergeet itemize altijd xD)
-{\end{itemize}}
-
-\def\image{\includegraphics}                  % image makkelijker te onthouden
-\def\it{\textit}                              % kortere italics
-\def\bf{\textbf}                              % bold, korter
-
-% Voorbeeld voor een plaatje met label
-
-%\begin{figure}[H] % H betekent: voeg HIER in, op deze plek
-%  \centering
-%    \image[width=0.5\textwidth]{zeemeeuw}
-%    \caption{Close-up van een meeuw}
-%  \label{meeuw}
-%\end{figure}
- 
-%Figuur \ref{meeuw} toont een foto van een meeuw.
-
-% CTRL+D: comment
-% CTRL+SHIFT+D: uncomment
-
-% Monospace schrijven: texttt{Monospace!}
-
-% Underscore typen? Gebruik \_.
-
-% Geen ruimte tussen bullets/enumerates? Gebruik \itemsep0em.
+\input{./preamble.tex}
 
 \begin{document}
 
@@ -904,6 +816,9 @@ bij een aangeklikte marker.
 
 \s{Experimenten en evaluatie}
 
+Ik zal nu de met onze \ttt{EventDetective}-software uitgevoerde experimenten – inclusief verkregen resultaten 
+en evaluatie – beschrijven.
+
 \ss{Data verzamelen event candidates genereren}
 
 Voor onze gezamenlijke event detection experimenten hebben we gebruik gemaakt van 
@@ -974,15 +889,40 @@ beoordelen. We gebruiken in ons systeem twee classifiers voor event detection:
 \begin{bullets}
 \item \ttt{categoryClassifier}: Een classifier met alleen word features, die op basis van woorden event candidates in de in \ref{Annotator} genoemde 
 categorie\"en indeelt. We hebben empirisch bepaald dat deze classifier het beste werkt wanneer we voor de word features de
-800 woorden met de hoogste tf-idf score selecteren, en we een Naive Bayes classifier gebruiken.
+800 woorden met de hoogste tf-idf score selecteren, en we als classifier Naive Bayes gebruiken.
 \item \ttt{eventClassifier}: Een classifier die de categorielabels van de eerste classifier verrijkt met features gebaseerd op tweet metadata (zie \ref{FeatureSelector}
 voor alle features). We hebben empirisch bepaald dat deze classifier het beste werkt wanneer we \ttt{category} van de \ttt{categoryClas\-si\-fier}
-combineren met \ttt{wordOverlapUser}, \ttt{wordOverlapSimple} en \ttt{location}, en we een Naive Bayes classifier gebruiken.
+combineren met \ttt{wordOverlapUser}, \ttt{wordOverlapSimple} en \ttt{location}, en we als classifier Naive Bayes gebruiken.
 \end{bullets}
+
+Voor de resultaten van de DEVTEST met de beste features, zie tabel x in de bijlage (\ref{bijlage}).
 
 \s{Conclusie}
 
 TODO
+
+\newpage
+\s{Bijlage}\label{bijlage}
+\begin{landscape}
+\begin{tabular}{llllllll}
+\hline
+ \#    & accuracy   & geen\_event     & sport          & entertainment   & bijeenkomst    & incident       & anders         \\
+\hline
+      &            & P    R    F    & P    R    F    & P    R    F     & P    R    F    & P    R    F    & P    R    F    \\
+ 1    & 0.89       & 0.90 0.93 0.91 & 0.80 0.75 0.77 & 0.00 0.00 0.00  & 0.84 0.81 0.83 & 0.97 1.00 0.98 & 0.00 0.00 0.00 \\
+ 2    & 0.87       & 0.93 0.89 0.91 & 0.80 0.80 0.80 & 0.00 0.00 0.00  & 0.72 0.85 0.78 & 0.90 0.95 0.92 & 0.00 0.00 0.00 \\
+ 3    & 0.91       & 0.90 0.96 0.92 & 0.67 0.60 0.63 & 0.00 0.00 0.00  & 0.93 0.84 0.88 & 0.97 1.00 0.99 & 0.00 0.00 0.00 \\
+ 4    & 0.86       & 0.86 0.92 0.89 & 0.93 0.72 0.81 & 1.00 0.17 0.29  & 0.72 0.78 0.75 & 0.97 0.92 0.94 & 0.00 0.00 0.00 \\
+ 5    & 0.91       & 0.93 0.95 0.94 & 0.62 0.71 0.67 & 0.00 0.00 0.00  & 0.88 0.81 0.85 & 0.97 0.97 0.97 & 0.00 0.00 0.00 \\
+ 6    & 0.9        & 0.95 0.90 0.92 & 0.80 0.89 0.84 & 0.00 0.00 0.00  & 0.80 0.88 0.83 & 0.89 0.97 0.93 & 0.00 0.00 0.00 \\
+ 7    & 0.93       & 0.95 0.92 0.94 & 0.68 0.94 0.79 & 0.00 0.00 0.00  & 0.92 0.94 0.93 & 1.00 0.95 0.97 & 0.00 0.00 0.00 \\
+ 8    & 0.9        & 0.91 0.92 0.91 & 0.71 0.91 0.80 & 0.67 0.50 0.57  & 0.86 0.84 0.85 & 1.00 0.95 0.97 & 0.00 0.00 0.00 \\
+ 9    & 0.87       & 0.91 0.90 0.91 & 0.78 0.70 0.74 & 0.33 0.25 0.29  & 0.71 0.79 0.75 & 0.97 0.94 0.96 & 0.00 0.00 0.00 \\
+ 10   & 0.88       & 0.90 0.90 0.90 & 0.57 0.57 0.57 & 0.50 0.50 0.50  & 0.80 0.83 0.81 & 1.00 0.93 0.96 & 0.00 0.00 0.00 \\
+ Avg. & 0.89       & 0.91 0.92 0.92 & 0.74 0.76 0.74 & 0.25 0.14 0.16  & 0.82 0.84 0.83 & 0.96 0.96 0.96 & 0.00 0.00 0.00 \\
+\hline
+\end{tabular}
+\end{landscape}
 
 \bibliographystyle{apacite}
 \bibliography{bibliografie}
