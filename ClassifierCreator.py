@@ -24,6 +24,7 @@ class ClassifierCreator:
     def __init__(self):
         self.dataSets = os.listdir('data/')
         self.categories = ["geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"]
+        # self.categories = ["wel_event", "geen_event", "sport","entertainment", "bijeenkomst", "incident", "anders"] # uncomment voor wel_event
         self.classifierAFeatures = ['wordFeatures']
         self.classifierBFeatures =  ['category', 'location','wordOverlapSimple','wordOverlapUser']
         self.annotation = {}
@@ -180,13 +181,25 @@ class ClassifierCreator:
         refsets = defaultdict(set)
         testsets = defaultdict(set)
 
+        #allCount = 0
+        #noEventCount = 0
         for n, (feats, label) in enumerate(self.testB):
+            #allCount += 1
+            #if label == "geen_event":
+            #    noEventCount += 1
             refsets[label].add(n)
             observed = self.classifierB.classify(feats)
+            # uncomment voor wel_event
+            #if label != "geen_event":
+            #    refsets["wel_event"].add(n)
+            #if observed != "geen_event":
+            #    testsets["wel_event"].add(n)
             testsets[observed].add(n)
+            
+        #print("Accuracy geen_event (baseline) is", noEventCount/allCount) #
 
         self.accuracy.append(nltk.classify.accuracy(self.classifierB,self.testB))
-        
+
         #for elke category precision and recall berekenen.
         for category in self.categories:
             if category in testsets:

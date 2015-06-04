@@ -23,5 +23,5 @@
 \contentsline {subsection}{\numberline {4.1}Data verzamelen event candidates genereren}{16}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Het annotatieproces}{16}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Event detection: Trainen en testen van classifiers}{17}{subsection.4.3}
-\contentsline {section}{\numberline {5}Conclusie}{17}{section.5}
-\contentsline {section}{\numberline {6}Bijlage}{18}{section.6}
+\contentsline {section}{\numberline {5}Conclusie}{19}{section.5}
+\contentsline {section}{\numberline {6}Bijlage}{20}{section.6}

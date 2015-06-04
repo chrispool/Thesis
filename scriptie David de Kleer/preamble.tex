@@ -30,11 +30,13 @@
 \usepackage{wallpaper}
 \usepackage[font={it}]{caption} % onderschriften in italics
 \usepackage{float}
-\usepackage[hypcap]{caption}
-\usepackage[hidelinks]{hyperref}
 \usepackage[compact]{titlesec}
 \usepackage{enumitem}
-\usepackage{lscape}
+% booktabs en hvfloat voor horizontale tabellen
+\usepackage{booktabs}
+\usepackage{hvfloat}
+\usepackage[hypcap]{caption}
+\usepackage[hidelinks]{hyperref}
 \setlength\parindent{0pt} % gebruik nooit indents
 % titlespacing* zorgt ervoor dat er geen indents worden geplaatst na het begin 
 % van een sectie
@@ -42,6 +44,8 @@
 \titlespacing{\subsection}{0pt}{10pt}{10pt}
 \titlespacing{\subsubsection}{0pt}{10pt}{10pt}
 \titlespacing{\paragraph}{0pt}{10pt}{10pt}
+% marges na figuren
+\setlength{\belowcaptionskip}{0pt}
 
 \addtolength{\topmargin}{-.5in}
 \addtolength{\textheight}{1.06in}

@@ -598,7 +598,7 @@ ClassifierCreator wordt gebruikt. Er zijn twee modi, namelijk \bf{DEVTEST} en \b
 \item \bf{DEVTEST modus}: De input bestaat uit één enkel geannoteerd dataset. Deze 
 dataset wordt opgesplitst door een willekeurige \it{80/20 split} (80\% traindata en 
 20\% testdata) toe te passen. De DEVTEST modus doorloopt tien iteraties waarin 
-classifiers worden getraind en geëvalueerd op de testdata.
+classifiers worden getraind en geëvalueerd op de willekeurig opgesplitste testdata: \it{cross-validation}.
 
 \item \bf{TEST modus}: De input bestaat uit twee geannoteerde datasets, namelijk een 
 train- en een testdataset. Deze modus doorloopt één iteratie, waarbij 
@@ -895,16 +895,95 @@ voor alle features). We hebben empirisch bepaald dat deze classifier het beste w
 combineren met \ttt{wordOverlapUser}, \ttt{wordOverlapSimple} en \ttt{location}, en we als classifier Naive Bayes gebruiken.
 \end{bullets}
 
-Voor de resultaten van de DEVTEST met de beste features, zie tabel x in de bijlage (\ref{bijlage}).
+We hebben in de DEVTEST een gemiddelde accuracy van 89\% behaald, waarvoor we 10 keer cross-validation hebben toegepast. We hebben gekozen om \it{accuracy} als
+eindcijfer van ons systeem te gebruiken, zodat we een eenduidige score voor de classificatie konden geven. De accuracy is te berekenen
+door de hoeveelheid goed geclassificeerde event candidates te delen door de totale hoeveelheid geclassificeerde event candidates. Voor de resultaten van de DEVTEST met de beste 
+features (inclusief \it{precision}, \it{recall} en \it{f1-score} per categorie), zie tabel \ref{bijlagedevtest} in de bijlage (\ref{bijlage}). 
+\vl
+Bij de TEST (\ttt{./ClassifierCreator -test}) hebben we met 3 verschillende classifiers getest: \it{Naive Bayes}, \it{Maximum Entropy} en
+\it{SVM}\footnote{\it{Support Vector Machine}}, zie tabel \ref{testclassifiers}. De classifiers presteerden allemaal net iets boven de 80\%, maar Naive Bayes
+presteerde het beste, met een accuracy van 84\%. In tabel \ref{naivebayes} staat de confusion matrix van de Naive Bayes classifier.
 
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l|l|l|l|l|l|l|l|l|}
+\cline{2-10}
+                          & \multicolumn{3}{c|}{Naive Bayes}                                         & \multicolumn{3}{c|}{Maximum Entropy}                                     & \multicolumn{3}{c|}{SVM}             \\ \cline{2-10} 
+                          & \multicolumn{3}{c|}{Accuracy = 84\%}                                     & \multicolumn{3}{c|}{Accuracy = 83\%}                                     & \multicolumn{3}{c|}{Accuracy = 81\%} \\ \cline{2-10} 
+                          & \multicolumn{1}{c|}{P} & \multicolumn{1}{c|}{R} & \multicolumn{1}{c|}{F} & \multicolumn{1}{c|}{P} & \multicolumn{1}{c|}{R} & \multicolumn{1}{c|}{F} & P          & R          & F          \\ \hline
+\multicolumn{1}{|l|}{NOE} & 0.85                   & 0.90                   & 0.88                   & 0.83                   & 0.93                   & 0.88                   & 0.85       & 0.83       & 0.84       \\ \hline
+\multicolumn{1}{|l|}{SPO} & 0.77                   & 0.49                   & 0.60                   & 0.77                   & 0.49                   & 0.60                   & 0.77       & 0.49       & 0.60       \\ \hline
+\multicolumn{1}{|l|}{ENT} & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00       & 0.00       & 0.00       \\ \hline
+\multicolumn{1}{|l|}{MEE} & 0.76                   & 0.79                   & 0.77                   & 0.79                   & 0.74                   & 0.76                   & 0.65       & 0.81       & 0.72       \\ \hline
+\multicolumn{1}{|l|}{INC} & 0.97                   & 0.97                   & 0.97                   & 0.94                   & 0.94                   & 0.94                   & 1.00       & 0.97       & 0.99       \\ \hline
+\multicolumn{1}{|l|}{OTH} & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00                   & 0.00       & 0.00       & 0.00       \\ \hline
+\end{tabular}
+\caption{Resultaten van de TEST met de vier beste features}\label{testclassifiers}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+    & \multicolumn{1}{l|}{OTH} & \multicolumn{1}{l|}{MEE} & \multicolumn{1}{l|}{ENT} & \multicolumn{1}{l|}{NOE} & \multicolumn{1}{l|}{INC} & \multicolumn{1}{l|}{SPO} \\ \hline
+OTH & \textless.\textgreater   & .                        & .                        & 1.                       & .                        & .                        \\ \hline
+MEE & .                        & \textless82\textgreater  & 2                        & 14                       & .                        & 12                       \\ \hline
+ENT & .                        & .                        & \textless.\textgreater   & 1                        & .                        & .                        \\ \hline
+NOE & .                        & 27                       & 5                        & \textless179\textgreater & 1                        & 7                        \\ \hline
+INC & .                        & .                        & .                        & 2                        & \textless76\textgreater  & .                        \\ \hline
+SPO & .                        & 1                        & 1                        & 2                        & 1                        & \textless16\textgreater  \\ \hline
+\end{tabular}
+\caption{Confusion matrix voor de Naive Bayes classifier}\label{naivebayes}
+\end{table}
+
+Omdat we individuele bijdrage van de verschillende features in de TEST wilden beoordelen, hebben we afzonderlijk met deze features getest,
+zie tabel \ref{testfeatures} (en tabel \ref{bijlagetest} in de bijlage (\ref{bijlage}) voor de bijbehorende precision, recall en f1-score per
+categorie). In tabel \ref{testfeatures} staan ook de \it{baseline performance} (iedere event candidate is geen event) en de \it{upper bound} (menselijke
+(onze) prestaties op een event dection taak) gebaseerd op de accuracy van onze annotatie.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+                          & Accuracy \\ \hline
+All features              & 0.84     \\ \hline
+Category                  & 0.81     \\ \hline
+Location                  & 0.51     \\ \hline
+WordOverlapSimple         & 0.63     \\ \hline
+WordOverlapUser           & 0.6      \\ \hline
+WordOverlapUser, Category & 0.82     \\ \hline
+Baseline Performance      & 0.46     \\ \hline
+Upper Bound               & 0.86     \\ \hline
+\end{tabular}
+\caption{Afzonderlijke features, baseline performance en upper bound}\label{testfeatures}
+\end{table}
+
+Uit tabel \ref{testfeatures} blijkt dat word features verreweg de meeste invloed hadden op de prestatie van de classifier, omdat deze dan al tot een accuracy
+van 81\% komt. De \ttt{wordOverlap}-features dragen veel minder bij: de accuracy ligt daarmee nog zo rond de 60\%. De \ttt{location}-feature maakt
+nog minder verschil, want de accuracy is met deze feature maar 5\% hoger dan de baseline. Over deze feature is ook discussie
+mogelijk: op dezelfde plaats kunnen immers verschillende categorie\"en events plaatsvinden.
+\vl
+In vergelijking met de baseline en de upper bound presteert ons systeem goed. De accuracy voor alle features is met 84\% namelijk 38\% beter dan de baseline
+en slechts 2\% slechter dan de upper bound. Omdat \citeauthor{walther2013geo} een vergelijkbaar systeem hebben gebouwd ligt het voor
+de hand om ons systeem met hun systeem te vergelijken. Het lijkt erop dat zij alleen cijfers presenteren voor events die \ttt{real-world
+events} zijn, oftewel de categorie \ttt{wel\_event}: alle categorie\"en behalve \it{geen\_event} van ons systeem samengenomen. Voor deze categorie
+krijgen we binnen ons systeem een f1-score van 88\%, terwijl \citeauthor{walther2013geo} een f1-score van 84\% behaalden (zie de code
+in comments bij ``\ttt{uncomment voor wel\_event}'' in de \ttt{ClassifierCreator}). Hierbij is wel belangrijk om op te merken dat wij
+het wat betreft events in de categorie \ttt{incident} vrij makkelijk hebben, omdat meldingen van incidenten vaak behoorlijk op elkaar lijken. Daarom 
+zijn ze makkelijk te identificeren met behulp van word features.
 \s{Conclusie}
 
 TODO
 
 \newpage
 \s{Bijlage}\label{bijlage}
-\begin{landscape}
-\begin{tabular}{llllllll}
+
+% onderdruk warning van hypcap
+\captionsetup{hypcap=false}
+
+\hvFloat[rotAngle=90,nonFloat=true,capWidth=w]%
+{table}%
+{\begin{tabular}{llllllll}
 \hline
  \#    & accuracy   & geen\_event     & sport          & entertainment   & bijeenkomst    & incident       & anders         \\
 \hline
@@ -922,8 +1001,28 @@ TODO
  Avg. & 0.89       & 0.91 0.92 0.92 & 0.74 0.76 0.74 & 0.25 0.14 0.16  & 0.82 0.84 0.83 & 0.96 0.96 0.96 & 0.00 0.00 0.00 \\
 \hline
 \end{tabular}
-\end{landscape}
+}%
+{Resultaten van de DEVTEST met de features category, wordOverlapUser, wordOverlapSimple en location}%
+{bijlagedevtest}
+\hfill % geen enter gebruiken!
+\hvFloat[rotAngle=90,nonFloat=true,capWidth=w]%
+{table}%
+{\begin{tabular}{llllllll}
+\hline
+                          & accuracy & geen\_event    & sport          & entertainment  & bijeenkomst    & incident       & anders         \\ \hline
+                          &          & P    R    F    & P    R    F    & P    R    F    & P    R    F    & P    R    F    & P    R    F    \\ \hline
+All features              & 0.84     & 0.85 0.90 0.88 & 0.77 0.49 0.60 & 0.00 0.00 0.00 & 0.76 0.79 0.77 & 0.97 0.97 0.97 & 0.00 0.00 0.00 \\ \hline
+Category                  & 0.81     & 0.85 0.82 0.84 & 0.73 0.46 0.56 & 0.00 0.00 0.00 & 0.66 0.84 0.74 & 0.99 0.97 0.98 & 0.00 0.00 0.00 \\ \hline
+Location                  & 0.51     & 0.49 0.94 0.65 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.66 0.25 0.36 & 0.50 0.06 0.11 & 0.00 0.00 0.00 \\ \hline
+WordOverlapSimple         & 0.63     & 0.60 0.85 0.71 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.57 0.33 0.42 & 0.77 0.83 0.80 & 0.00 0.00 0.00 \\ \hline
+wordOverlapUser           & 0.6      & 0.57 0.93 0.71 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.00 0.00 0.00 & 0.66 0.90 0.76 & 0.00 0.00 0.00 \\ \hline
+wordOverlapUser, category & 0.82     & 0.86 0.83 0.85 & 0.77 0.49 0.60 & 0.00 0.00 0.00 & 0.66 0.85 0.74 & 1.00 0.97 0.99 & 0.00 0.00 0.00 \\ \hline
+\end{tabular}
+}%
+{Resultaten van de TEST voor de beste features afzonderlijk}%
+{bijlagetest}
 
+\newpage
 \bibliographystyle{apacite}
 \bibliography{bibliografie}
 \end{document}
