@@ -135,13 +135,17 @@ bijvoorbeeld aan journalisten of hulpdiensten, die hier altijd snel van op de
 hoogte moeten zijn). We willen een systeem bouwen dat 
 voor Nederlandstalige tweets met locatie-informatie gebeurtenissen of \it{events} op Twitter op kan sporen (Event\it{Detective}) door tweets 
 tot events te groeperen, oftewel 
-een systeem voor \it{event detection} op Twitter. Events moeten daarnaast
-tijdens de detectie worden gecategoriseerd (in bijvoorbeeld \ttt{sport} of \ttt{incident}), verrijkt met tweets zonder locatie-informatie (slechts 3\% van de 
-tweets zijn voorzien van locatie-informatie (\citealt{leetaru2013mapping})) en vervolgens op een geschikte manier 
-worden gevisualiseerd. We verstaan onder een event het
+een systeem voor \it{event detection} op Twitter.
+We verstaan onder een event het
 volgende: \it{``something non-trivially happening at a certain time or place''} 
 (\citealt{yang1998study}), met daarbij als eis 
-dat een event daadwerkelijk in de fysieke wereld plaatsvindt.
+dat een event daadwerkelijk in de fysieke wereld plaatsvindt. 
+Events moeten
+tijdens de detectie worden gecategoriseerd (in bijvoorbeeld \ttt{sport} of \ttt{incident}), verrijkt met tweets zonder locatie-informatie (slechts 3\% van de 
+tweets zijn voorzien van locatie-informatie (\citealt{leetaru2013mapping})) en vervolgens op een geschikte manier 
+worden gevisualiseerd.
+Het systeem detecteert geen \it{real-time events},
+omdat we ons geheel willen richten op het proces van event detection en nog niet zo zeer op real-time aspecten daarvan.
 \vl
 Ik zal in de Methode (hoofdstuk \ref{methode}) de implementatie van ons systeem 
 beschrijven en in hoofdstuk \ref{resultaten} de experimenten, resultaten en evaluatie
