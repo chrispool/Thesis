@@ -1,13 +1,13 @@
-\BOOKMARK [1][-]{section*.1}{Voorwoord}{}% 1
+\BOOKMARK [1][-]{section*.1}{Voorwoord: Van orale traditie tot informatiesamenleving}{}% 1
 \BOOKMARK [1][-]{section*.2}{Samenvatting}{}% 2
 \BOOKMARK [1][-]{section.1}{Inleiding}{}% 3
 \BOOKMARK [1][-]{section.2}{Theoretisch kader}{}% 4
-\BOOKMARK [1][-]{section.3}{Methode: van data tot detective}{}% 5
+\BOOKMARK [1][-]{section.3}{Methode: Van data tot detective}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{Verzamelen van data}{section.3}% 6
-\BOOKMARK [2][-]{subsection.3.2}{EventCandidates - Generatie van event candidates}{section.3}% 7
-\BOOKMARK [3][-]{subsubsection.3.2.1}{TweetPreprocessor \205 Tweets representeren in Python}{subsection.3.2}% 8
-\BOOKMARK [3][-]{subsubsection.3.2.2}{ClusterCreator \205 Tweets clusteren op GeoHash en tijd}{subsection.3.2}% 9
-\BOOKMARK [3][-]{subsubsection.3.2.3}{ClusterMerger \205 Clusters samenvoegen en event candidates selecteren}{subsection.3.2}% 10
+\BOOKMARK [2][-]{subsection.3.2}{EventCandidates: Generatie van event candidates}{section.3}% 7
+\BOOKMARK [3][-]{subsubsection.3.2.1}{TweetPreprocessor: Tweets representeren in Python}{subsection.3.2}% 8
+\BOOKMARK [3][-]{subsubsection.3.2.2}{ClusterCreator: Tweets clusteren op GeoHash en tijd}{subsection.3.2}% 9
+\BOOKMARK [3][-]{subsubsection.3.2.3}{ClusterMerger: Clusters samenvoegen en event candidates selecteren}{subsection.3.2}% 10
 \BOOKMARK [2][-]{subsection.3.3}{Annotatie van event candidates}{section.3}% 11
 \BOOKMARK [3][-]{subsubsection.3.3.1}{Annotator: Interactieve annotatie van event candidates}{subsection.3.3}% 12
 \BOOKMARK [3][-]{subsubsection.3.3.2}{AnnotationEvaluation: Annotatie evalueren en event candidates opschonen}{subsection.3.3}% 13
@@ -15,13 +15,13 @@
 \BOOKMARK [3][-]{subsubsection.3.4.1}{FeatureSelector: Extractie van features uit event candidates}{subsection.3.4}% 15
 \BOOKMARK [3][-]{subsubsection.3.4.2}{ClassifierCreator: Training en evaluatie van classifiers}{subsection.3.4}% 16
 \BOOKMARK [2][-]{subsection.3.5}{Detectie, verrijking en visualisatie van events}{section.3}% 17
-\BOOKMARK [3][-]{subsubsection.3.5.1}{EventDetective \205 detectie van events}{subsection.3.5}% 18
-\BOOKMARK [3][-]{subsubsection.3.5.2}{EventDetectiveChart \205 verrijking van events}{subsection.3.5}% 19
-\BOOKMARK [3][-]{subsubsection.3.5.3}{generateMarkers en vis/map/ \205 visualisatie van events}{subsection.3.5}% 20
+\BOOKMARK [3][-]{subsubsection.3.5.1}{EventDetective: Detectie van events}{subsection.3.5}% 18
+\BOOKMARK [3][-]{subsubsection.3.5.2}{EventDetectiveChart: Verrijking van events}{subsection.3.5}% 19
+\BOOKMARK [3][-]{subsubsection.3.5.3}{generateMarkers en vis/map/: Visualisatie van events}{subsection.3.5}% 20
 \BOOKMARK [1][-]{section.4}{Experimenten, resultaten en evaluatie}{}% 21
 \BOOKMARK [2][-]{subsection.4.1}{Data verzamelen event candidates genereren}{section.4}% 22
 \BOOKMARK [2][-]{subsection.4.2}{Het annotatieproces}{section.4}% 23
-\BOOKMARK [2][-]{subsection.4.3}{Detectie van events: Trainen en testen van classifiers}{section.4}% 24
-\BOOKMARK [2][-]{subsection.4.4}{Visualisatie en verrijking van events}{section.4}% 25
+\BOOKMARK [2][-]{subsection.4.3}{Trainen en testen van classifiers}{section.4}% 24
+\BOOKMARK [2][-]{subsection.4.4}{Detectie, verrijking en visualisatie van events}{section.4}% 25
 \BOOKMARK [1][-]{section.5}{Conclusie}{}% 26
 \BOOKMARK [1][-]{section.6}{Bijlage}{}% 27

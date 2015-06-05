@@ -12,35 +12,146 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% HOOFDDOCUMENT
 
+% table of contents op nieuwe pagina
 \newpage
 \tableofcontents
+
+% nieuwe pagina voor voorwoord
 \newpage
 % phantomsection voor goede link in de table of contents, VOOR de sectie!
 \phantomsection 
-\s*{Voorwoord}
+\s*{Voorwoord: Van orale traditie tot informatiesamenleving}
 % toevoegen van s(ection)* aan inhoudsopgave moet in de sectie zelf!
-\addcontentsline{toc}{section}{Voorwoord}
+\addcontentsline{toc}{section}{Voorwoord: Van orale traditie tot informatiesamenleving}
+% Naamdicht dat ik een keer schreef in de trein omdat ik niks te doen had en
+% nadacht over hoe ik mijn scriptie zou moeten beginnen
+\begin{verse}
+\it{\bf{O}p een stille zomernacht\\
+    \bf{R}ond het vuur van het heden\\
+    \bf{A}demt het verleden\\
+    \bf{L}evend door de kracht\\
+    \bf{E}n dynamiek, luid en zacht
+\vl
+    \bf{T}ongen van vuur\\
+    \bf{R}oepend in het duister\\
+    \bf{A}ls de strijd dan toch te heet wordt, is er\\
+    \bf{D}e wind, die zachtjes fluistert\\
+    \bf{I}n de kern van het verhaal\\
+    \bf{T}ekenen van een wijze moraal, die\\
+    \bf{I}n de harten blijft bestaan\\
+    \bf{E}n nimmer zal vergaan}
+\end{verse}
 
-TODO
+Mensen zijn inherent sociale wezens. Ze geven al eeuwenlang informatie aan 
+elkaar door en doorstaan hierbij de tand des tijds door hun opgedane informatie 
+op te slaan. Deze informatie is te zien als een erfenis waar volgende generaties 
+op voort kunnen bouwen, een fundament voor het heden en de toekomst.
+\vl
+In de tijd dat er nog geen typemachines, recorders of computers bestonden moest 
+er gebruik worden gemaakt van een primitieve, doch zeer effectieve manier van 
+informatieoverdracht: de orale traditie. Deze traditie roept al snel een beeld 
+op van oudere inwoners van stammen, die rond een knisperend vuur de jongeren 
+lokale verhalen vol levenswijsheden vertelden. Dit mag misschien vrij primitief 
+klinken, maar deze orale traditie vormt toch de basis van onze moderne 
+samenleving, waarin we nog steeds onze kennis putten uit de informatiebronnen 
+(gecreëerd vanuit de kennis van anderen) om ons heen. Daarbij zijn de manieren 
+van doorgeven en opslaan van informatie door de eeuwen heen ontzettend vervormd, 
+veranderd en vernieuwd, en kennen we een enorme hoeveelheid aan 
+informatiedragers en daarmee methoden om informatie door te geven.
+\vl
+Er is wel een \it{maar}: Informatie heeft alleen waarde wanneer deze kan worden 
+omgezet tot \it{kennis}. Het alleen maar opslaan van informatie betekent immers niet 
+dat we die informatie automatisch tot ons nemen en omvormen tot kennis. Omdat 
+onze hersenen een beperkte capaciteit hebben, kunnen we maar een beperkte 
+hoeveelheid informatie in een keer verwerken. Informatiekunde kan helpen om 
+grote hoeveelheden informatie inzichtelijker te maken en mensen tot nieuwe 
+kennis en inzichten te brengen, door ze relevante informatie te bieden.
+\vl
+Het systeem dat wordt beschreven in deze bachelorscriptie Informatiekunde is een voorbeeld van het op 
+overzichtelijke manier proberen te groeperen en weer te geven van relevante 
+delen van een grote hoeveelheid informatie, gebaseerd op bepaalde kenmerken van 
+deze informatie. 
+\vl
+Ik wil graag mijn scriptiebegeleiders – Johan Bos en Malvina Nissim – bedanken voor 
+hun uitleg en begeleiding. Daarnaast wil ik Chris Pool bedanken voor zijn bijdrage
+aan onze goede samenwerking. Mijn speciale dank gaat uit naar mijn ouders, vrienden, 
+docenten en studiegenoten, voor hun steun, leerzame ervaringen en positieve contacten.
+\vl
+\it{David de Kleer, juni 2015}
 
+% nieuwe pagina voor samenvatting
 \newpage
 \null\vspace{\fill}
 
 \phantomsection
 \s*{\hfill Samenvatting \hfill}
 \addcontentsline{toc}{section}{Samenvatting}
-\begin{center}
-In deze scriptie presenteer ik een state-of the art benadering voor event detection op Twitter. Hiervoor hebben we (Chris Pool en ik)
-gebruik gemaakt van een methode voor spatio-temporal clustering, waarbij we tweets clusteren binnen een bepaalde GeoHash en tijdsinterval.
-\end{center}
+Sociale media bieden een grote hoeveelheid informatie over de fysieke wereld, 
+waarin mensen vertellen waar ze zijn, wat er in hun
+omgeving gebeurt of wat ze doen. Berichten van meerdere mensen op dezelfde 
+locatie kunnen worden gecombineerd tot mogelijke gebeurtenissen of \it{event candidates},
+welke in categorie\"en zouden kunnen worden ingedeeld.
+Hierdoor kunnen anderen in de buurt op de hoogte worden gebracht van wat er zoal
+om hen heen gebeurt.
+\vl
+In deze scriptie presenteer ik een \it{state-of-the-art} benadering voor 
+\it{event detection} – oftewel de detectie van gebeurtenissen of \it{events} – 
+op Twitter. Daarvoor hebben we (Chris Pool en ik) eerst
+gebruik gemaakt van een methode voor \it{spatio-temporal clustering}, waarbij 
+we verzamelde tweets (met locatie-informatie) clusteren binnen een bepaalde \it{GeoHash} (een locatie-representatie) en 
+tijdsinterval. Vervolgens delen we met behulp van \it{supervised learning} event candidates op in de categorie\"en \ttt{geen\_event}, 
+\ttt{sport}, \ttt{bijeenkomst}, \ttt{entertainment},
+\ttt{incident} of \ttt{anders}. Hiervoor hebben we gebruik gemaakt van van twee
+(\it{Naive Bayes}) \it{classifiers}, waarbij de eerste classifier alleen 
+\it{word features}
+gebruikt en de tweede features die meer gerelateerd zijn aan 
+\it{meta-informatie} van tweets.
+Met name de eerste classifier blijkt behoorlijk goed te werken, deze behaalt 
+alleen al een \it{accuracy} van 81\%. In combinatie met de tweede classifier
+behalen we een accuracy van 84\%. Events worden gevisualiseerd met behulp
+van een \it{Google Map interface} met \it{markers} en verrijkt met staafdiagrammen en
+tweets zonder locatie-informatie.
 \vspace{\fill}
+
+% nieuwe pagina voor inleding
 \newpage
 
 \s{Inleiding}
+Dankzij de opkomst van sociale media is er tegenwoordig een schat aan 
+\it{real-time} informatie 
+over de fysieke wereld te vinden op het Internet. Mensen zijn \it{sociale 
+sensoren} (\citealt{sakaki2010earthquake}) geworden doordat ze bijvoorbeeld 
+vertellen waar ze zijn, wat er in hun omgeving gebeurt en wat ze doen. Sociale 
+media bieden daardoor een metaforisch raam binnen
+de digitale wereld, dat uitkijkt op onze fysieke wereld.
+\vl
+Op \it{Twitter} worden per dag miljoenen berichten (\it{tweets}) geplaatst, 
+waarvan de nuttigheid voor andere gebruikers soms enigszins te
+betwisten is (mensen vragen zich bijvoorbeeld af waarom plakken kaas twee 
+centimeter groter zijn dan een boterham).
+Het kan voor gebruikers handig zijn om via gefilterde Twitterdata inzicht te 
+krijgen in wat er zoal bij hen in de buurt plaatsvindt: denk 
+bijvoorbeeld aan journalisten of hulpdiensten, die hier altijd snel van op de 
+hoogte moeten zijn). We willen een systeem bouwen dat 
+voor Nederlandstalige tweets met locatie-informatie gebeurtenissen of \it{events} op Twitter op kan sporen (Event\it{Detective}) door tweets 
+tot events te groeperen, oftewel 
+een systeem voor \it{event detection} op Twitter. Events moeten daarnaast
+tijdens de detectie worden gecategoriseerd (in bijvoorbeeld \ttt{sport} of \ttt{incident}), verrijkt met tweets zonder locatie-informatie (slechts 3\% van de 
+tweets zijn voorzien van locatie-informatie (\citealt{leetaru2013mapping})) en vervolgens op een geschikte manier 
+worden gevisualiseerd. We verstaan onder een event het
+volgende: \it{``something non-trivially happening at a certain time or place''} 
+(\citealt{yang1998study}), met daarbij als eis 
+dat een event daadwerkelijk in de fysieke wereld plaatsvindt.
+\vl
+Ik zal in de Methode (hoofdstuk \ref{methode}) de implementatie van ons systeem 
+beschrijven en in hoofdstuk \ref{resultaten} de experimenten, resultaten en evaluatie
+presenteren. Daarna zal ik in hoofdstuk \ref{conclusie}, de Conclusie, ingaan op de 
+hoofdvraag: \it{``Hoe kunnen we een systeem bouwen dat aan de hand van
+Nederlandstalige tweets events kan detecteren, verrijken en visualiseren?''} Als 
+eerste zal ik een link leggen met de wetenschap achter 
+event detection in hoofdstuk \ref{theorie}, het Theoretisch Kader.
 
-TODO
-
-\s{Theoretisch kader}
+\s{Theoretisch kader}\label{theorie}
 
 Het onderwerp van deze scriptie valt binnen de wetenschappelijke literatuur 
 onder het thema \it{event detection} (in sociale media), waarbij dit thema op zijn beurt weer is in te 
@@ -60,14 +171,14 @@ reeds bestaande \it{news events} te detecteren en nieuwe news events te
 ontdekken ({\citealt{allan2002introduction}). Het TDT-programma bestond dus oorspronkelijk uit 
 respectivelijk drie taken: de \it{segmentatie}, \it{detectie} en \it{opsporing} van events 
 (\citealt{atefeh2013survey}). Het doel hiervan was om gebruikers inzicht te bieden in (de 
-ontwikkeling van) nieuwe en interessante gebeurtenissen die op de wereld 
+ontwikkeling van) nieuwe en interessante events die op de wereld 
 plaatsvinden ({\citealt{allan2002introduction}).
 \vl
 Een systeem dat in staat is om event detection uit te voeren moet dus volgens 
 TDT nieuwe of oudere, niet eerder ge\"identificeerde events kunnen ontdekken. 
 Event detection kan voor TDT dus uit respectievelijk twee taken bestaan: \it{on-line} (dus 
 \it{real-time}) \it{detection} en \it{retrospective detection} (\citealt{yang1998study}). Het systeem dat 
-wordt beschreven in deze scriptie valt onder retrospective detection, 
+wordt beschreven in deze scriptie is niet real-time en valt dus onder retrospective detection, 
 omdat we events in tweets uit het verleden willen ontdekken. Na enige aanpassing 
 zou het mogelijk zijn om ons systeem ook on-line detection te laten uitvoeren, door te 
 zorgen dat er constant input van de Twitter stream kan worden geanalyseerd. 
@@ -118,7 +229,7 @@ representatie voor de locatie (geen radius rondom tweets, maar \it{GeoHash}\foot
 figuur \ref{geohash} en de uitleg daarboven}, en probeer ik events te verrijken met tweets zonder geo-informatie en 
 Chris Pool met named \it{entity recognition}.
 
-\s{Methode: van data tot detective}\label{methode}
+\s{Methode: Van data tot detective}\label{methode}
 
 Nu volgt een beschrijving van de werking van ons systeem, van het verzamelen 
 van de data tot de uiteindelijke detectie, verrijking en visualisatie van 
@@ -222,7 +333,7 @@ Ik moet slapen	<tab>4.584649 51.854845<tab>tundraful<tab>2015-03-27 00:01:17 CET
 \end{lstlisting}
 \vspace*{-10pt}
 
-\ss{\ttt{EventCandidates} - Generatie van event candidates}\label{EventCandidates}
+\ss{\ttt{EventCandidates}: Generatie van event candidates}\label{EventCandidates}
 
 Net als Walther, et al. willen we in ons systeem \it{event candidates} verzamelen: 
 groepen of clusters van tweets die een gebeurtenis zouden kunnen zijn. Hiervoor 
@@ -248,7 +359,7 @@ use: ./eventCandidates.py tweetfile datasetname
 \end{lstlisting}
 \vspace*{-10pt}
 
-\sss{\ttt{TweetPreprocessor} – Tweets representeren in Python}\label{TweetPreprocessor}
+\sss{\ttt{TweetPreprocessor}: Tweets representeren in Python}\label{TweetPreprocessor}
 
 We hebben ervoor gekozen om tweets op te slaan als Python \ttt{dictionaries} (in een 
 \ttt{list}), waarbij de \ttt{keys} strings zijn en de \ttt{values} de verzamelde tweet (meta)data 
@@ -329,7 +440,7 @@ tweetDict = {"text" : "tekst van tweet", "tokens" : "getokeniseerde tekst",
 \end{lstlisting}
 \vspace*{-10pt}
 
-\sss{\ttt{ClusterCreator} – Tweets clusteren op GeoHash en tijd}\label{ClusterCreator}
+\sss{\ttt{ClusterCreator}: Tweets clusteren op GeoHash en tijd}\label{ClusterCreator}
 
 We moeten nu op basis van de gegenereerde tweet dictionaries tijd- en 
 locatieclusters in een datastructuur zetten die we in het verdere systeem zullen 
@@ -354,7 +465,7 @@ clusters = { "GeoHash 1" : { "Unix Time laatste_tweet" : [ tweetDict1, ...], ...
 \end{lstlisting}
 \vspace*{-10pt}
 
-\sss{\ttt{ClusterMerger} – Clusters samenvoegen en event candidates selecteren}
+\sss{\ttt{ClusterMerger}: Clusters samenvoegen en event candidates selecteren}
 
 De clusters die we hebben verzameld vallen binnen een vrij klein gebied (kleiner 
 of gelijk aan 173x173 meter), wat niet voldoende is voor events waarvan de 
@@ -675,7 +786,7 @@ leesbaar formaat opgeslagen. Het doel van beide modules is gelijkwaardig, nameli
 \it{serialisatie}\footnote{datastructuren of objecten opslaan zodat ze later weer kunnen 
 worden opgebouwd}.
 
-\ss{Detectie, verrijking en visualisatie van events}
+\ss{Detectie, verrijking en visualisatie van events}\label{detect}
 
 De in \ref{train} getrainde classifiers kunnen nu worden toegepast om events te 
 detecteren op basis van nieuwe event candidates. Dit is het proces dat het aan 
@@ -686,7 +797,7 @@ de visualisatie van events af. \ttt{EventDetective} en \ttt{EventDetectiveChart}
 visualisatiecomponent (\ttt{generateMarkers}, zie 3.5.3) omdat ze de input voor de 
 visualisatie moeten geven.
 
-\sss{\ttt{EventDetective} – detectie van events}\label{EventDetective}
+\sss{\ttt{EventDetective}: Detectie van events}\label{EventDetective}
 
 De naam \ttt{EventDetective} is afkomstig van event detection, het centrale thema van 
 het onderzoek onderliggend aan het onderwerp van deze scriptie, en een soort 
@@ -704,7 +815,7 @@ classifiers bepalen daarna een categorielabel voor de event candidates. Wanneer
 ze onder een categorie vallen die niet gelijk is aan \ttt{geen\_event} worden ze aan 
 een lijst met events toegevoegd.
 
-\sss{\ttt{EventDetectiveChart} – verrijking van events}\label{EventDetectiveChart}
+\sss{\ttt{EventDetectiveChart}: Verrijking van events}\label{EventDetectiveChart}
 
 \ttt{EventDetectiveChart} erft over van \ttt{EventDetective} en bevat qua detectie van 
 events dezelfde funcionaliteit. De extra stap die in dit programma plaatsvindt 
@@ -742,7 +853,7 @@ die hierna nog plaats zouden kunnen vinden is het berekenen van een \it{similari
 score} met de tweets in een event, maar hier ben ik verder niet meer aan 
 toegekomen.
 
-\sss{\ttt{generateMarkers} en \ttt{vis/map/} – visualisatie van events}
+\sss{\ttt{generateMarkers} en \ttt{vis/map/}: Visualisatie van events}\label{eventvis}
 
 Om events te visualiseren en de resultaten van ons systeem te kunnen presenteren 
 hebben we gebruik gemaakt van \it{markers} met een \ttt{InfoWindow} op een \it{Google Map}, zie 
@@ -785,7 +896,7 @@ van de lijsten in locations.
 \end{figure}
 
 Naast de standaard visualisatie heb ik nog een extra visualisatie-optie aan het systeem 
-toegevoegd: een Google map met staafdiagram, met behulp van het \it{jQuery framework} van 
+toegevoegd: een Google Map met staafdiagram, met behulp van het \it{jQuery framework} van 
 \ttt{High\-Charts}\footnote{\url{http://www.highcharts.com/products/highcharts}}. 
 Het idee hierachter is als volgt: wanneer events worden verrijkt 
 met tweets zonder geo-informatie, en er wordt bijvoorbeeld een belangrijke 
@@ -815,7 +926,7 @@ in twee delen wordt verdeeld, waarbij aan de linkerkant de Google Map met
 markers wordt weergegeven en aan de rechterkant de \ttt{HighCharts}-grafiek die hoort 
 bij een aangeklikte marker.
 
-\s{Experimenten, resultaten en evaluatie}
+\s{Experimenten, resultaten en evaluatie}\label{resultaten}
 
 Ik zal nu de met onze \ttt{EventDetective}-software uitgevoerde experimenten – inclusief verkregen resultaten 
 en evaluatie – beschrijven.
@@ -883,7 +994,7 @@ zorgt ook voor wat onduidelijkheid en zou in de toekomst eventueel weggelaten ku
 zijn we het niet altijd eens, maar dit wordt wellicht veroorzaakt omdat we erg brede categorie\"en gebruiken. Ondanks deze bezwaren
 waren we het toch in 86\% van de gevallen met elkaar eens.
 
-\ss{Detectie van events: Trainen en testen van classifiers}
+\ss{Trainen en testen van classifiers}\label{traintest}
 
 We hebben de \ttt{ClassifierCreator} (\ref{ClassifierCreator}) gebruikt om classifiers te trainen en de prestaties van ons systeem te
 beoordelen. We gebruiken in ons systeem twee classifiers voor event detection:
@@ -971,26 +1082,26 @@ events} zijn, oftewel de categorie \ttt{wel\_event}: alle categorie\"en behalve 
 krijgen we binnen ons systeem een f1-score van 88\%, terwijl \citeauthor{walther2013geo} een f1-score van 84\% behaalden (zie de code
 in comments bij ``\ttt{uncomment voor wel\_event}'' in de \ttt{ClassifierCreator}). Hierbij is wel belangrijk om op te merken dat wij
 het wat betreft events in de categorie \ttt{incident} vrij makkelijk hebben, omdat meldingen van incidenten vaak behoorlijk op elkaar lijken. Daarom 
-zijn ze makkelijk te identificeren met behulp van word features.
+zijn ze makkelijk te identificeren met behulp van word features. Daarnaast werkt onze detectie nog niet real-time, wat bij \citeauthor{walther2013geo}
+wel het geval is.
 
-\ss{Visualisatie en verrijking van events}
+\ss{Detectie, verrijking en visualisatie van events}\label{detvervis}
 
-Een beschrijving van de resultaten van ons systeem zou natuurlijk niet compleet zijn zonder de visualisaties van \ttt{vis/map/} toe te 
-voegen. Nadat de \ttt{EventDetective} (\ref{EventDetective}) de door de \ttt{ClassifierCreator} gegenereerde classifiers heeft 
+Nadat de \ttt{EventDetective} (\ref{EventDetective}) de door de \ttt{ClassifierCreator} gegenereerde classifiers heeft 
 toegepast op een dataset met event candidates, worden de gedetecteerde events in een lijst in Javascript-formaat 
 opgeslagen (\ttt{vis/map/js/mar\-kers.js}). Wanneer nu \ttt{vis/map/map.html} wordt geopend, is figuur \ref{standaardvis} het resultaat: een Google Map met
 markers voor events.
 
 \begin{figure}[H]
   \centering
-    \image[width=0.6\textwidth]{standaardvis.png}
+    \image[width=0.46\textwidth]{standaardvis.png}
     \caption{Visualisatie van events in april 2015 door vis/map/map.html}
   \label{standaardvis}
 \end{figure}
 
 \ttt{EventDetectiveChart} (\ref{EventDetectiveChart}) kan events verrijken met tweets zonder geo-informatie en voegt (in samenwerking
 met \ttt{vis/map/map\_chart.html}) een staafdiagram toe aan de visualisatie. Figuur \ref{verrijk} geeft een voorbeeld van een verrijkt event met staafdiagram.
-Tweets zonder geo-informatie zijn dikgedrukt.
+Tweets zonder geo-informatie worden dikgedrukt weergegeven.
 
 \begin{figure}[H]
   \centering
@@ -999,10 +1110,36 @@ Tweets zonder geo-informatie zijn dikgedrukt.
   \label{verrijk}
 \end{figure}
 
-\s{Conclusie}
+\s{Conclusie}\label{conclusie}
 
-TODO
+In deze scriptie heb ik een met behulp van Python ge\"implementeerde benadering voor \it{event detection} beschreven, die te vinden is
+in de repository \url{https://github.com/chrispool/Thesis}. 
+\vl
+De detectie van events vindt plaats door 
 
+\begin{bullets}
+\item data (tweets met metadata, voorzien van locatie) te verzamelen (\ref{dataverzamelen}),
+\item event candidates te genereren (\ref{EventCandidates}): de eerste groepering van tweets tot mogelijke events,
+\item event candidates te annoteren (\ref{annotatie}) omdat we supervised learning gebruiken,
+\item (Naive Bayes) classifiers met geschikte features te trainen en te evalueren, waarbij is gebleken dat met name word features belangrijk
+zijn voor de prestatie van het systeem (\ref{train}),
+\item de getrainde classifiers in het programma toe te passen om voor nieuwe event candidates events te kunnen detecteren (\ref{detect})
+\end{bullets}
+
+De verrijking en visualisatie van events vindt plaats door
+
+\begin{bullets}
+\item events in een Javascript-lijst te zetten en deze events in \ttt{InfoWindow}s in markers op een Google Map te plaatsen (\ref{eventvis}
+en \ref{detvervis}).
+\item staafdiagrammen voor events te genereren (om trends in events te kunnen ontdekken), waarin tweets per twee minuten worden gegroepeerd
+(\ref{EventDetectiveChart} en \ref{detvervis}).
+\item een simpel Proof of Concept toe te passen dat tweets zonder locatie-informatie toevoegt aan events (\ref{EventDetectiveChart} en
+\ref{detvervis}).
+\end{bullets}
+
+Uit \ref{traintest} blijkt dat ons systeem goed presteert en het zich lijkt kunnen te meten met \it{state-of-the-art performance}. Doordat we 
+besloten hebben om GeoHash als locatierepresentatie gebruiken en events met word features in algemene categorie\"en in te delen 
+en te verrijken, is \ttt{EventDetective} een uniek systeem.
 \newpage
 \s{Bijlage}\label{bijlage}
 
