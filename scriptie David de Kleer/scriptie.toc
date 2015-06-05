@@ -19,9 +19,10 @@
 \contentsline {subsubsection}{\numberline {3.5.1}\texttt {EventDetective} \IeC {\textendash } detectie van events}{14}{subsubsection.3.5.1}
 \contentsline {subsubsection}{\numberline {3.5.2}\texttt {EventDetectiveChart} \IeC {\textendash } verrijking van events}{14}{subsubsection.3.5.2}
 \contentsline {subsubsection}{\numberline {3.5.3}\texttt {generateMarkers} en \texttt {vis/map/} \IeC {\textendash } visualisatie van events}{15}{subsubsection.3.5.3}
-\contentsline {section}{\numberline {4}Experimenten en evaluatie}{16}{section.4}
+\contentsline {section}{\numberline {4}Experimenten, resultaten en evaluatie}{16}{section.4}
 \contentsline {subsection}{\numberline {4.1}Data verzamelen event candidates genereren}{16}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Het annotatieproces}{16}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Event detection: Trainen en testen van classifiers}{17}{subsection.4.3}
-\contentsline {section}{\numberline {5}Conclusie}{19}{section.5}
-\contentsline {section}{\numberline {6}Bijlage}{20}{section.6}
+\contentsline {subsection}{\numberline {4.3}Detectie van events: Trainen en testen van classifiers}{17}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Visualisatie en verrijking van events}{19}{subsection.4.4}
+\contentsline {section}{\numberline {5}Conclusie}{20}{section.5}
+\contentsline {section}{\numberline {6}Bijlage}{21}{section.6}

@@ -30,7 +30,8 @@ TODO
 \s*{\hfill Samenvatting \hfill}
 \addcontentsline{toc}{section}{Samenvatting}
 \begin{center}
-TODO
+In deze scriptie presenteer ik een state-of the art benadering voor event detection op Twitter. Hiervoor hebben we (Chris Pool en ik)
+gebruik gemaakt van een methode voor spatio-temporal clustering, waarbij we tweets clusteren binnen een bepaalde GeoHash en tijdsinterval.
 \end{center}
 \vspace{\fill}
 \newpage
@@ -814,7 +815,7 @@ in twee delen wordt verdeeld, waarbij aan de linkerkant de Google Map met
 markers wordt weergegeven en aan de rechterkant de \ttt{HighCharts}-grafiek die hoort 
 bij een aangeklikte marker.
 
-\s{Experimenten en evaluatie}
+\s{Experimenten, resultaten en evaluatie}
 
 Ik zal nu de met onze \ttt{EventDetective}-software uitgevoerde experimenten – inclusief verkregen resultaten 
 en evaluatie – beschrijven.
@@ -882,7 +883,7 @@ zorgt ook voor wat onduidelijkheid en zou in de toekomst eventueel weggelaten ku
 zijn we het niet altijd eens, maar dit wordt wellicht veroorzaakt omdat we erg brede categorie\"en gebruiken. Ondanks deze bezwaren
 waren we het toch in 86\% van de gevallen met elkaar eens.
 
-\ss{Event detection: Trainen en testen van classifiers}
+\ss{Detectie van events: Trainen en testen van classifiers}
 
 We hebben de \ttt{ClassifierCreator} (\ref{ClassifierCreator}) gebruikt om classifiers te trainen en de prestaties van ons systeem te
 beoordelen. We gebruiken in ons systeem twee classifiers voor event detection:
@@ -971,6 +972,33 @@ krijgen we binnen ons systeem een f1-score van 88\%, terwijl \citeauthor{walther
 in comments bij ``\ttt{uncomment voor wel\_event}'' in de \ttt{ClassifierCreator}). Hierbij is wel belangrijk om op te merken dat wij
 het wat betreft events in de categorie \ttt{incident} vrij makkelijk hebben, omdat meldingen van incidenten vaak behoorlijk op elkaar lijken. Daarom 
 zijn ze makkelijk te identificeren met behulp van word features.
+
+\ss{Visualisatie en verrijking van events}
+
+Een beschrijving van de resultaten van ons systeem zou natuurlijk niet compleet zijn zonder de visualisaties van \ttt{vis/map/} toe te 
+voegen. Nadat de \ttt{EventDetective} (\ref{EventDetective}) de door de \ttt{ClassifierCreator} gegenereerde classifiers heeft 
+toegepast op een dataset met event candidates, worden de gedetecteerde events in een lijst in Javascript-formaat 
+opgeslagen (\ttt{vis/map/js/mar\-kers.js}). Wanneer nu \ttt{vis/map/map.html} wordt geopend, is figuur \ref{standaardvis} het resultaat: een Google Map met
+markers voor events.
+
+\begin{figure}[H]
+  \centering
+    \image[width=0.6\textwidth]{standaardvis.png}
+    \caption{Visualisatie van events in april 2015 door vis/map/map.html}
+  \label{standaardvis}
+\end{figure}
+
+\ttt{EventDetectiveChart} (\ref{EventDetectiveChart}) kan events verrijken met tweets zonder geo-informatie en voegt (in samenwerking
+met \ttt{vis/map/map\_chart.html}) een staafdiagram toe aan de visualisatie. Figuur \ref{verrijk} geeft een voorbeeld van een verrijkt event met staafdiagram.
+Tweets zonder geo-informatie zijn dikgedrukt.
+
+\begin{figure}[H]
+  \centering
+    \image[width=\textwidth]{verrijk.png}
+    \caption{Voorbeeld van een verrijkt event met bijbehorend staafdiagram}
+  \label{verrijk}
+\end{figure}
+
 \s{Conclusie}
 
 TODO
