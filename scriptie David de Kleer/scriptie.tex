@@ -87,11 +87,11 @@ docenten en studiegenoten, voor hun steun, leerzame ervaringen en positieve cont
 \s*{\hfill Samenvatting \hfill}
 \addcontentsline{toc}{section}{Samenvatting}
 Sociale media bieden een grote hoeveelheid informatie over de fysieke wereld, 
-waarin mensen vertellen waar ze zijn, wat er in hun
-omgeving gebeurt of wat ze doen. Berichten van meerdere mensen op dezelfde 
+omdat mensen vertellen waar ze zijn, wat er in hun
+omgeving gebeurt of wat ze doen. Berichten van meerdere mensen op dezelfde
 locatie kunnen worden gecombineerd tot mogelijke gebeurtenissen of \it{event candidates},
 welke in categorie\"en zouden kunnen worden ingedeeld.
-Hierdoor kunnen anderen in de buurt op de hoogte worden gebracht van wat er zoal
+Hierdoor is het voor anderen in de buurt mogelijk om op de hoogte te blijven van wat er zoal
 om hen heen gebeurt.
 \vl
 In deze scriptie presenteer ik een \it{state-of-the-art} benadering voor 
@@ -120,8 +120,8 @@ tweets zonder locatie-informatie.
 Dankzij de opkomst van sociale media is er tegenwoordig een schat aan 
 \it{real-time} informatie 
 over de fysieke wereld te vinden op het Internet. Mensen zijn \it{sociale 
-sensoren} (\citealt{sakaki2010earthquake}) geworden doordat ze bijvoorbeeld 
-vertellen waar ze zijn, wat er in hun omgeving gebeurt en wat ze doen. Sociale 
+sensoren} (\citealt{sakaki2010earthquake}) geworden doordat ze
+vertellen waar ze zijn, wat er in hun omgeving gebeurt of wat ze doen. Sociale 
 media bieden daardoor een metaforisch raam binnen
 de digitale wereld, dat uitkijkt op onze fysieke wereld.
 \vl
@@ -132,7 +132,7 @@ centimeter groter zijn dan een boterham).
 Het kan voor gebruikers handig zijn om via gefilterde Twitterdata inzicht te 
 krijgen in wat er zoal bij hen in de buurt plaatsvindt: denk 
 bijvoorbeeld aan journalisten of hulpdiensten, die hier altijd snel van op de 
-hoogte moeten zijn). We willen een systeem bouwen dat 
+hoogte moeten zijn. We willen een systeem bouwen dat 
 voor Nederlandstalige tweets met locatie-informatie gebeurtenissen of \it{events} op Twitter op kan sporen (Event\it{Detective}) door tweets 
 tot events te groeperen, oftewel 
 een systeem voor \it{event detection} op Twitter.
@@ -145,14 +145,14 @@ tijdens de detectie worden gecategoriseerd (in bijvoorbeeld \ttt{sport} of \ttt{
 tweets zijn voorzien van locatie-informatie (\citealt{leetaru2013mapping})) en vervolgens op een geschikte manier 
 worden gevisualiseerd.
 Het systeem detecteert geen \it{real-time events},
-omdat we ons geheel willen richten op het proces van event detection en nog niet zo zeer op real-time aspecten daarvan.
+omdat we ons geheel willen richten op het proces van event detection en niet zozeer op real-time aspecten daarvan.
 \vl
 Ik zal in de Methode (hoofdstuk \ref{methode}) de implementatie van ons systeem 
 beschrijven en in hoofdstuk \ref{resultaten} de experimenten, resultaten en evaluatie
 presenteren. Daarna zal ik in hoofdstuk \ref{conclusie}, de Conclusie, ingaan op de 
 hoofdvraag: \it{``Hoe kunnen we een systeem bouwen dat aan de hand van
 Nederlandstalige tweets events kan detecteren, verrijken en visualiseren?''} Als 
-eerste zal ik een link leggen met de wetenschap achter 
+eerste zal ik een link leggen met de wetenschap onderliggend aan
 event detection in hoofdstuk \ref{theorie}, het Theoretisch Kader.
 
 \s{Theoretisch kader}\label{theorie}
@@ -249,12 +249,12 @@ meest fundamentele delen van ons systeem zijn gekomen: de data.
 \ss{Verzamelen van data}\label{dataverzamelen}
 
 We willen ons systeem trainen op retrospective data, dus op tweets uit het 
-verleden. Onze tweet datasets zijn afkomstig van de Linuxserver \it{Karora}
+verleden. Onze tweet datasets (zie de map \ttt{corpus/} in de repository) zijn afkomstig van de Linuxserver \it{Karora}
 (\ttt{karora.let.rug.nl}) van de Rijksuniversiteit Groningen. Deze server 
 filtert constant 
 (grotendeels) Nederlandstalige tweets uit de Twitter stream. De gefilterde 
 tweets worden samen met hun metadata per uur in gecomprimeerde (\ttt{.out.gz}) 
-bestanden in de map \ttt{/net/corpora/twitter2/Tweets} (op Karora) geplaatst. 
+bestanden in de map \ttt{/net/corpora/twitter2/\\Tweets} (op Karora) geplaatst. 
 Met het volgende commando is het nu mogelijk om bijvoorbeeld de tweets 
 (inclusief alle 
 metadata) van 27 maart 2015, om 3 uur 's middags, te verkrijgen.
@@ -265,7 +265,7 @@ $ zcat /net/corpora/twitter2/Tweets/2015/03/20150327:15.out.gz}
 tweets gedecomprimeerd wordt en de gedecomprimeerde data wordt weggeschreven 
 naar standard output.
 \vl
-Het programma \ttt{tweet2tab} (zie ook \ttt{scripts/tweet2tab} in de 
+Het programma \ttt{tweet2tab} (zie \ttt{scripts/tweet2tab} in de 
 repository) is in 
 staat om een aantal velden uit de zojuist verkregen gedecomprimeerde data te 
 filteren en te scheiden met tabs, zodat deze velden eenvoudig door programma's
@@ -415,7 +415,7 @@ Figuur \ref{geohash} geeft weer hoe dit ongeveer werkt.
 We hebben gekozen om een GeoHash van precisie 7 (7 alfanumerieke karakters) te gebruiken. 
 Hierbij is de grootte van de hokjes in het raster kleiner of gelijk aan 173x173 
 meter\footnote{\url{http://www.movable-type.co.uk/scripts/geohash.html}}. We maken voor de omzetting van lengte- en breedtegraden naar GeoHashes 
-gebruik van de Python-module \ttt{python-geohash}\footnote{\url{https://code.google.com/p/python-geohash/} (zie ook \ttt{modules/geohash.py} in de repository)}.
+gebruik van de Python-module \ttt{python-geohash}\footnote{\url{https://code.google.com/p/python-geohash/} (zie \ttt{modules/geohash.py} in de repository)}.
 \vl
 Nu het probleem van locatie en tijd is opgelost, is het handig om te kijken naar 
 de \bf{tokenisatie} van de tekst van een tweet. Wanneer we bijvoorbeeld de tekst van 
@@ -538,7 +538,7 @@ event candidate wanneer er minstens \bf{twee tweets} in staan van minstens \bf{t
 gebruikers}. Deze event candidates worden door \ttt{EventCandidates} met behulp van de 
 \ttt{json}-module\footnote{Met \ttt{json} kunnen datastructuren in Python eenvoudig 
 in leesbaar formaat worden opgeslagen en later worden gebruikt door andere
-programma's, zie ook \url{https://docs.python.org/3/library/json.html}} opgeslagen
+programma's, zie \url{https://docs.python.org/3/library/json.html}} opgeslagen
 als \ttt{data/datasetnaam/Event\-Can\-di\-da\-tes.json}.
 \vl
 Het verschil tussen candidate clusters en event candidates is dus dat:
