@@ -22,7 +22,7 @@
 \contentsline {section}{\numberline {4}Experimenten, resultaten en evaluatie}{16}{section.4}
 \contentsline {subsection}{\numberline {4.1}Data verzamelen event candidates genereren}{16}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Het annotatieproces}{17}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Trainen en testen van classifiers}{17}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.3}Trainen en testen van classifiers}{18}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}Detectie, verrijking en visualisatie van events}{19}{subsection.4.4}
 \contentsline {section}{\numberline {5}Conclusie}{20}{section.5}
 \contentsline {section}{\numberline {6}Bijlage}{21}{section.6}

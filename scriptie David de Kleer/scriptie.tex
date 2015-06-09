@@ -56,7 +56,7 @@ klinken, maar deze orale traditie vormt toch de basis van onze moderne
 samenleving, waarin we nog steeds onze kennis putten uit de informatiebronnen 
 (gecreëerd vanuit de kennis van anderen) om ons heen. Daarbij zijn de manieren 
 van doorgeven en opslaan van informatie door de eeuwen heen ontzettend vervormd, 
-veranderd en vernieuwd, en kennen we een enorme hoeveelheid aan 
+veranderd en vernieuwd, en kennen we een enorme hoeveelheden 
 informatiedragers en daarmee methoden om informatie door te geven.
 \vl
 Er is wel een \it{maar}: Informatie heeft alleen waarde wanneer deze kan worden 
@@ -88,7 +88,7 @@ docenten en studiegenoten, voor hun steun, leerzame ervaringen en positieve cont
 \addcontentsline{toc}{section}{Samenvatting}
 Sociale media bieden een grote hoeveelheid informatie over de fysieke wereld, 
 omdat mensen vertellen waar ze zijn, wat er in hun
-omgeving gebeurt of wat ze doen. Berichten van meerdere mensen op dezelfde
+omgeving gebeurt, of wat ze doen. Berichten van meerdere mensen op dezelfde
 locatie kunnen worden gecombineerd tot mogelijke gebeurtenissen of \it{event candidates},
 welke in categorie\"en zouden kunnen worden ingedeeld.
 Hierdoor is het voor anderen in de buurt mogelijk om op de hoogte te blijven van wat er zoal
@@ -104,7 +104,7 @@ tijdsinterval. Vervolgens delen we met behulp van \it{supervised learning} event
 \ttt{incident} of \ttt{anders}. Hiervoor hebben we gebruik gemaakt van van twee
 (\it{Naive Bayes}) \it{classifiers}, waarbij de eerste classifier alleen 
 \it{word features}
-gebruikt en de tweede features die meer gerelateerd zijn aan 
+gebruikt en de tweede features meer gerelateerd zijn aan 
 \it{meta-informatie} van tweets.
 Met name de eerste classifier blijkt behoorlijk goed te werken, deze behaalt 
 alleen al een \it{accuracy} van 81\%. In combinatie met de tweede classifier
@@ -121,7 +121,7 @@ Dankzij de opkomst van sociale media is er tegenwoordig een schat aan
 \it{real-time} informatie 
 over de fysieke wereld te vinden op het Internet. Mensen zijn \it{sociale 
 sensoren} (\citealt{sakaki2010earthquake}) geworden doordat ze
-vertellen waar ze zijn, wat er in hun omgeving gebeurt of wat ze doen. Sociale 
+vertellen waar ze zijn, wat er in hun omgeving gebeurt, of wat ze doen. Sociale 
 media bieden daardoor een metaforisch raam binnen
 de digitale wereld, dat uitkijkt op onze fysieke wereld.
 \vl
@@ -130,7 +130,7 @@ waarvan de nuttigheid voor andere gebruikers soms enigszins te
 betwisten is (mensen vragen zich bijvoorbeeld af waarom plakken kaas twee 
 centimeter groter zijn dan een boterham).
 Het kan voor gebruikers handig zijn om via gefilterde Twitterdata inzicht te 
-krijgen in wat er zoal bij hen in de buurt plaatsvindt: denk 
+krijgen in wat er zoal om hen heen gebeurt: denk 
 bijvoorbeeld aan journalisten of hulpdiensten, die hier altijd snel van op de 
 hoogte moeten zijn. We willen een systeem bouwen dat 
 voor Nederlandstalige tweets met locatie-informatie gebeurtenissen of \it{events} op Twitter op kan sporen (Event\it{Detective}) door tweets 
@@ -178,13 +178,13 @@ respectivelijk drie taken: de \it{segmentatie}, \it{detectie} en \it{opsporing} 
 ontwikkeling van) nieuwe en interessante events die op de wereld 
 plaatsvinden ({\citealt{allan2002introduction}).
 \vl
-Een systeem dat in staat is om event detection uit te voeren moet dus volgens 
+Een systeem dat in staat is om event detection uit te voeren moet volgens 
 TDT nieuwe of oudere, niet eerder ge\"identificeerde events kunnen ontdekken. 
 Event detection kan voor TDT dus uit respectievelijk twee taken bestaan: \it{on-line} (dus 
 \it{real-time}) \it{detection} en \it{retrospective detection} (\citealt{yang1998study}). Het systeem dat 
 wordt beschreven in deze scriptie is niet real-time en valt dus onder retrospective detection, 
 omdat we events in tweets uit het verleden willen ontdekken. Na enige aanpassing 
-zou het mogelijk zijn om ons systeem ook on-line detection te laten uitvoeren, door te 
+zou het mogelijk kunnen zijn om ons systeem ook on-line detection te laten uitvoeren, door te 
 zorgen dat er constant input van de Twitter stream kan worden geanalyseerd. 
 Hieruit blijkt dus dat een systeem voor event detection zowel een on-line als een retrospective 
 component zou kunnen hebben.
@@ -219,19 +219,19 @@ berichten in events, waarbij een systeem een model (gebaseerd op regels of
 gebruikt om patronen in een datarepresentatie te bepalen en aan de hand daarvan
 data te classificeren}) gebruikt om de gekozen datarepresentatie te organiseren. 
 Deze eigenschappen kunnen soms vaker voorkomen: in ons systeem komt data organization
-bijvoorbeeld drie keer voor.
+bijvoorbeeld drie keer voor (in \ref{ClusterCreator}, \ref{ClusterMerger} en \ref{ClassifierCreator}).
 \vl
 Onze aanpak van event detection vertoont overeenkomsten met de aanpak van 
 \citeauthor{walther2013geo}. We gebruiken hetzelfde achterliggende idee: wanneer tweets 
 binnen een bepaald tijdsinterval en op dezelfde locatie qua inhoud gerelateerd 
 zijn, zou het goed kunnen dat ze een event bespreken. \citeauthor{walther2013geo} gebruiken 
 daarnaast een aantal nuttige \it{features} (eigenschappen binnen de datarepresentatie) in 
-hun event detection waarop onze features zijn geïnspireerd. Onze classificiatie 
-is daarentegen niet \it{binair} (wel/geen event), maar \it{categorisch}, omdat we algemene 
+hun event detection, waarop onze features zijn geïnspireerd. Onze classificiatie 
+is daarentegen niet \it{binair} (wel/geen event) maar \it{categorisch}, omdat we
 events in categorieën (zoals \it{sport} of \it{bijeenkomst}) willen indelen. Daarnaast gebruiken we een andere 
-representatie voor de locatie (geen radius rondom tweets, maar \it{GeoHash}\footnote{zie 
-figuur \ref{geohash} en de uitleg daarboven}, en probeer ik events te verrijken met tweets zonder geo-informatie en 
-Chris Pool met named \it{entity recognition}.
+locatie-representatie (geen radius rondom tweets, maar \it{GeoHash}\footnote{zie 
+figuur \ref{geohash} en de uitleg daarboven}), en probeer ik events te verrijken met tweets zonder geo-informatie en 
+Chris Pool met \it{named entity recognition}.
 
 \s{Methode: Van data tot detective}\label{methode}
 
@@ -242,8 +242,8 @@ serie programma's in de programmeertaal Python, die in dit hoofdstuk behandeld
 zullen gaan worden. Wanneer er wordt verwezen naar een bestand (binnen een 
 repository), is dit bestand te vinden in de git-repository 
 \url{https://github.com/chrispool/Thesis/}. Als er geen uitleg over het gebruik 
-van een programma wordt gegeven, is dit gewoon uit te voeren als 
-\ttt{./programmaNaam.py}. Ik zal ten eerste beschrijven hoe we aan een van de 
+van een programma wordt gegeven, is dit gewoon (onder \ttt{Unix}) uit te voeren als 
+\ttt{./programmaNaam.py}. Ik zal ten eerste beschrijven hoe we aan \'e\'en van de 
 meest fundamentele delen van ons systeem zijn gekomen: de data.
 
 \ss{Verzamelen van data}\label{dataverzamelen}
@@ -259,11 +259,11 @@ Met het volgende commando is het nu mogelijk om bijvoorbeeld de tweets
 (inclusief alle 
 metadata) van 27 maart 2015, om 3 uur 's middags, te verkrijgen.
 \begin{lstlisting}
-$ zcat /net/corpora/twitter2/Tweets/2015/03/20150327:15.out.gz}
+$ zcat /net/corpora/twitter2/Tweets/2015/03/20150327:15.out.gz
 \end{lstlisting}
 \ttt{zcat} is identiek aan \ttt{gunzip -c}, dit betekent dat het bestand met 
-tweets gedecomprimeerd wordt en de gedecomprimeerde data wordt weggeschreven 
-naar standard output.
+tweets gedecomprimeerd wordt en de gedecomprimeerde tweet data wordt weggeschreven 
+naar \ttt{standard output}.
 \vl
 Het programma \ttt{tweet2tab} (zie \ttt{scripts/tweet2tab} in de 
 repository) is in 
@@ -281,7 +281,7 @@ gepost
 \item \ttt{date}: datum en tijd
 \end{bullets}
 
-Om deze velden te verkrijgen kan het volgende commando worden gebruikt op de 
+Om deze velden te verkrijgen kan het volgende commando worden toegepast op de 
 output van het zojuist genoemde \ttt{zcat}-commando (op Karora):
 
 \begin{lstlisting}
@@ -289,7 +289,7 @@ output van het zojuist genoemde \ttt{zcat}-commando (op Karora):
 \end{lstlisting}
 
 Dit is in feite alle tweet data die we nodig hebben voor verdere verwerking. Er 
-is alleen nog een probleem: alle tweets worden meegenomen in het vorige 
+is alleen nog een probleem: \it{alle} tweets worden meegenomen in het vorige 
 commando, niet alleen de tweets die voorzien zijn van een locatie! Het formaat 
 van een tweet zonder locatie is (\ttt{<tab>} is het scheidingsteken):
 
@@ -298,22 +298,22 @@ Kan niet slapen.<tab><tab>HOIIKBENMERLE<tab>2015-05-05 01:03:20 CEST Tue
 \end{lstlisting}
 
 Er is dus nog een derde stap nodig om alleen de tweets met locatie te 
-verkrijgen: alle tweets die een leeg locatieveld hebben moeten worden 
+verkrijgen: de tweets die een leeg locatieveld hebben moeten worden 
 overgeslagen. Dit kan zowel met een \ttt{grep}-commando als een klein script 
 geschreven in Python (zie \ttt{scripts/get\_geotweets} in de repository):
 
 \begin{bullets}
 \item \ttt{grep}: Gebruik de Perl reguliere expressie (optie -P) 
-\verb|^[^\t]+\t[^\t]+}|. Deze reguliere expressie is waar wanneer er aan het 
+\verb|^[^\t]+\t[^\t]+|. Deze reguliere expressie is waar wanneer er aan het 
 begin van een regel 1 of meerdere keren een karakter staat dat geen tab is, 
 vervolgens 1 keer een karakter dat wel een tab is en daarna weer 1 of meerdere 
 keren een karakter dat geen tab is.
 \item \ttt{get\_geotweets.py}: splitst alle regels in standard input op tabs en 
 kijkt of 
-het tweede element niet leeg is. De tweet wordt geprint als dit het geval is.
+het tweede element niet leeg is. De tweet wordt geprint naar \ttt{standard output} als dit het geval is.
 \end{bullets}
 
-Nu volgen twee voorbeeldcommando's die alle commando's combineren en laten zien 
+Nu volgen twee voorbeeldcommando's die alle voorgaande handelingen combineren en laten zien 
 hoe alle tweets van 27 maart op Karora kunnen worden verzameld in het bestand 
 \ttt{march27.txt}.
 \vl
@@ -355,7 +355,7 @@ candidates.  Het idee achter de \ttt{ClusterCreator} en de \ttt{ClusterMerger} l
 idee achter de \ttt{ClusterCreator} en de \ttt{ClusterUpdater} van Walther, et al.
 \vl
 Het programma \ttt{EventCandidates} accepteert als argumenten een bestand met tweets 
-die gegenereerd zijn door een van de laatste twee commando's in sectie 3.1, en 
+dat gegenereerd is door \'e\'en van de laatste twee commando's in sectie \ref{dataverzamelen}, en 
 de naam van de dataset met event candidates die het programma moet generen.
 
 \begin{lstlisting}
@@ -366,12 +366,12 @@ use: ./eventCandidates.py tweetfile datasetname
 \sss{\ttt{TweetPreprocessor}: Tweets representeren in Python}\label{TweetPreprocessor}
 
 We hebben ervoor gekozen om tweets op te slaan als Python \ttt{dictionaries} (in een 
-\ttt{list}), waarbij de \ttt{keys} strings zijn en de \ttt{values} de verzamelde tweet (meta)data 
-in de vorm van strings. Een \it{tweet dictionary} ziet er nu dus zo uit:
+\ttt{list}), waarvan de \ttt{keys} strings zijn en de \ttt{values} de verzamelde tweet (meta)data 
+in de vorm van \ttt{strings} en \ttt{floats} voor de co\"ordinaten. Een \it{tweet dictionary} ziet er nu dus zo uit:
 
 \begin{lstlisting}[language=Python]
-tweetDict = {"text" : "tekst van tweet", "lon" : "lengtegraad", "lat" : "breedtegraad", 
-"user" : "gebruikersnaam", "localTime" : "tijd in UTC"}
+tweetDict = {"text" : "tekst van tweet", "lon" : lengtegraad_float, "lat" : 
+breedtegraad_float, "user" : "gebruikersnaam", "localTime" : "tijd in UTC"}
 \end{lstlisting}
 
 Het is belangrijk om in deze stap alvast na te denken over de volgende stap: hoe 
@@ -380,10 +380,10 @@ effici\"ente representatie van deze clusters? Hoe locatie- en tijdsdata in tweet
 dictionaries worden opgeslagen beïnvloedt immers hoe we deze data kunnen 
 clusteren! 
 \vl
-De \bf{tijd} van tweets wordt standaard weergegeven als \ttt{jaar-maand-dagnummer 
-uur:minuut:se\-con\-de tijdszone dag}. Wanneer uit deze string \ttt{jaar-maand-dagnummer 
-uur:minuut:seconde} wordt gefilterd is het mogelijk tijd en datum met behulp van 
-de time- en datetime-module in \bf{\it{Unix Time}} om te zetten, oftewel het aantal 
+De \bf{tijd} van tweets wordt standaard weergegeven als \ttt{"jaar-maand-dagnummer 
+uur:minuut:se\-con\-de tijdszone dag"}. Wanneer uit deze string \ttt{"jaar-maand-dagnummer 
+uur:minuut:se\-con\-de"} wordt gefilterd is het mogelijk tijd en datum met behulp van 
+de Python \ttt{time}- en \ttt{datetime}-module in \bf{\it{Unix Time}} om te zetten, oftewel het aantal 
 seconden dat is verstreken sinds 1 januari 1970. Hierdoor is het mogelijk om te 
 rekenen met seconden wanneer tijden van tweets met elkaar vergeleken moeten 
 worden, wat eenvoudiger is dan rekenen met een datum of tijd. Er kunnen direct 
@@ -396,10 +396,10 @@ beide events het andere event. Omdat dit waarschijnlijk niet vaak voor zal
 komen, nemen we dit risico.
 \vl
 De \bf{locatie} van tweets wordt standaard weergegeven als een co\"ordinaat (lengte- en 
-breedtegraad). Een representatie van locatie-informatie waarin coordinaten 
+breedtegraad). Een representatie van locatie-informatie waarin co\"ordinaten 
 binnen hetzelfde gebied onder dezelfde identifier kunnen worden geplaatst is 
 \bf{\it{GeoHash}}. Dit systeem deelt de wereld als het ware op in “hokjes” in een raster, 
-waarbij een locatie dus niet meer bestaat uit een specifieke coordinaat, maar 
+waarbij een locatie dus niet meer bestaat uit een specifieke co\"ordinaat, maar 
 uit een specifiek hokje (dat dus meerdere coordinaten omvat). Ieder hokje heeft 
 een alfanumerieke code, waarbij de precisie van het hokje hoger wordt (en 
 daarmee het betreffende gebied op aarde kleiner) wanneer de code langer is. 
@@ -419,28 +419,28 @@ gebruik van de Python-module \ttt{python-geohash}\footnote{\url{https://code.goo
 \vl
 Nu het probleem van locatie en tijd is opgelost, is het handig om te kijken naar 
 de \bf{tokenisatie} van de tekst van een tweet. Wanneer we bijvoorbeeld de tekst van 
-tweets met elkaar willen vergelijken komt het van pas om beschikking te hebben 
+tweets met elkaar willen vergelijken, komt het van pas om beschikking te hebben 
 over een lijst met tokens die in deze tweets voorkomen. Om tokens te kunnen 
-extraheren is het nodig om woordgrenzen te vinden, waarvoor we een simpele 
-tokenizer hebben geschreven die gebaseerd is op de volgende reguliere expressie: 
+extraheren is het nodig om woordgrenzen te vinden. Daarvoor hebben we een simpele 
+tokenizer geschreven, die gebaseerd is op de volgende reguliere expressie: 
 \verb|[^a-zA-Z0-9#@]+|. Alle tekens in een string waarvoor niet geldt dat ze 1 of 
 meerdere keren \ttt{a-z}, \ttt{A-9}, \ttt{0-9}, \ttt{\#}, of \ttt{@} bevatten, worden vervangen door een spatie 
 (met behulp van \ttt{pattern.sub} in de {re}-module van Python). We hebben besloten om 
 vóór het toepassen van de reguliere expressie links uit tweets te verwijderen 
 (we willen puur te kijken naar de tekst). Wanneer er vervolgens een lijst van 
 woorden zonder links overblijft, filteren we stopwoorden uit tweets met behulp 
-van een lijst van stopwoorden die is samengesteld door de Nederlandse 
+van een lijst met stopwoorden. Deze lijst is samengesteld door de Nederlandse 
 stopwoorden van de \ttt{nltk}-module\footnote{\url{http://www.nltk.org/}} van Python te combineren met een lijst van 
 stopwoorden op internet (zie \ttt{corpus/stopwords.txt} in de repository).
 \vl
 Als we nu locatie, tijd en tokenisatie toevoegen aan het bestaande tweet 
-dictionary ziet deze er als volgt uit:
+dictionary, ziet deze er als volgt uit:
 
 \begin{lstlisting}[language=Python]
 tweetDict = {"text" : "tekst van tweet", "tokens" : "getokeniseerde tekst", 
-"lon" : "lengtegraad", "lat" : "breedtegraad", "user" : "gebruikersnaam", 
-"localTime" : "datum en tijd", "unixTime" : "Unix Time in seconden", 
-"geoHash" : "GeoHash behorend bij lengte- en breedtegraad van tweet"}
+"lon" : lengtegraad_float, "lat" : breedtegraad_float, "user" : "gebruikersnaam", 
+"localTime" : "datum en tijd", "unixTime" : unixTime_int, "geoHash" : 
+"GeoHash behorend bij lengte- en breedtegraad van tweet"}
 \end{lstlisting}
 \vspace*{-10pt}
 
@@ -452,7 +452,7 @@ gaan gebruiken. Omdat locaties met tijden gebruikt kunnen worden als (redelijk)
 unieke identifiers, zijn ze in combinatie geschikt als keys voor een dictionary. 
 Er kunnen op verschillende tijden gebeurtenissen plaatsvinden binnen dezelfde 
 locatie, dus is een logische en efficiënte representatie van clusters een 
-dictionary met als keys de locaties (GeoHash) en als values dictionaries met als 
+dictionary met als keys de locaties (GeoHash) en als values dictionaries, met als 
 keys tijden (Unix Time) en als value een lijst van tweet dictionaries.  
 \vl
 Merk hierbij op dat lijsten van tweet dictionaries binnen onze gekozen 
@@ -460,22 +460,22 @@ representatie clusters of \it{candidate clusters} zijn. Candidate clusters zijn
 clusters van tweets die binnen een bepaalde GeoHash en een bepaald tijdsinterval 
 gepost zijn. Een candidate cluster kan blijven groeien in (tweet) omvang zolang 
 dit cluster “in leven is”, wat betekent dat er een nieuwe tweet wordt gepost 
-binnen de tijd van de laatste tweet op de locatie van het \ttt{cluster + 60 minuten}.
+binnen de GeoHash en de tijd van de laatste tweet in een cluster + 60 minuten.
 \vl
 De structuur van een candidate cluster dictionary is dus als volgt:
 
 \begin{lstlisting}[language=Python]
-clusters = { "GeoHash 1" : { "Unix Time laatste_tweet" : [ tweetDict1, ...], ...}, ...}
+clusters = { "GeoHash 1" : { unixTimeLaatsteTweet_int : [ tweetDict1, ...], ...}, ...}
 \end{lstlisting}
 \vspace*{-10pt}
 
-\sss{\ttt{ClusterMerger}: Clusters samenvoegen en event candidates selecteren}
+\sss{\ttt{ClusterMerger}: Clusters samenvoegen en event candidates selecteren}\label{ClusterMerger}
 
 De clusters die we hebben verzameld vallen binnen een vrij klein gebied (kleiner 
 of gelijk aan 173x173 meter), wat niet voldoende is voor events waarvan de 
 deelnemers over grotere gebieden zijn verspreid. Daarom hebben we drie stappen 
 aan het clusterproces toegevoegd die zorgen dat clusters worden samengevoegd met 
-andere clusters in de buurt wanneer ze qua locatie (\bf{stap 1}), tijd (\bf{stap 2}) en 
+andere clusters in de buurt, wanneer ze qua locatie (\bf{stap 1}), tijd (\bf{stap 2}) en 
 inhoud (\bf{stap 3}) overlappen. Dit werkt als volgt:
 
 \begin{bullets}
@@ -494,7 +494,7 @@ van een GeoHash zijn eenvoudig te vinden door de \ttt{neigbors}-methode van de
 
 Een goede vraag om nu te stellen is: wanneer stop je met het kijken naar buren? 
 Het is immers mogelijk om voor de buren van een GeoHash weer te kijken naar hun 
-buren, voor die buren weer, etcetera... We hebben ervoor gekozen om maar een 
+buren, voor die buren weer, etcetera... We hebben ervoor gekozen om maar \'e\'en 
 keer de buren van een GeoHash op te zoeken, omdat een gebied van zo'n 400x400 
 meter ons een goed formaat leek voor een gemiddeld event. 
 \vl
@@ -519,7 +519,7 @@ overlappen.
 overlappen bepalen we per cluster de 10 woorden met de hoogste \it{tf-idf score}. De 
 tf-idf score wordt berekend door eerst te tellen hoe vaak een woord in een 
 cluster voorkomt. Deze uitkomst wordt vermenigvuldigd met het logaritme van de 
-totale hoeveelheid clusters gedeeld door gedeeld door in hoeveel clusters een woord
+totale hoeveelheid clusters, gedeeld door in hoeveel clusters een woord
 voorkomt (\it{idf}, zie figuur \ref{idf}). idf is een compensatie voor woorden die vaak in 
 veel documenten voorkomen, denk hierbij aan stopwoorden.
 
@@ -532,7 +532,7 @@ veel documenten voorkomen, denk hierbij aan stopwoorden.
 
 \end{bullets}
 
-Omdat na deze stappen de clusters zijn samengevoegd kunnen we nu event 
+Omdat na deze drie stappen de clusters zijn samengevoegd kunnen we nu event 
 candidates gaan selecteren. Een samengevoegde cluster is in ons systeem een 
 event candidate wanneer er minstens \bf{twee tweets} in staan van minstens \bf{twee 
 gebruikers}. Deze event candidates worden door \ttt{EventCandidates} met behulp van de 
@@ -555,7 +555,7 @@ ze minstens twee tweets en twee gebruikers bevatten
 
 We willen events uit event candidates filteren met behulp van \it{supervised 
 learning}. Binnen supervised learning is een leeralgoritme in staat om patronen 
-vinden in gelabelde data, en op deze manier zelf in staat om labels aan nieuwe 
+vinden in \it{gelabelde} data, en op deze manier zelf in staat om labels aan nieuwe 
 data toe te kennen. Om een leeralgoritme voor supervised learning toe te kunnen 
 passen moeten we dus als eerste de door \ttt{EventCandidates} (\ref{EventCandidates}) gevonden event 
 candidates voorzien van een label. Dit gebeurt met behulp van de \ttt{Annotator}
@@ -567,11 +567,11 @@ evaluatie vindt plaats in \ttt{AnnotationEvaluation} (\ref{AnnotationEvaluation}
 \sss{\ttt{Annotator}: Interactieve annotatie van event candidates}\label{Annotator}
 
 De annotatie van event candidates is een interactief proces. Eerst moet er een 
-door EventCandidates gegenereerd dataset met event candidates worden ingelezen. 
+door \ttt{EventCan\-di\-da\-tes} gegenereerd dataset met event candidates worden ingelezen. 
 Daarna worden alle event candidates één voor één weergegeven en kan een 
 annotator voor iedere event candidate een label toekennen. We hebben besloten om 
 event candidates niet binair te labelen (event/geen event), maar om categorieën 
-toe te kennen aan events. Het gaat hierbij om de volgende 5 categorieën:
+aan ze toe te kennen. Het gaat hierbij om de volgende zes categorieën:
 
 \begin{enumerate}
 \item \ttt{geen\_event}: geen event
@@ -587,11 +587,11 @@ datastructuur waarin event candidates zijn opgeslagen. In feite zijn de lijsten
 met tweet dictionaries vervangen door nummers van event types:
 
 \begin{lstlisting}[language=Python]
-clusters = {geoHash : { unix_time_laatste_tweet : categorie_nummer, ... }, ... }
+clusters = {geoHash : { unixTimeLaatsteTweet_int : categorieNummer_int, ... }, ... }
 \end{lstlisting}
 
 De \ttt{Annotator} accepteert als argument de naam van een annotator, waardoor voor 
-een \ttt{json}-bestand met annotaties (dit bestand staat voor iedere annotator in 
+een \ttt{json}-bestand met annotaties (voor iedere annotator te vinden in 
 \ttt{data/datasetnaam/an\-no\-ta\-ti\-on\_Name-judge.json}) kan worden ge\"identificeerd wie de 
 annotator was, en annotaties op deze manier een unieke naam kunnen krijgen.
 
@@ -619,8 +619,8 @@ $Pr(e)$ voor de kans dat ze het eens zijn.
 annotatoren. Daarna bereiden we voor beide annotatoren twee lijsten voor, 
 waarvan in lijst 1 de labels 0 t/m 5 (kappa-score voor categorie\"en) staan en in 
 lijst 2 de labels 0 en 1 (kappa-score voor event of geen event). Deze lijsten 
-staan voor beide annotatoren in dezelfde volgorde, waarna door een eigen 
-implementatie van formule 2 de Kappa-score voor categorie\"en en event/geen event 
+staan voor beide annotatoren in dezelfde volgorde, waarna met behulp van een eigen 
+implementatie de Kappa-score voor categorie\"en en event/geen event 
 wordt berekend, met daarbij een \it{confusion matrix} voor categorieën en de 
 \it{accuracy}. De laatste twee statistieken kunnen we enigszins vergelijken met de prestaties van 
 ons systeem (als mensen het al in een bepaald percentage van de gevallen niet 
@@ -661,13 +661,13 @@ onze experimenten 9 features ge\"identificeerd:
 \begin{bullets}
 \item \ttt{wordOverlapUser}: Berekent de overlap van woorden tussen gebruikers binnen een 
 event candidate, waarbij de score hoger wordt wanneer overlappende woorden een 
-hoge df-waarde hebben. In hoe meer documenten per gebruiker een woord staat, des 
+hoge df-waarde hebben. In hoe meer documenten per gebruiker (tweets) een woord staat, des 
 te hoger de score wordt, waarbij hashtags een bonus krijgen omdat ze een 
 gemeenschappelijk thema of onderwerp aan kunnen geven. De score wordt 
 vermenigvuldigd met de hoeveelheid gebruikers, gedeeld door de hoeveelheid 
 tweets binnen de event candidate, en afgerond op 0.5 zodat de kans op overlap 
 met andere event candidates groter is.
-\item \ttt{wordOverlapSimple}: Simpele score voor woordoverlap: de hoeveelheid woorden die 
+\item \ttt{wordOverlapSimple}: Simpele score voor woordoverlap. De hoeveelheid woorden die 
 overlappen voor elke tweet binnen een event candidate (hashtags krijgen wederom 
 een bonus) wordt gedeeld door de hoeveelheid tweets binnen deze event candidate 
 en afgerond op 0.5.
@@ -680,10 +680,10 @@ een gemiddelde coördinaat rekening worden gehouden met de
 kromming van het aardoppervlak, anders ontstaat er een afwijking in het 
 uiteindelijke coördinaat. Omdat het bij een event candidate gaat om een klein 
 vlak op aarde zal de afwijking van dit coördinaat waarschijnlijk niet zo groot 
-zijn, dus berekenen we gewoon het “standaard” gemiddelde van de coördinaten (net 
+zijn. Daarom berekenen we gewoon het “standaard” gemiddelde van de coördinaten (net 
 alsof ze punten in een Cartesiaans coördinatenstelsel zijn: een platte aarde!)}) 
 gemiddelde van de lengte- en breedtegraden van de tweets binnen de event 
-candidate te berekenen. Dit coördinaat wordt omgezet naar een GeoHash van 
+candidate te berekenen. Dit gemiddelde coördinaat wordt omgezet naar een GeoHash van 
 precisie 6 met behulp van de \ttt{geohash}-module: \ttt{geohash.encode(breedtegraad, 
 lengtegraad, precisie)}.
 \item \ttt{uniqueUsers}: De hoeveelheid unieke gebruikers binnen een event candidate.
@@ -785,7 +785,7 @@ Als het programma in de TEST modus wordt uitgevoerd worden de (laatst) getrainde
 classifiers opgeslagen als binaire bestanden in 
 \ttt{data/datasetnaam/eventClassifier.bin} en \ttt{data/da\-ta\-set\-naam/categoryClassifier.bin}, 
 met behulp van de pickle-module\footnote{\url{https://docs.python.org/3/library/pickle.html}}.
-\ttt{pickle} is vergelijkbaar met ttt{json}, alleen worden bestanden in binair in plaats van
+\ttt{pickle} is vergelijkbaar met \ttt{json}, alleen worden bestanden in binair in plaats van
 leesbaar formaat opgeslagen. Het doel van beide modules is gelijkwaardig, namelijk
 \it{serialisatie}\footnote{datastructuren of objecten opslaan zodat ze later weer kunnen 
 worden opgebouwd}.
@@ -822,7 +822,7 @@ een lijst met events toegevoegd.
 \sss{\ttt{EventDetectiveChart}: Verrijking van events}\label{EventDetectiveChart}
 
 \ttt{EventDetectiveChart} erft over van \ttt{EventDetective} en bevat qua detectie van 
-events dezelfde funcionaliteit. De extra stap die in dit programma plaatsvindt 
+events dezelfde functionaliteit. De extra stap die in dit programma plaatsvindt 
 is de toevoeging van tweets zonder geo-informatie. Omdat er niet meer zoveel 
 tijd was voor een uitgebreide extra componenent heb ik voor deze stap een \it{Proof 
 of Concept} of versimpeld prototype ontwikkeld.
@@ -831,7 +831,7 @@ Het is van belang dat tweets zonder geo-informatie vóór volledige processing m
 behulp van \it{heuristieken} kunnen worden gescand op overeenkomst met een event, 
 omdat we hiervoor \it{alle} Nederlandse tweets in een periode moeten scannen. Op \bf{de 
 dag} 5 mei 2015 zijn er bijvoorbeeld 760000 tweets gepost (100 MB), waarbij de 
-hoeveelheid tweets over \bf{de hele maand} maart ter vergelijking ongeveer 570000 
+hoeveelheid tweets met geo-informatie over \bf{de hele maand} maart ter vergelijking ongeveer 570000 
 tweets (79 MB) bedraagt. Wanneer een maand aan tweets zonder geo-informatie moet 
 worden gescand, gaat het al gauw om ongeveer 10 GB(!) aan tweets.
 \vl
@@ -883,14 +883,15 @@ met het formaat:
 
 % eigenlijk niet Python, maar dit werkt ook prima
 \begin{lstlisting}[language=Python]
-locations = [['tweet tekst en metadata', gemiddeldeBreedtegraad, gemiddeldeLengtegraad, 'categorielabel'], ...] 
+locations = [['tweet tekst/metadata', gemBreedtegraad_float, gemLengtegraad_float, 
+'categorielabel'], ...] 
 \end{lstlisting}
 
 Elke lijst binnen deze \ttt{locations}-lijst is een event dat met behulp van 
 \ttt{vis/map/map.html} kan worden gevisualiseerd. De werking van \ttt{vis/map/map.html} is 
 vrij vanzelfsprekend, er wordt een Google Map gemaakt met behulp van de Google 
 Maps API en markers (met iconen per categorie) worden gegenereerd aan de hand 
-van de lijsten in locations.
+van de lijsten in \ttt{locations}.
 
 \begin{figure}[H]
   \centering
@@ -918,7 +919,7 @@ het eenvoudig om trends in grote hoeveelheden tweets te ontdekken.
 dezelfde data als de \ttt{EventDetective}, met daarbij als toevoeging de \it{x- en 
 y-coordinaten} ($x$ is de tijd, $y$ de hoeveelheid tweets binnen twee minuten) van 
 het staafdiagram, de \it{titel van het event} in de vorm van de drie woorden met de 
-hoogste df-waarde en de \it{ondertitel} in de vorm van de dag waarop het event 
+hoogste df-waarden en de \it{ondertitel} in de vorm van de dag waarop het event 
 plaatsvond. De in \ref{EventDetectiveChart} gevonden tweets zonder locatie-informatie worden 
 \bf{dikgedrukt} weergegeven in de \ttt{InfoWindow}s bij markers op de kaart. De structuur 
 van de eerder genoemde \ttt{locations}-lijst is afgezien van de toevoeging van deze 
@@ -951,7 +952,7 @@ candidates uit beide datasets te extraheren (zie \ttt{data/dataset/EventCandidat
 We hebben voor onze train- en testset allebei met behulp van de \ttt{Annotator} (\ref{Annotator})
 respectievelijk 1350 en 500 event candidates geannoteerd. Vervolgens heeft \ttt{AnnotationEvaluation} (\ref{AnnotationEvaluation}) 
 de kappa-score en de confusion matrices van onze annotaties bepaald, zie tabel \ref{annotationtrain} en \ref{annotationtest}.
-Bij elke confusion matrix worden de kappa-score voor categorie\"en (\it{categoryKappa}), voor event/geen event (\it{eventKappa}) en
+Bij elke confusion matrix worden de kappa-score voor categorie\"en (\it{categoryKappa}), event/geen event (\it{eventKappa}) en
 de \it{accuracy} (hoe vaak we het eens waren) gegeven.
 
 \begin{table}[H]
@@ -991,11 +992,11 @@ annotatie samengevoegd. De opgeschoonde event candidates en annotatie zijn voor 
 \ttt{data/dataset/sanitizedAnnotation.json} en \ttt{data/dataset/sanitizedEventCandidates.json} (1085 candidates), voor de testdata onder 
 \ttt{data/testdata/sanitizedAnnotation.json} en \ttt{data/testdata/sanitizedEventCandida-\\tes.json} (430 candidates).
 \vl
-Uit de confusion matrices blijkt dat we in onze annotatie niet altijd overeenstemming hebben bereikt over of een event candidate
-wel of geen event is. Er waren bijvoorbeeld twijfelachtige gevallen als 
+Uit de confusion matrices blijkt dat we in onze annotatie niet altijd overeenstemming hebben bereikt over in welke categorie
+een event candidate te plaatsen was. Er waren bijvoorbeeld twijfelachtige gevallen als 
 ``is een opening een bijeenkomst?'' of ``is de beschrijving van een debat op televisie een event?''. De categorie \ttt{anders}
-zorgt ook voor wat onduidelijkheid en zou in de toekomst eventueel weggelaten kunnen worden. Ook in de categorie \ttt{entertainment}
-zijn we het niet altijd eens, maar dit wordt wellicht veroorzaakt omdat we erg brede categorie\"en gebruiken. Ondanks deze bezwaren
+zorgde ook voor wat onduidelijkheid en zou in de toekomst eventueel weggelaten kunnen worden. Ook in de categorie \ttt{entertainment}
+waren we het niet altijd eens, maar dit wordt wellicht veroorzaakt doordat we erg brede categorie\"en gebruiken. Ondanks deze bezwaren
 waren we het toch in 86\% van de gevallen met elkaar eens.
 
 \ss{Trainen en testen van classifiers}\label{traintest}
@@ -1011,14 +1012,14 @@ voor alle features). We hebben empirisch bepaald dat deze classifier het beste w
 combineren met \ttt{wordOverlapUser}, \ttt{wordOverlapSimple} en \ttt{location}, en we als classifier Naive Bayes gebruiken.
 \end{bullets}
 
-We hebben in de DEVTEST een gemiddelde accuracy van 89\% behaald, waarvoor we 10 keer cross-validation hebben toegepast. We hebben gekozen om \it{accuracy} als
+In de DEVTEST hebben we een gemiddelde accuracy van 89\% behaald, waarvoor we 10 keer cross-validation hebben toegepast. We hebben besloten om \it{accuracy} als
 eindcijfer van ons systeem te gebruiken, zodat we een eenduidige score voor de classificatie konden geven. De accuracy is te berekenen
 door de hoeveelheid goed geclassificeerde event candidates te delen door de totale hoeveelheid geclassificeerde event candidates. Voor de resultaten van de DEVTEST met de beste 
 features (inclusief \it{precision}, \it{recall} en \it{f1-score} per categorie), zie tabel \ref{bijlagedevtest} in de bijlage (\ref{bijlage}). 
 \vl
-Bij de TEST (\ttt{./ClassifierCreator -test}) hebben we met 3 verschillende classifiers getest: \it{Naive Bayes}, \it{Maximum Entropy} en
+In de TEST (\ttt{./ClassifierCreator -test}) hebben we met 3 verschillende classifiers getest: \it{Naive Bayes}, \it{Maximum Entropy} en
 \it{SVM}\footnote{\it{Support Vector Machine}}, zie tabel \ref{testclassifiers}. De classifiers presteerden allemaal net iets boven de 80\%, maar Naive Bayes
-presteerde het beste, met een accuracy van 84\%. In tabel \ref{naivebayes} staat de confusion matrix van de Naive Bayes classifier.
+presteerde het beste met een accuracy van 84\%. In tabel \ref{naivebayes} staat de confusion matrix van de Naive Bayes classifier.
 
 \begin{table}[H]
 \centering
@@ -1052,7 +1053,7 @@ SPO & .                        & 1                        & 1                   
 \caption{Confusion matrix voor de Naive Bayes classifier}\label{naivebayes}
 \end{table}
 
-Omdat we individuele bijdrage van de verschillende features in de TEST wilden beoordelen, hebben we afzonderlijk met deze features getest,
+Omdat we de individuele bijdrage van de verschillende features in de TEST wilden beoordelen, hebben we afzonderlijk met deze features getest,
 zie tabel \ref{testfeatures} (en tabel \ref{bijlagetest} in de bijlage (\ref{bijlage}) voor de bijbehorende precision, recall en f1-score per
 categorie). In tabel \ref{testfeatures} staan ook de \it{baseline performance} (iedere event candidate is geen event) en de \it{upper bound} (menselijke
 (onze) prestaties op een event dection taak) gebaseerd op de accuracy van onze annotatie.
@@ -1074,14 +1075,14 @@ Upper Bound               & 0.86     \\ \hline
 \caption{Afzonderlijke features, baseline performance en upper bound}\label{testfeatures}
 \end{table}
 
-Uit tabel \ref{testfeatures} blijkt dat word features verreweg de meeste invloed hadden op de prestatie van de classifier, omdat deze dan al tot een accuracy
-van 81\% komt. De \ttt{wordOverlap}-features dragen veel minder bij: de accuracy ligt daarmee nog zo rond de 60\%. De \ttt{location}-feature maakt
+Uit tabel \ref{testfeatures} blijkt dat word features verreweg de meeste invloed hadden op de prestatie van de classifiers, omdat deze daarmee al een accuracy
+van 81\% bereiken. De \ttt{wordOverlap}-features dragen veel minder bij: de accuracy ligt daarmee nog zo rond de 60\%. De \ttt{location}-feature maakt
 nog minder verschil, want de accuracy is met deze feature maar 5\% hoger dan de baseline. Over deze feature is ook discussie
 mogelijk: op dezelfde plaats kunnen immers verschillende categorie\"en events plaatsvinden.
 \vl
 In vergelijking met de baseline en de upper bound presteert ons systeem goed. De accuracy voor alle features is met 84\% namelijk 38\% beter dan de baseline
 en slechts 2\% slechter dan de upper bound. Omdat \citeauthor{walther2013geo} een vergelijkbaar systeem hebben gebouwd ligt het voor
-de hand om ons systeem met hun systeem te vergelijken. Het lijkt erop dat zij alleen cijfers presenteren voor events die \ttt{real-world
+de hand om ons systeem met hun systeem te vergelijken. Het lijkt erop dat zij alleen cijfers presenteren voor events die \it{real-world
 events} zijn, oftewel de categorie \ttt{wel\_event}: alle categorie\"en behalve \it{geen\_event} van ons systeem samengenomen. Voor deze categorie
 krijgen we binnen ons systeem een f1-score van 88\%, terwijl \citeauthor{walther2013geo} een f1-score van 84\% behaalden (zie de code
 in comments bij ``\ttt{uncomment voor wel\_event}'' in de \ttt{ClassifierCreator}). Hierbij is wel belangrijk om op te merken dat wij
@@ -1123,11 +1124,11 @@ De detectie van events vindt plaats door
 
 \begin{bullets}
 \item data (tweets met metadata, voorzien van locatie) te verzamelen (\ref{dataverzamelen}),
-\item event candidates te genereren (\ref{EventCandidates}): de eerste groepering van tweets tot mogelijke events,
+\item event candidates te genereren (\ref{EventCandidates}): de groepering van tweets tot mogelijke events,
 \item event candidates te annoteren (\ref{annotatie}) omdat we supervised learning gebruiken,
 \item (Naive Bayes) classifiers met geschikte features te trainen en te evalueren, waarbij is gebleken dat met name word features belangrijk
 zijn voor de prestatie van het systeem (\ref{train}),
-\item de getrainde classifiers in het programma toe te passen om voor nieuwe event candidates events te kunnen detecteren (\ref{detect})
+\item de getrainde classifiers toe te passen om voor nieuwe event candidates events te kunnen detecteren (\ref{detect})
 \end{bullets}
 
 De verrijking en visualisatie van events vindt plaats door
