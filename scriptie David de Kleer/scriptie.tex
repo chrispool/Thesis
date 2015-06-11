@@ -90,7 +90,7 @@ Sociale media bieden een grote hoeveelheid informatie over de fysieke wereld,
 omdat mensen vertellen waar ze zijn, wat er in hun
 omgeving gebeurt, of wat ze doen. Berichten van meerdere mensen op dezelfde
 locatie kunnen worden gecombineerd tot mogelijke gebeurtenissen of \it{event candidates},
-welke in categorie\"en zouden kunnen worden ingedeeld.
+welke weer in categorie\"en zouden kunnen worden ingedeeld.
 Hierdoor is het voor anderen in de buurt mogelijk om op de hoogte te blijven van wat er zoal
 om hen heen gebeurt.
 \vl
@@ -189,22 +189,6 @@ zorgen dat er constant input van de Twitter stream kan worden geanalyseerd.
 Hieruit blijkt dus dat een systeem voor event detection zowel een on-line als een retrospective 
 component zou kunnen hebben.
 \vl
-\citet{atefeh2013survey} geven aan dat het wat betreft de types events die kunnen worden 
-gedetecteerd kan gaan om \it{specified} of \it{unspecified} events. Wanneer een systeem 
-specified events detecteert, is het type event dat wordt gedetecteerd door het 
-systeem bekend, of gaat het om een gepland event (\citealt{atefeh2013survey}). Voorbeelden 
-uit de wetenschappelijke literatuur zijn systemen voor de detectie van 
-aardbevingen (\citealt{sakaki2010earthquake}), concerten (\citealt{benson2011event}) en festivals (\citealt{lee2010measuring}). 
-Wanneer het gaat om de detectie van unspecified events is het onbekend wat 
-de events die we willen detecteren precies inhouden, of in gaan houden. Dit is 
-het geval in bijvoorbeeld het laatste nieuws, denk aan een ongeval 
-of een onderwerp dat onverwachts veel aandacht krijgt. Voorbeelden uit de 
-wetenschappelijke literatuur zijn systemen voor de detectie van news events
-(\citealt{sankaranarayanan2009twitterstand}), incidenten (\citealt{abel2012twitcident}), of algemene (ook kleinschalige) events die in de wereld
-plaatsvinden (\citealt{walther2013geo} en \citealt{becker2011beyond}). Omdat we in ons systeem de laatstgenoemde
-algemene events willen detecteren, richten we ons op de detectie van unspecified
-events.
-\vl
 Volgens \citet{atefeh2013survey} bestaat event detection uit drie hoofdprocessen: \it{``data 
 preprocessing, data representation and data organization or clustering''}. \it{Data 
 preprocessing} heeft alles te maken met de voorbereiding van ``rauwe'' data voordat 
@@ -221,7 +205,48 @@ data te classificeren}) gebruikt om de gekozen datarepresentatie te organiseren.
 Deze eigenschappen kunnen soms vaker voorkomen: in ons systeem komt data organization
 bijvoorbeeld drie keer voor (in \ref{ClusterCreator}, \ref{ClusterMerger} en \ref{ClassifierCreator}).
 \vl
-%TODO aanpak anderen
+\citet{atefeh2013survey} geven aan dat het wat betreft de types events die kunnen worden 
+gedetecteerd kan gaan om \it{specified} of \it{unspecified} events. Wanneer een systeem 
+specified events detecteert, is het type event dat wordt gedetecteerd door het 
+systeem bekend, of gaat het om een gepland event (\citealt{atefeh2013survey}). Voorbeelden 
+uit de wetenschappelijke literatuur zijn systemen voor de detectie van 
+aardbevingen (\citealt{sakaki2010earthquake}), concerten (\citealt{benson2011event}) en festivals (\citealt{lee2010measuring}). 
+Wanneer het gaat om de detectie van unspecified events is het onbekend wat 
+de events die we willen detecteren precies inhouden, of in gaan houden. Dit is 
+het geval in bijvoorbeeld het laatste nieuws, denk aan een ongeval 
+of een onderwerp dat onverwachts veel aandacht krijgt. Voorbeelden uit de 
+wetenschappelijke literatuur zijn systemen voor de detectie van news events
+(\citealt{sankaranarayanan2009twitterstand}), incidenten (\citealt{abel2012twitcident}), of algemene (ook kleinschalige) events die in de wereld
+plaatsvinden (\citealt{walther2013geo}). Omdat we in ons systeem de laatstgenoemde
+algemene events willen detecteren, richten we ons op de detectie van unspecified
+events. Ik zal in de volgende alinea's wat dieper ingaan op de aanpak van de zojuist genoemde onderzoeken.
+\vl
+\citet{sakaki2010earthquake} willen aardbevingen en orkanen detecteren met behulp van Twitter en analyseren 
+als eerste of hun verzamelde tweets hier daadwerkelijk over gaan. Ze gebruiken een \it{SVM} (\it{Support Vector Machine}, een machine learning algoritme
+dat met name geschikt is voor binaire classificatie) om te bepalen of een tweet daadwerkelijk over
+een natuurramp gaat die nu plaatsvindt (positieve klasse) of niet (negatieve klasse). De locatie
+van positieve tweets wordt bepaald met behulp van \it{Kalman filtering}/\it{particle filtering}, waarmee de meest
+waarschijnlijke locatie van een natuurramp uit de reeks (deels onbetrouwbare) locaties van Twitteraars kan worden gefilterd.
+\vl
+\citet{benson2011event} proberen Twitter in te zetten om muzikale events ontdekken die niet in andere media worden genoemd.
+Ze maken gebruik van een (graaf)model (\it{factor graph model}) dat tweets analyseert, ze tot events clustert en bepaalt wat de waardes van eigenschappen van events (zoals artiest en locatie) zijn. Op het niveau van de tekst van tweets
+wordt gebruik gemaakt van een \it{CRF} (\it{Conditional Random Field}, waarin een (graaf)model context kan gebruiken om labels aan input toe te kennen)
+om de naam van een artiest of de locatie van een event uit geclusterde tweets te extraheren.
+\vl
+\citet{lee2010measuring} observeren voor de detectie van lokale festivals (in Japan) gedragspatronen van gebruikers met behulp
+van tweets met locatie-informatie. Deze tweets worden op basis van hun co\"ordinaten met behulp van \it{K-means clustering}
+geclusterd en ingedeeld in zogenaamde \it{ROIs} (\it{Regions of Interest}). Binnen deze ROIs wordt met behulp van statistiek ``normaal'' en 
+``afwijkend'' gedrag van gebruikers vastgesteld. Een toename van gebruikers die een ROI binnenkomen of verlaten samen met een toenemend
+aantal tweets blijkt een goede indicator voor lokale festivals te zijn.
+\vl
+\citet{sankaranarayanan2009twitterstand} willen tweets over het laatste nieuws kunnen opsporen. Ze
+clusteren tweets (real-time) gebaseerd op tekstuele overeenkomst (\it{cosine similarity}) en verwijderen onbetrouwbare (\it{noisy}) tweets met behulp van een 
+\it{Naive Bayes classifier}. Omdat noisy tweets een behoorlijk probleem vormden, is er ook gebruik gemaakt van \it{seeders}:
+betrouwbare gebruikers die als eerste het laatste nieuws mogen rapporteren, wat betekent dat een bijbehorende cluster met reeds gevonden tweets zolang inactief
+moet blijven. Een nadeel hiervan is wel dat het systeem door deze aanpak niet meteen het laatste nieuws kan detecteren, maar eerst moet wachten totdat een seeder hierover heeft bericht.
+\vl
+\citet{abel2012twitcident} richten zich op de detectie van tweets die incidenten rapporteren.
+\vl
 Onze aanpak van event detection vertoont overeenkomsten met de aanpak van 
 \citet{walther2013geo}. We gebruiken hetzelfde achterliggende idee: wanneer tweets 
 binnen een bepaald tijdsinterval en op dezelfde locatie qua inhoud gerelateerd 
