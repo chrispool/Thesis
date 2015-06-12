@@ -1271,7 +1271,7 @@ Chris_Thesis/corpus$ cd ..
 Chris_Thesis$ ./EventCandidates.py corpus/june10_train.txt june10
 
 # event candidates van corpus/june11_test.txt verzamelen in een dataset genaamd june11
-Chris_Thesis$ ./EventCandidates.py corpus/june10_train.txt june10
+Chris_Thesis$ ./EventCandidates.py corpus/june11_test.txt june11
 
 # Annoteren voor annotator David. Voer het nummer van dataset june10 in, daarna voor 
 # iedere event candidate het nummer van de categorie waar deze het beste onder past.
@@ -1297,7 +1297,7 @@ Chris_Thesis$ ./ClassifierCreator.py -test
 
 # Nu kunnen events worden gedetecteerd met EventDetective.py (gewone Google Map met markers) 
 # OF EventDetectiveChart.py (Google Map met markers en staafdiagram). Voer eerst het nummer 
-# van dataset june10 in, vervolgens van een dataset met event candidates.
+# van dataset june10 in, vervolgens het nummer van een dataset met event candidates.
 Chris_Thesis$ ./EventDetective (of ./EventDetectiveChart.py)
 
 # Open /vis/map/map.html voor een visualisatie van de gedetecteerde events.
