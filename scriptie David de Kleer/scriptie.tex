@@ -201,7 +201,7 @@ organization} heeft betrekking op het daadwerkelijk indelen of organiseren van
 berichten in events, waarbij een systeem een model (gebaseerd op regels of 
 \it{machine learning}\footnote{Binnen machine learning kunnen algoritmes worden 
 gebruikt om patronen in een datarepresentatie te bepalen en aan de hand daarvan
-data te classificeren}) gebruikt om de gekozen datarepresentatie te organiseren. 
+data te classificeren.}) gebruikt om de gekozen datarepresentatie te organiseren. 
 Deze eigenschappen kunnen soms vaker voorkomen: in ons systeem komt data organization
 bijvoorbeeld drie keer voor (in \ref{ClusterCreator}, \ref{ClusterMerger} en \ref{ClassifierCreator}).
 \vl
@@ -230,13 +230,13 @@ waarschijnlijke locatie van een natuurramp uit de reeks (deels onbetrouwbare) lo
 \vl
 \citet{benson2011event} proberen Twitter in te zetten om muzikale events ontdekken die niet in andere media worden genoemd.
 Ze maken gebruik van een (graaf)model (\it{factor graph model}) dat tweets analyseert, ze tot events clustert en bepaalt wat de waardes van eigenschappen van events (zoals artiest en locatie) zijn. Op het niveau van de tekst van tweets
-wordt gebruik gemaakt van een \it{CRF} (\it{Conditional Random Field}, waarin een (graaf)model context kan gebruiken om labels aan input toe te kennen)
+wordt gebruik gemaakt van een \it{CRF} (\it{Conditional Random Field}, waarin een (graaf)model context/andere observaties kan gebruiken om labels aan input toe te kennen)
 om de naam van een artiest of de locatie van een event uit geclusterde tweets te extraheren.
 \vl
 \citet{lee2010measuring} observeren voor de detectie van lokale festivals (in Japan) gedragspatronen van gebruikers met behulp
 van tweets met locatie-informatie. Deze tweets worden op basis van hun co\"ordinaten met behulp van \it{K-means clustering}
-geclusterd en ingedeeld in zogenaamde \it{ROIs} (\it{Regions of Interest}). Binnen deze ROIs wordt met behulp van statistiek ``normaal'' en 
-``afwijkend'' gedrag van gebruikers vastgesteld. Een toename van gebruikers die een ROI binnenkomen of verlaten samen met een toenemend
+geclusterd en ingedeeld in zogenaamde \it{ROIs} (\it{Regions of Interest}) in een \it{Voronoi}\footnote{De indeling van een vlak in subvlakken of regio's gebaseerd op punten die in dit vlak liggen.}-diagram. 
+Binnen deze ROIs wordt met behulp van statistiek ``normaal'' en ``afwijkend'' gedrag van gebruikers vastgesteld. Een toename van gebruikers die een ROI binnenkomen of verlaten samen met een toenemend
 aantal tweets blijkt een goede indicator voor lokale festivals te zijn.
 \vl
 \citet{sankaranarayanan2009twitterstand} willen tweets over het laatste nieuws kunnen opsporen. Ze
@@ -245,25 +245,34 @@ clusteren tweets (real-time) gebaseerd op tekstuele overeenkomst (\it{cosine sim
 betrouwbare gebruikers die als eerste het laatste nieuws mogen rapporteren, wat betekent dat een bijbehorende cluster met reeds gevonden tweets zolang inactief
 moet blijven. Een nadeel hiervan is wel dat het systeem door deze aanpak niet meteen het laatste nieuws kan detecteren, maar eerst moet wachten totdat een seeder hierover heeft bericht.
 \vl
-\citet{abel2012twitcident} richten zich op de detectie van tweets die incidenten rapporteren.
+\citet{abel2012twitcident} richten zich op de detectie van tweets die incidenten rapporteren. Op basis van berichten van het P2000\footnote{P2000 geeft voor incidenten aan welk type incident er waar, wanneer en op welke schaal heeft plaatsgevonden.}
+communicatiesysteem wordt er als eerste een incidentprofiel vastgesteld. Dit incidentprofiel bevat eigenschappen van een incident of
+\it{facet:value}-paren (zoals \it{locatie:Moerdijk}). Met behulp van deze eigenschappen wordt een query gegenereerd die tweets teruggeeft die 
+dergelijke eigenschappen bevatten, welke vervolgens semantisch worden verrijkt (met \it{NER}\footnote{\it{Named Entity Recognition}, de extractie van namen van bijvoorbeeld personen of locaties uit tekst.}, 
+informatie afkomstig van links, tweet metadata en classificatie in onder andere tweets over slachtoffers of schade). De tweets die 
+daadwerkelijk over een incident gaan moeten worden gefilterd, waarbij \it{semantic filtering} het beste bleek te werken: berichten die de
+top k zwaarst wegende semantische eigenschappen bevatten blijven over.
 \vl
 Onze aanpak van event detection vertoont overeenkomsten met de aanpak van 
 \citet{walther2013geo}. We gebruiken hetzelfde achterliggende idee: wanneer tweets 
-binnen een bepaald tijdsinterval en op dezelfde locatie qua inhoud gerelateerd 
-zijn, zou het goed kunnen dat ze een event bespreken. \citet{walther2013geo} gebruiken 
-daarnaast een aantal nuttige \it{features} (eigenschappen binnen de datarepresentatie) in 
-hun event detection, waarop onze features zijn geïnspireerd. Onze classificiatie 
-is daarentegen niet \it{binair} (wel/geen event) maar \it{categorisch}, omdat we
+binnen een bepaald tijdsinterval en op dezelfde locatie gepost
+zijn, zou het goed kunnen dat ze een event bespreken: dit zijn mogelijke events of \it{event candidates}. 
+\citet{walther2013geo} gebruiken daarnaast een aantal nuttige \it{features} (eigenschappen binnen de datarepresentatie) in 
+hun event detection, waarop onze features zijn geïnspireerd. Wanneer we beschikking hebben over een
+goede verzameling features (zoals een score voor de mate van overeenkomst van de inhoud van tweets), kunnen
+we met behulp van geannoteerde data (event candidates voorzien van labels) \it{classifiers} trainen (bijvoorbeeld \it{Naive Bayes} of \it{SVM}). Deze classifiers kunnen
+worden toegepast op nieuwe event candidates, om daaruit events te filteren. Onze classificiatie 
+is in tegenstelling tot de classificatie van \citet{walther2013geo} niet \it{binair} (wel/geen event) maar \it{categorisch}, omdat we
 events in categorieën (zoals \it{sport} of \it{bijeenkomst}) willen indelen. Daarnaast gebruiken we een andere 
-locatie-representatie (geen radius rondom tweets, maar \it{GeoHash}\footnote{zie 
-figuur \ref{geohash} en de uitleg daarboven}), en probeer ik events te verrijken met tweets zonder geo-informatie en 
+locatie-representatie (geen radius rondom tweets, maar \it{GeoHash}\footnote{Zie 
+figuur \ref{geohash} en de uitleg daarboven.}), en probeer ik events te verrijken met tweets zonder geo-informatie en 
 Chris Pool met \it{named entity recognition}.
 
 \s{Methode: Van data tot detective}\label{methode}
 
 Nu volgt een beschrijving van de werking van ons systeem, van het verzamelen 
 van de data tot de uiteindelijke detectie, verrijking en visualisatie van 
-events. Het grootste gedeelte van deze processen wordt afgehandeld door een 
+events (voor een \it{hands-on} benadering, zie listing \ref{commandos} in de bijlage (\ref{bijlage})). Het grootste gedeelte van deze processen wordt afgehandeld door een 
 serie programma's in de programmeertaal Python, die in dit hoofdstuk behandeld 
 zullen gaan worden. Wanneer er wordt verwezen naar een bestand (binnen een 
 repository), is dit bestand te vinden in de git-repository 
@@ -353,7 +362,7 @@ python3 get_geotweets.py > march27.txt
 Met \ttt{grep}:
 \begin{lstlisting}
 $ zcat /net/corpora/twitter2/Tweets/2015/03/20150327???.out.gz | 
-/net/corpora/twitter2/tools/tweet2tab -k text coordinates user date | 
+/net/corpora/twitter2/tools/tweet2tab -i text coordinates user date | 
 grep -P "^[^\t]+\t[^\t]+" > march27.txt
 \end{lstlisting}
 
@@ -564,7 +573,7 @@ event candidate wanneer er minstens \bf{twee tweets} in staan van minstens \bf{t
 gebruikers}. Deze event candidates worden door \ttt{EventCandidates} met behulp van de 
 \ttt{json}-module\footnote{Met \ttt{json} kunnen datastructuren in Python eenvoudig 
 in leesbaar formaat worden opgeslagen en later worden gebruikt door andere
-programma's, zie \url{https://docs.python.org/3/library/json.html}} opgeslagen
+programma's, zie \url{https://docs.python.org/3/library/json.html}.} opgeslagen
 als \ttt{data/datasetnaam/Event\-Can\-di\-da\-tes.json}.
 \vl
 Het verschil tussen candidate clusters en event candidates is dus dat:
@@ -706,11 +715,11 @@ een gemiddelde coördinaat rekening worden gehouden met de
 kromming van het aardoppervlak, anders ontstaat er een afwijking in het 
 uiteindelijke coördinaat. Omdat het bij een event candidate gaat om een klein 
 vlak op aarde zal de afwijking van dit coördinaat waarschijnlijk niet zo groot 
-zijn. Daarom berekenen we gewoon het “standaard” gemiddelde van de coördinaten (net 
-alsof ze punten in een Cartesiaans coördinatenstelsel zijn: een platte aarde!)}) 
+zijn. Daarom berekenen we gewoon het “standaard” gemiddelde van de coördinaten, net 
+alsof ze punten in een Cartesiaans coördinatenstelsel zijn: een platte aarde!}) 
 gemiddelde van de lengte- en breedtegraden van de tweets binnen de event 
 candidate te berekenen. Dit gemiddelde coördinaat wordt omgezet naar een GeoHash van 
-precisie 6 met behulp van de \ttt{geohash}-module: \ttt{geohash.encode(breedtegraad, 
+precisie 6 met behulp van de \ttt{geohash}-module: \ttt{geohash.encode(breed\-te\-graad, 
 lengtegraad, precisie)}.
 \item \ttt{uniqueUsers}: De hoeveelheid unieke gebruikers binnen een event candidate.
 \item \ttt{nTweets}: De hoeveelheid tweets binnen een event candidate.
@@ -813,8 +822,8 @@ classifiers opgeslagen als binaire bestanden in
 met behulp van de pickle-module\footnote{\url{https://docs.python.org/3/library/pickle.html}}.
 \ttt{pickle} is vergelijkbaar met \ttt{json}, alleen worden bestanden in binair in plaats van
 leesbaar formaat opgeslagen. Het doel van beide modules is gelijkwaardig, namelijk
-\it{serialisatie}\footnote{datastructuren of objecten opslaan zodat ze later weer kunnen 
-worden opgebouwd}.
+\it{serialisatie}\footnote{Objecten of datastructuren opslaan zodat ze later weer kunnen 
+worden opgebouwd.}.
 
 \ss{Detectie, verrijking en visualisatie van events}\label{detect}
 
@@ -1145,6 +1154,8 @@ Tweets zonder geo-informatie worden dikgedrukt weergegeven.
   \label{verrijk}
 \end{figure}
 
+Een aantal voorbeelden van gedetecteerde events zijn te vinden in de bijlage (\ref{bijlage}), vanaf figuur \ref{voorbeelden}.
+
 \s{Conclusie}\label{conclusie}
 
 In deze scriptie heb ik een met behulp van Python ge\"implementeerde benadering voor \it{event detection} beschreven, die te vinden is
@@ -1221,8 +1232,405 @@ wordOverlapUser, category & 0.82     & 0.86 0.83 0.85 & 0.77 0.49 0.60 & 0.00 0.
 }%
 {Resultaten van de TEST voor de beste features afzonderlijk}%
 {bijlagetest}
+\newpage
+
+\lstset{basicstyle=\footnotesize\fontfamily{pxtt}\selectfont, keywordstyle=\footnotesize\fontfamily{pxtt}\selectfont}
+\begin{lstlisting}[label=commandos,caption=Een recept met commando's voor event detection met het EventDetective-systeem. 
+OPMERKING: In data/dataset staan de door ons getrainde classifiers. Een aantal commando's hieronder zijn vooral bedoeld voor mensen
+die hun eigen event detection classifiers willen trainen!]
+# Voor de volgende commando's wordt aangenomen dat een gebruiker in de hoofdmap van de 
+# repository https://github.com/chrispool/Thesis is en de toegang heeft tot de Karora-
+# server van de Rijksuniversiteit Groningen.
+
+Chris_Thesis$ cd corpus/
+
+# verbinden met Karora
+Chris_Thesis/corpus$ ssh s_of_p_nummer@bastion.service.rug.nl
+bastion:~$ ssh s_of_p_nummer@karora.let.rug.nl
+
+# "speelgoed"-traindata (tweets van 10 juni) verzamelen
+karora:~$ zcat /net/corpora/twitter2/Tweets/2015/06/20150610???.out.gz | /net/corpora/twitter2/tools/tweet2tab -i text coordinates user date | grep -P "^[^\t]+\t[^\t]+" > june10_train.txt
+
+# "speelgoed"-testdata (tweets van 11 juni) verzamelen
+karora:~$ zcat /net/corpora/twitter2/Tweets/2015/06/20150611???.out.gz | /net/corpora/twitter2/tools/tweet2tab -i text coordinates user date | grep -P "^[^\t]+\t[^\t]+" > june11_test.txt
+
+# zet de data over naar eigen computer
+karora:~$ exit
+bastion:~$ sftp s_of_p_nummer@karora.let.rug.nl
+sftp> get june10_train.txt 
+sftp> get june11_test.txt
+sftp> exit
+bastion:~$ exit
+Chris_Thesis/corpus$ sftp s_of_p_nummer@bastion.service.rug.nl
+sftp> get june10_train.txt 
+sftp> get june11_test.txt
+sftp> exit
+Chris_Thesis/corpus$ cd ..
+
+# event candidates van corpus/june10_train.txt verzamelen in een dataset genaamd june10
+Chris_Thesis$ ./EventCandidates.py corpus/june10_train.txt june10
+
+# event candidates van corpus/june11_test.txt verzamelen in een dataset genaamd june11
+Chris_Thesis$ ./EventCandidates.py corpus/june10_train.txt june10
+
+# Annoteren voor annotator David. Voer het nummer van dataset june10 in, daarna voor 
+# iedere event candidate het nummer van de categorie waar deze het beste onder past.
+# Herhaal annotatie voor de testset en voer eerst het nummer van dataset june11 in.
+Chris_Thesis$ ./Annotator.py David
+
+# Wanneer iemand alleen annoteert moet hij of zij de namen van de annotatie en de event
+# candidates veranderen in sanitizedEventCandidates.json/sanitizedEventCandidates.json, 
+# iets dat normaal door AnnotationEvaluation gedaan wordt wanneer de annotaties van twee
+# annotatoren worden samengevoegd.
+Chris_Thesis$ cp data/june10/eventCandidates.json data/june10/sanitizedEventCandidates.json
+Chris_Thesis$ cp data/june10/annotation_David.json data/june10/sanitizedAnnotation.json
+Chris_Thesis$ cp data/june11/eventCandidates.json data/june11/sanitizedEventCandidates.json
+Chris_Thesis$ cp data/june11/annotation_David.json data/june11/sanitizedAnnotation.json
+
+# DEVTEST met de trainset (willekeurige 80/20 split), voer het nummer van dataset june10 in.
+Chris_Thesis$ ./ClassifierCreator.py
+
+# TEST met de train- en testset. Voer de nummers van dataset june10 (trainset) in om te trainen
+# en het nummer van dataset june11 (testset) om te testen. De classifiers worden weggeschreven 
+# naar categoryClassifier.bin en eventClassifier.bin.
+Chris_Thesis$ ./ClassifierCreator.py -test
+
+# Nu kunnen events worden gedetecteerd met EventDetective.py (gewone Google Map met markers) 
+# OF EventDetectiveChart.py (Google Map met markers en staafdiagram). Voer eerst het nummer 
+# van dataset june10 in, vervolgens van een dataset met event candidates.
+Chris_Thesis$ ./EventDetective (of ./EventDetectiveChart.py)
+
+# Open /vis/map/map.html voor een visualisatie van de gedetecteerde events.
+Chris_Thesis$ firefox vis/map/map.html &
+\end{lstlisting}
 
 \newpage
+
+Nu volgt een aantal voorbeelden van events in april die door ons systeem zijn gevonden. De tweets binnen de events worden
+weergegeven als \ttt{datum tijd GeoHash gebruiker tweet}. Ik heb links uit de tweets verwijderd, omdat deze voor formatteerproblemen
+zorgden. Events in de categorie\"en \ttt{entertainment} en \ttt{anders} zijn niet terug te vinden (te weinig traindata hiervoor).
+
+\begin{figure}[H]
+ \caption{\bf{Incident} – Meldingen van BurgerNet.}\label{voorbeelden}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-21 21:37:14 u1kegm6 Burgernet\_DR HOOGEVEEN: Vermist-Hgveen:Man 62 jr, spijkerbrk, bruine leren jas, creme kl. gympen, kort dnker haar met grijs,
+\vl
+2015-04-21 21:37:21 u1kegm6 BurgernetNL Hoogeveen - Vermist-Hgveen:Man 62 jr, spijkerbrk, bruine leren jas, creme kl. gympen, kort dnker haar met grijs, no...
+\vl
+2015-04-21 22:31:12 u1kegm6 Burgernet\_DR HOOGEVEEN: Naar aanleiding van de vermissing in Hoogeveen, kunnen wij u melden dat meneer is aangetroffen. Bedan
+\vl
+2015-04-21 22:31:19 u1kegm6 BurgernetNL Hoogeveen - Naar aanleiding van de vermissing in Hoogeveen, kunnen wij u melden dat meneer is aangetroffen. Bedankt...
+}
+\end{framed}
+\end{figure}
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Incident} – Meldingen van P2000/brandweer/112.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-10 20:36:15 u15pntt p2000rotterdam VZ901 GRAAG OPKOMEN VOOR ZEER GROTE BRAND DREEF ROTTERDAM \#p2000
+\vl
+2015-04-10 20:36:16 u15pntu 112alarm\_Opsch \#ROTTERDAM Opschaling | \\VZ901 GRAAG OPKOMEN VOOR ZEER GROTE BRAND DREEF ROTTERDAM | \#p2000
+\vl
+2015-04-10 21:28:12 u15pntu TS43\_2 Wij staan al enige tijd gekoppeld aan de \#kazerne \#Mijnsherenlaan ivm een grote brand aan de \#Dreef. \#brandweer \#brand \#TS432
+\vl
+2015-04-10 21:29:28 u15pntu TS43\_2 Inmiddels zijn wij ter plaatse op het \#incident terrein voor \#aflossing van de \#TS441.
+}
+\end{framed}
+\end{figure}
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Bijeenkomst} – WK Superbike. Blijkbaar heeft ons systeem weinig racegerelateerde woorden gezien en wordt dit event niet onder sport gerekend. De inhoud lijkt verder prima.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-19 09:01:35 u1ktk3x stefanguezen In de pitbox! VIP is dus écht VIP @WorldSBK \#kawasaki @ttcircuitassen
+\vl
+2015-04-19 13:01:30 u1ktk3q HenkBrinkDr Klaar voor de start voor de WSBK race 2 @ttcircuitassen @ProvDrenthe
+\vl
+2015-04-19 13:56:31 u1ktk98 HenkBrinkDr Feest op @ttcircuitassen publiek op de banken Van der Mark 2 x 3 genieten !
+\vl
+2015-04-19 14:09:35 u1ktk3r stefanguezen En ook race 2 @WorldSBK @ttcircuitassen winst voor @jonathanrea \#kawasaki \#top!
+\vl
+2015-04-19 14:56:45 u1ktk3r ginigroot Wat een lef\#michaelvandermar\#wsbk}
+\end{framed}
+\end{figure}
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Bijeenkomst} – ``Bolle buiken en kleine koters'' beurs.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-04 08:55:17 u1k4yy9 Impact\_S\_Media Wij zijn er klaar voor! Bolle buiken en kleine koters beurs, van 10 tot 4 in De Leuke Hanzestad, IJsseldijk 12
+\vl
+2015-04-04 10:58:33 u1k4yy9 LeukeHanzestad Opening Bolle buiken en kleine koters \#beurs in De Leuke Hanzestad door burgemeester @bortkoelewijn op de bakfiets.
+\vl
+2015-04-04 13:18:08 u1k4yyd LeukeHanzestad Bolle buiken en kleine koters beurs, vandaag nog tot 16:00 uur, komt u ook gezellig langs? \#kampen \#beurs}
+\end{framed}
+\end{figure}
+ 
+\begin{figure}[H]
+ \caption{\bf{Bijeenkomst} – Open middag Communicatie, Media en IT (HanzeHogeschool).}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-17 17:39:32 u1kwusj AnnemterBorg Open middag \#cmihanze team opleiding Communicatie staat klaar @AnetDoornbos
+\vl
+2015-04-17 17:51:41 u1kwusj AnnemterBorg @ingeijsseldijk alumna communicatie vertelt over haar baan bij marketing Groningen: er gaat niets boven Groningen
+\vl
+2015-04-17 18:03:13 u1kwusj Robertdewit1990 Nu @hanze in gesprek over aansluiting onderwijs - werkveld. Voorbeeld: bij Communicatie in jaar één al oriëntatie werkveld. \#persfectief
+\vl
+2015-04-17 18:16:03 u1kwusj AnnemterBorg Eerste jaars CO student Jikke Overdiep presenteert ondernemersidee ABCompany: creativiteitslab voor ondernemers
+\vl
+2015-04-17 18:21:58 u1kwusj AnnemterBorg Derde jaars CO student Lisette Jacobi ging in haar 3e jaar naar Helsinki en volgde t vak Event.
+}
+\end{framed}
+\end{figure}
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Bijeenkomst} – Congres ``Besluitvorming anno 2015''.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-17 10:42:54 u1kwv2k JBSVDorknoper Het congres 'Besluitvorming anno 2015' is begonnen! Twitter mee via \#dorknoper
+\vl
+2015-04-17 10:52:54 u1kwv2k heinrichwinter Dagvoorzitter Albertjan Tollenaar leidt het congres van @JBSVDorknoper over besluitvorming in.
+\vl
+2015-04-17 10:59:26 u1kwv2k SytzeDijkstra Conflict als kans voor inclusieve besluitvorming
+\vl
+2015-04-17 11:59:18 u1kwv2k JBSVDorknoper Oud-Commissaris van de Koningin Hans Alders spreekt nu over zijn ervaringen omtrent de @Alderstafel. \#dorknoper
+\vl
+2015-04-17 12:51:39 u1kwv2k SytzeDijkstra Alders: rol politiek verschuift naar de voorkant, piketpalen slaan ipv achteraf regelen hoe het moet! \#alderstafel congres @JBSVDorknoper}
+\end{framed}
+\end{figure}
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Sport} – SC Cambuur - FC Groningen. Eigenlijk meerdere events.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-12 13:15:03 u1kwwjb thuisingeld Presentatie van Nationale Nederlanden op een geweldige locatie, t.w. Euroborg. Straks de wedstrijd
+\vl
+2015-04-12 13:29:15 u1kwtvz joostvankeulen @FemkeEerland Zijn dat nipsters? \#maakfest050
+\vl
+2015-04-12 13:42:11 u1kwwjb joostvankeulen @annewillucas Cool! Ik heb net een lampje gesoldeerd.
+\vl
+2015-04-12 13:45:51 u1kwwjb joostvankeulen Topdag in Stad. @MaakFestival, Bevrijding Groningen en \#grocam \#bruisend050
+\vl
+2015-04-12 14:03:33 u1kwtvz JeroenvanZalm Met Daan en Mels naar FC \#grocam @ FC Groningen
+\vl
+2015-04-12 14:04:52 u1kwtvz JeroenvanZalm Met Daan en Mels naar FC \#grocam @ FC Groningen
+\vl
+2015-04-12 14:18:20 u1kwtvz mellenshorst Zojuist mijn bijdrage voor mooie sfeeractie tijdens finale in de emmer gedaan \#grocam
+\vl
+2015-04-12 14:24:18 u1kwtvz benniepos Hele Cambuur bestuur natuurlijk ook aanwezig\#hopenopmooiepot
+\vl
+2015-04-12 14:32:13 u1kwtvz mellenshorst CHERRY.....wat een heerlijke goal.. \#grocam
+\vl
+2015-04-12 14:34:00 u1kwtvz JolandaMulder2 Nu al feest hier \#grocam 1-0
+\vl
+2015-04-12 14:38:32 u1kwtvz Dijksfotografie De kleine derby van het noorden ... \#groningen \#cambuur \#grocam
+\vl
+2015-04-12 15:21:08 u1kwtvz bert24meinema Man man man wat een fouten festijn \#grocam 1-2
+\vl
+2015-04-12 15:22:42 u1kwtvz RenedeHaan @vvWarga er zit er 1 in de Euroborg
+}
+ \end{framed}
+\end{figure}
+
+\begin{figure}[H]
+ \caption{\bf{Bijeenkomst} – Het Natuurmonumenten Voorjaarsforum. Er zijn altijd wel wat noisy tweets aanwezig in grotere events, alhoewel de meeste tweets wel relevant zijn.}
+\vspace*{-15pt} 
+\begin{framed}
+\footnotesize{
+2015-04-22 10:08:22 u17bdxq alexanderkoene Natuurmonumenten Voorjaarsforum gaat over Technologie (@ De Flint in Amersfoort, Utrecht)
+\vl
+2015-04-22 10:15:01 u17bdxq BOEiArnoBoon Beleven, daar gaat het om bij \#Natuurmonumenten. Voorzitter Weijers viert 110 jaar met de frontrunners-app
+\vl
+2015-04-22 10:33:35 u17bdxq kimcramer whoop whoop dat herken ik! goed verhaal! en waar
+\vl
+2015-04-22 10:37:51 u17bdxq detlefcmeijer Het meest energie-efficiënte organisme overleeft, volgens bionische vrouw \#YlvaPoelman \#vjf \#natuurmonumenten
+\vl
+2015-04-22 10:38:16 u17bdxq kimcramer mooie voorbeelden 'inspired by nature'!
+\vl
+2015-04-22 10:39:05 u17bdxq BOEiArnoBoon Vier miljard jaar natuurinnovatie als inspiratiebron @Natuurmonument
+\vl
+2015-04-22 10:42:00 u17bdxq kimcramer 'aerodynamisch gezien kan een hommel niet vliegen. gelukkig weet ze dat niet en vliegt ze toch!' \#VJF15
+\vl
+2015-04-22 10:42:56 u17bdxq BOEiArnoBoon Beleven, daar gaat het om bij @Natuurmonument sinds 1905 om! @MarcvandenTweel
+\vl
+2015-04-22 10:46:32 u17bdxq MarkMeijering Bij voorjaarsymposium van \#natuurmonumenten combinatie techniek en natuur. Interessant!
+\vl
+2015-04-22 11:10:40 u17bdxq kimcramer dank @auspacker voor je inspirerende en grappige presentatie! \#VJF15
+\vl
+2015-04-22 11:16:19 u17bdxq Gerbvine Thanks @auspacker voor de boeiende presentatie! \#natuurmonumenten
+\vl
+2015-04-22 11:32:20 u17bdxq TomWildenburg @BMWJandeJong ik kom met de koningin en prinses. Kan dat? Had de VIP uitno ingevuld voor twee
+\vl
+2015-04-22 11:46:25 u17bdxq HansKamerbeek1 Hans Wijers vz @Natuurmonument roept zaal op om Fundrunner-app te laden. \#voorjaarsforum
+\vl
+2015-04-22 12:18:41 u17bdxq kimcramer goede filosofische vragen van @josdemul 'wat is natuur?' 'wat is waardevol' 'wie bepaalt dat?' 'wat betekent 'van nature' nog in NL?' \#VJF15
+\vl
+2015-04-22 12:27:08 u17bdxq kimcramer de tulp is door Nederlands ingrijpen een calvinistische preutse bloem geworden zegt @josdemul \#VJF15
+\vl
+2015-04-22 12:27:48 u17bdxq CoralineBronsky Bossen en heiden inzetten voor stroomproduktie. Win-win voor mens en natuur! \#VJF15 \#Natuurmonumenten
+\vl
+2015-04-22 12:29:19 u17bdxq MerelVierling 'Niet terug naar, maar vooruit met de natuur' daar pleit @josdemul voor. \#VJF15
+\vl
+2015-04-22 12:35:01 u17bdxq kimcramer je elektrische auto wireless opladen terwijl je door het bos rijdt. elektriciteit opgewekt door bomen \#VJF15
+\vl
+2015-04-22 12:38:30 u17bdxq alexanderkoene 'wanhoop nooit aan vooruitgang' @MarcvandenTweel on stage \#VJF15 \#Natuurmonumenten
+\vl
+2015-04-22 12:41:46 u17bdxq alexanderkoene @FrankFlippo @andredonker veel wulps tulpengenot... nu ga ik heel anders naar bloemen kijken!
+\vl
+2015-04-22 12:44:11 u17bdxq alexanderkoene geluidswallen zijn binnenkort overbodig met opkomst van electrische autos, filosofeert @MarcvandenTweel \#VJF15 \#Natuurmonumenten
+\vl
+2015-04-22 12:46:27 u17bdxq CoralineBronsky Natuur als bondgenoot in het oplossen van maatschappelijke issues aldus @MarcvandenTweel \#VJF15 \#Natuurmonumenten
+\vl
+2015-04-22 12:52:34 u17bdxq alexanderkoene Natuurmonumenten vernieuwt ook door sociale innovatie.. 'back to the future' \#VJF15 @MarcvandenTweel
+}
+\end{framed}
+\end{figure}
+
+\begin{figure}[H]
+ \caption{\bf{Bijeenkomst} – Overdrachtsceremonie politievaandel.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-08 13:12:12 u17060u DesireeLorist Het \#Binnenhof maakt zich op voor de overdrachtsceremonie \#politievaandel > \#politiestandaard
+\vl
+2015-04-08 13:13:30 u17060u DesireeLorist ... En ondertussen ontvangen collega's, collega's uit het hele land, voor de manifestatie \#caopolitie \#vandersteurbekenkleur
+\vl
+2015-04-08 13:17:21 u17060u Arie\_denHeijer @cs1959 Straks overhandiging \#politiestandaard HM de koning
+\vl
+2015-04-08 13:24:48 u17060u AnoukPross De kudde vierbenigen is uitgebreid met een kudde tweebenigen vandaag \#koning \#politie \#binnenhof @…
+\vl
+2015-04-08 13:36:59 u17060g VorstenNL Koning Willem-Alexander is gearriveerd op het Binnenhof, tientallen agenten staan klaar voor overdracht van standaard
+\vl
+2015-04-08 13:44:00 u17060u VorstenNL Deze oude standaard, van KLPD, wordt zometeen ingeleverd. Omdat het nu Nationale Politie is, krijgen ze nieuwe.
+\vl
+2015-04-08 13:48:19 u17060u VorstenNL De koning wordt muzikaal begroet door de Nationale Politie voor de Ridderzaal
+\vl
+2015-04-08 13:58:08 u17060u VorstenNL De Standaard van het (niet meer bestaande) KLPD wordt ingeleverd. Nieuwe, voor Nationale Politie, gegeven door koning
+\vl
+2015-04-08 14:06:30 u17060u VorstenNL In zijn toespraak aan de Nationale Politie bespreekt de koning de taak van de politie en de nog korte geschiedenis
+\vl
+2015-04-08 14:46:18 u17060u VorstenNL Ruim half uur na gepland vertrek is koning Willem-Alexander nog aanwezig in Ridderzaal voor borrel Nationale Politie
+\vl
+2015-04-08 14:52:02 u17060u politieRdam\_C Zojuist heeft de koning een vaandel uitgereikt aan Gerard Bouwman, de korps chef van de Nationale…
+\vl
+2015-04-08 15:03:37 u17060u Sjinksie Net op het binnenhof weg staan branden tijdens de \#vaandeloverdracht Beetje verbrand nu.. \#oeps
+}
+\end{framed}
+\end{figure}
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Sport} – Emmen - Fortuna Sittard. Het begint goed, maar het vervolg mist...}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-03 19:27:34 u1kunp3 FortunaSittard We zijn gearriveerd in het stadion van Emmen. Klaar om de strijd aan te gaan met de plaatselijke FC. Opstelling komt eraan! \#EmmFor
+\vl
+2015-04-03 19:30:50 u1kunp3 FortunaSittard De basis is als volgt: Kaya; Turan, De Wit, Dengering, Janssen ; Briels, Mert, Overhof; Schroijen, Conneh, Vlijter. \#\#EmmFOR
+\vl
+2015-04-03 19:31:45 u1kunp3 FortunaSittard Op de bank zitten: Kis, Ter Borg, De Groot, Marveggio, Baur, Linssen en reservedoelman Daniëls. \#EmmFOR
+\vl
+2015-04-03 19:54:50 u1kunp3 FortunaSittard Een laatste sproeibeurt en dan kunnen we beginnen!! \#AANM \#EmmFOR
+\vl
+2015-04-03 20:26:33 u1kunp3 PeterMohlmann Mijn uitzicht vanavond: \#emmfor \#FCEmmen
+}
+\end{framed}
+\end{figure}
+
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Incident} – Met twitterende nieuwsbronnen gaat het wel eens mis... (door ``rook''?)}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-13 17:28:06 u1k6g22 rtvoost Groningers: "Zwolle ligt onder de rook van het prachtige Deventer" http://t.co/kgpTTDsVFp \#rtvoost http://t.co/4gXkLcKxWZ
+\vl
+2015-04-13 19:55:16 u1k6g23 rtvoostsport Al het nieuws rond de bekerfinale verzameld in dossier 'Bekerfinale PEC Zwolle' http://t.co/2hFlVz22O5 \#rtvoost
+\vl
+2015-04-13 19:56:05 u1k6g23 rtvoostsport UPDATE (foto): Al het nieuws rond de bekerfinale verzameld in dossier 'Bekerfinale PEC Zwolle' http://t.co/2hFlVz22O5 http://t.co/iEaquPtAwU
+}
+\end{framed}
+\end{figure}
+
+\begin{figure}[H]
+ \caption{\bf{Sport} – FC Marlene 1 - De Ruif, met kort daarna FC Marlene 2 - Knooppunt. Dit zijn twee wedstrijden van zaalvoetbalverenigingen.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-10 19:55:46 u177w71 FCMarlene Fcm2 tegen de Ruif 3 minuten onderweg aram scoort de 1-0 en 10 seconde later staan ze gelijk 10 seconde later scoort Kai 2-1
+\vl
+2015-04-10 20:21:11 u177w70 FCMarlene Nog 3 minuten en de Ruif zet de stand op 4-2
+\vl
+2015-04-10 20:42:22 u177w70 FCMarlene 2e helft is 4 minuten aan de gang stand 5-2 eigen doelpunt de Ruif
+\vl
+2015-04-10 21:09:17 u177w71 FCMarlene Fcm2 heeft de belangrijke 3 punten op zak en winnen met 7-2 van de Ruif. Klasse gefeliciteerd.
+\vl
+2015-04-10 21:21:19 u177w71 \_Paul\_Schoen Wedstrijd @FCMarlene - \#Knooppunt zal rond 21.35 - 21.40 beginnen. Nu nog ruim 12 min warming-up.
+\vl
+2015-04-10 21:35:01 u177w71 FCMarlene Fcm1 tegen het knooppunt gaat zo beginnen. Alleen winst is belangrijk
+\vl
+2015-04-10 21:39:57 u177w71 FCMarlene De mannen zijn er klaar voor http://t.co/b9ADm0fice
+\vl
+2015-04-10 21:58:35 u177w71 FCMarlene Nog 9.30 op de klok en knooppunt staat al op 4 overtredingen
+\vl
+2015-04-10 22:00:53 u177w71 FCMarlene De stand is weer gelijk eigen doelpunt Sander de zwart. Erg ongelukkig
+\vl
+2015-04-10 22:14:57 u177w71 FCMarlene In de laatste seconde voor rust 6e overtredingen van knooppunt. Hofkamp achter de bal en mist. Ruststand dus 1-1
+\vl
+2015-04-10 22:38:46 u177w71 FCMarlene Knooppunt zet de stand op 1-2
+\vl
+2015-04-10 22:44:09 u177w71 FCMarlene En zo komt de stand op 1-3 Door knooppunt
+\vl
+2015-04-10 22:47:23 u177w71 FCMarlene Nog 7.13 op de klok. Time out Knooppunt.
+\vl
+2015-04-10 22:52:16 u177w71 FCMarlene Goallll Roy huisman 4-3 heerlijk dit
+\vl
+2015-04-10 23:00:04 u177w71 FCMarlene Gele kaart voor knooppunt nog 50 seconden de kunnen ze het vast houden
+\vl
+2015-04-10 23:01:37 u177w71 FCMarlene Yes 3 punten zijn binnen eindstand 4-3 grote klasse
+}
+\end{framed}
+\end{figure}
+
+\vspace*{-17pt} 
+\begin{figure}[H]
+ \caption{\bf{Bijeenkomst} – Seminar ``Anders Organiseren''.}
+\vspace*{-10pt} 
+\begin{framed}
+\footnotesize{
+2015-04-23 13:20:45 u17b0e7 MgtboekEvents Van ME-economy naar WE-conomy! @arkovb nu aan het woord \#andersorganiseren @deBaak
+\vl
+2015-04-23 14:04:50 u17b0e7 annekevdijk68 \#andersorganiseren @daniellebraunOL: 'het ondertussen', de tijd tussen het oude en het nieuwe. Chaos, leren en vormen gebeurd hier!
+\vl
+2015-04-23 14:12:55 u17b0e7 annekevdijk68 'Als je in organisaties van klein naar groot denkt is variatie de standaard' @wouterhart bij \#andersorganiseren
+\vl
+2015-04-23 14:18:21 u17b0e4 MgtboekEvents Nu aan het woord: @HuibBroekhuis over \#beyondmba \#andersorganiseren
+\vl
+2015-04-23 14:46:00 u17b0e7 annekevdijk68 @HuibBroekhuis 'focus op winst leidt tot verlies' \#andersorganiseren
+\vl
+2015-04-23 14:50:36 u17b0e7 annekevdijk68 @HuibBroekhuis \#andersorganiseren: 'hoe het (beter) werkt'....
+\vl
+2015-04-23 16:50:48 u17b0e7 annekevdijk68 Na een dag over \#andersorganiseren geeft @basvanafas een fantastische afsluiting met echte praktijkvoorbeelden waar je wat aan hebt, top!
+}
+\end{framed}
+\end{figure}
+\newpage
+
 \bibliographystyle{apacite}
 \bibliography{bibliografie}
 \end{document}

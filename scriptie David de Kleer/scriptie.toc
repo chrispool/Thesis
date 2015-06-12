@@ -5,7 +5,7 @@
 \contentsline {section}{\numberline {2}Theoretisch kader}{4}{section.2}
 \contentsline {section}{\numberline {3}Methode: Van data tot detective}{6}{section.3}
 \contentsline {subsection}{\numberline {3.1}Verzamelen van data}{6}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}\texttt {EventCandidates}: Generatie van event candidates}{7}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}\texttt {EventCandidates}: Generatie van event candidates}{8}{subsection.3.2}
 \contentsline {subsubsection}{\numberline {3.2.1}\texttt {TweetPreprocessor}: Tweets representeren in Python}{8}{subsubsection.3.2.1}
 \contentsline {subsubsection}{\numberline {3.2.2}\texttt {ClusterCreator}: Tweets clusteren op GeoHash en tijd}{9}{subsubsection.3.2.2}
 \contentsline {subsubsection}{\numberline {3.2.3}\texttt {ClusterMerger}: Clusters samenvoegen en event candidates selecteren}{10}{subsubsection.3.2.3}
