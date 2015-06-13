@@ -15,6 +15,11 @@ class Annotator:
     def __init__(self, judge):
         self.dataSets = os.listdir('data/')
         self.judge = judge
+        self.people = int(input("Are there two people going to annotate (2), or are you on your own (1)? "))
+        if self.people == 1:
+            print("\nYou entered 1. Good luck! :-)\n")
+        else:
+            print("\nYou entered 2. Don't forget to run AnnotationEvaluation.py when you are done! Good luck! :-)\n")
         self.annotation = {}
         self.candidates = {}
         self._loadDataSet()
@@ -24,7 +29,7 @@ class Annotator:
     def _loadDataSet(self):
         for i, dataset in enumerate(self.dataSets):
             print("{}: {}".format(i, dataset))
-        choice = int(input("Select dataset: "))
+        choice = int(input("\nSelect dataset: "))
         
         self.datasetName = self.dataSets[choice]
 
@@ -63,20 +68,31 @@ class Annotator:
                     try:
                         choice = int(input('Event? ' + eventString))
                         if choice < 0 or choice > len(eventTypes)-1:
-                            print("Het nummer", choice, "representeert geen event.")
+                            print("The number", choice, "does not represent an event.")
                         else:
                             self.annotatedEvents[geohash][timestamp] = choice
                             if choice: # 0 is geen event, dus False
                                 nEvents += 1
                             break
                     except ValueError:
-                        print("Dit is geen nummer, probeer opnieuw.")
+                        print("This is not a number, please try again.")
                     
         print("{} out of {} event candidates are events.".format(nEvents, nCandidates))
 
     def _saveAnnotation(self):
         print("Saving annotated data...")
- 
+        
+        if self.people == 1:
+            # only 1 person annotating: no need to run AnnotationEvaluation, annotation
+            # and event candidates are automatically sanitized.
+            filenameSEC = 'data/' + self.datasetName + '/sanitizedEventCandidates.json'
+            with open(filenameSEC, 'w') as outfile:
+                json.dump(self.candidates, outfile)
+            
+            filenameSAN = 'data/' + self.datasetName + '/sanitizedAnnotation.json'
+            with open(filenameSAN, 'w') as outfile:
+                json.dump(self.annotatedEvents, outfile)
+                
         filenameA = 'data/' + self.datasetName + '/annotation_' + self.judge + '.json'
         with open(filenameA, 'w') as outfile:
             json.dump(self.annotatedEvents, outfile)
