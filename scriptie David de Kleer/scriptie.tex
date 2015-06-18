@@ -94,7 +94,7 @@ welke weer in categorie\"en zouden kunnen worden ingedeeld.
 Hierdoor is het voor anderen in de buurt mogelijk om op de hoogte te blijven van wat er zoal
 om hen heen gebeurt.
 \vl
-In deze scriptie wordt een \it{state-of-the-art}-benadering voor 
+In deze scriptie wordt een \it{state-of-the-art} benadering voor 
 \it{event detection} op Twitter gepresenteerd. Om gebeurtenissen of \it{events} te kunnen detecteren gebruiken we eerst een methode voor \it{spatio-temporal clustering}, waarbij 
 we verzamelde tweets (met locatie-informatie) clusteren binnen een bepaalde \it{GeoHash} (een locatie-representatie) en een bepaald
 tijdsinterval. Vervolgens delen we met behulp van \it{supervised learning} event candidates op in de categorie\"en \ttt{geen\_event}, 
@@ -105,7 +105,8 @@ tijdsinterval. Vervolgens delen we met behulp van \it{supervised learning} event
 \it{meta-informatie} van tweets, zoals locatie en tijd.
 Met name de eerste classifier blijkt behoorlijk goed te werken, deze behaalt 
 alleen al een \it{accuracy} van 81\%. In combinatie met de tweede classifier
-behalen we een accuracy van 84\%: dit is 38\% beter dan de \it{baseline} van 46\%. De gedetecteerde events worden gevisualiseerd met behulp
+behalen we een accuracy van 84\%: slechts 2\% lager dan de \it{upper bound} (onze eigen prestaties op een
+event detection taak) van 86\%. De gedetecteerde events worden gevisualiseerd met behulp
 van een \it{Google Map interface} met \it{markers} en verrijkt met staafdiagrammen en
 tweets zonder locatie-informatie.
 \vspace{\fill}
