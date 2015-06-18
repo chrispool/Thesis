@@ -14,7 +14,7 @@
 
 % table of contents op nieuwe pagina
 \newpage
-\tableofcontents
+\tableofcontents                                                
 
 % nieuwe pagina voor voorwoord
 \newpage
@@ -94,21 +94,18 @@ welke weer in categorie\"en zouden kunnen worden ingedeeld.
 Hierdoor is het voor anderen in de buurt mogelijk om op de hoogte te blijven van wat er zoal
 om hen heen gebeurt.
 \vl
-In deze scriptie presenteer ik een \it{state-of-the-art} benadering voor 
-\it{event detection} – oftewel de detectie van gebeurtenissen of \it{events} – 
-op Twitter. Hiervoor hebben we eerst
-gebruik gemaakt van een methode voor \it{spatio-temporal clustering}, waarbij 
-we verzamelde tweets (met locatie-informatie) clusteren binnen een bepaalde \it{GeoHash} (een locatie-representatie) en 
+In deze scriptie wordt een \it{state-of-the-art}-benadering voor 
+\it{event detection} op Twitter gepresenteerd. Om gebeurtenissen of \it{events} te kunnen detecteren gebruiken we eerst een methode voor \it{spatio-temporal clustering}, waarbij 
+we verzamelde tweets (met locatie-informatie) clusteren binnen een bepaalde \it{GeoHash} (een locatie-representatie) en een bepaald
 tijdsinterval. Vervolgens delen we met behulp van \it{supervised learning} event candidates op in de categorie\"en \ttt{geen\_event}, 
 \ttt{sport}, \ttt{bijeenkomst}, \ttt{entertainment},
-\ttt{incident} of \ttt{anders}. Hiervoor hebben we gebruik gemaakt van van twee
-(\it{Naive Bayes}) \it{classifiers}, waarbij de eerste classifier alleen 
-\it{word features}
-gebruikt en de tweede features meer gerelateerd zijn aan 
-\it{meta-informatie} van tweets.
+\ttt{incident} of \ttt{anders}, waarvoor we twee
+(\it{Naive Bayes}) \it{classifiers} gebruiken. De eerste classifier gebruikt alleen 
+\it{word features}. De features van de tweede classifier zijn meer gerelateerd aan 
+\it{meta-informatie} van tweets, zoals locatie en tijd.
 Met name de eerste classifier blijkt behoorlijk goed te werken, deze behaalt 
 alleen al een \it{accuracy} van 81\%. In combinatie met de tweede classifier
-behalen we een accuracy van 84\%. Events worden gevisualiseerd met behulp
+behalen we een accuracy van 84\%: dit is 38\% beter dan de \it{baseline} van 46\%. De gedetecteerde events worden gevisualiseerd met behulp
 van een \it{Google Map interface} met \it{markers} en verrijkt met staafdiagrammen en
 tweets zonder locatie-informatie.
 \vspace{\fill}
@@ -1055,7 +1052,7 @@ door de hoeveelheid goed geclassificeerde event candidates te delen door de tota
 features (inclusief \it{precision}, \it{recall} en \it{f1-score} per categorie), zie tabel \ref{bijlagedevtest} in de bijlage (\ref{bijlage}). 
 \vl
 In de TEST (\ttt{./ClassifierCreator -test}) hebben we met 3 verschillende classifiers getest: \it{Naive Bayes}, \it{Maximum Entropy} en
-\it{SVM}\footnote{\it{Support Vector Machine}}, zie tabel \ref{testclassifiers}. De classifiers presteerden allemaal net iets boven de 80\%, maar Naive Bayes
+\it{SVM}, zie tabel \ref{testclassifiers}. De classifiers presteerden allemaal net iets boven de 80\%, maar Naive Bayes
 presteerde het beste met een accuracy van 84\%. In tabel \ref{naivebayes} staat de confusion matrix van de Naive Bayes classifier.
 
 \begin{table}[H]
@@ -1093,7 +1090,7 @@ presteerde het beste met een accuracy van 84\%. In tabel \ref{naivebayes} staat 
 
 Omdat we de individuele bijdrage van de verschillende features in de TEST wilden beoordelen, hebben we afzonderlijk met deze features getest,
 zie tabel \ref{testfeatures} (en tabel \ref{bijlagetest} in de bijlage (\ref{bijlage}) voor de bijbehorende precision, recall en f1-score per
-categorie). In tabel \ref{testfeatures} staan ook de \it{baseline performance} (iedere event candidate is geen event) en de \it{upper bound} (menselijke
+categorie). In tabel \ref{testfeatures} staan ook de \it{baseline performance} (elke event candidate is geen event) en de \it{upper bound} (menselijke
 (onze) prestaties op een event dection taak) gebaseerd op de accuracy van onze annotatie.
 
 \begin{table}[H]
@@ -1236,7 +1233,7 @@ wordOverlapUser, category & 0.82     & 0.86 0.83 0.85 & 0.77 0.49 0.60 & 0.00 0.
 
 \vspace*{\fill}
 \lstset{basicstyle=\footnotesize\fontfamily{pxtt}\selectfont, keywordstyle=\footnotesize\fontfamily{pxtt}\selectfont}
-\begin{lstlisting}[label=commandos,caption=Een recept met commando's voor event detection met het EventDetective-systeem. 
+\begin{lstlisting}[label=commandos,caption=Een ``recept'' met commando's voor event detection met het EventDetective-systeem. 
 OPMERKING: In data/dataset staan de door ons getrainde classifiers. Een aantal commando's hieronder zijn vooral bedoeld voor mensen
 die hun eigen event detection classifiers willen trainen!]
 # Voor de volgende commando's wordt aangenomen dat een gebruiker in de hoofdmap van de 
