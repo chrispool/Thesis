@@ -1,25 +1,30 @@
 \contentsline {section}{\numberline {1}Introduction}{7}{section.1}
 \contentsline {section}{\numberline {2}Related literature}{8}{section.2}
-\contentsline {section}{\numberline {3}Method}{9}{section.3}
-\contentsline {subsection}{\numberline {3.1}Clustering}{9}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Classification}{11}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Named Entity Recognition}{11}{subsection.3.3}
-\contentsline {section}{\numberline {4}Experiment and Evaluation}{12}{section.4}
-\contentsline {subsection}{\numberline {4.1}System architecture}{12}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Data collection}{13}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Creating Event Candidates}{13}{subsection.4.3}
-\contentsline {paragraph}{TweetPreprocessor.py}{13}{subsection.4.3}
-\contentsline {paragraph}{ClusterCreator.py}{14}{lstnumber.2.8}
-\contentsline {paragraph}{ClusterMerger.py}{15}{lstnumber.4.21}
-\contentsline {paragraph}{EventCandidates.py}{16}{lstnumber.5.19}
-\contentsline {subsection}{\numberline {4.4}Annotation}{17}{subsection.4.4}
-\contentsline {subsection}{\numberline {4.5}Training classifiers}{18}{subsection.4.5}
-\contentsline {subsubsection}{\numberline {4.5.1}Feature selection}{19}{subsubsection.4.5.1}
-\contentsline {subsubsection}{\numberline {4.5.2}Results event detection}{21}{subsubsection.4.5.2}
-\contentsline {subsection}{\numberline {4.6}Event Detective}{22}{subsection.4.6}
-\contentsline {subsection}{\numberline {4.7}Named Entity Recognition}{22}{subsection.4.7}
-\contentsline {subsubsection}{\numberline {4.7.1}Data collection}{23}{subsubsection.4.7.1}
-\contentsline {subsubsection}{\numberline {4.7.2}Training}{23}{subsubsection.4.7.2}
-\contentsline {subsubsection}{\numberline {4.7.3}Results}{23}{subsubsection.4.7.3}
-\contentsline {section}{\numberline {5}Conclusion and discussion}{24}{section.5}
-\contentsline {section}{\numberline {6}Appendix}{25}{section.6}
+\contentsline {section}{\numberline {3}Data en Method}{10}{section.3}
+\contentsline {subsection}{\numberline {3.1}Data collection}{10}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Pipeline}{10}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Clustering}{11}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}Classification}{12}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.3}Named Entity Recognition}{13}{subsubsection.3.2.3}
+\contentsline {subsection}{\numberline {3.3}Evaluation}{13}{subsection.3.3}
+\contentsline {section}{\numberline {4}Implementation and results}{14}{section.4}
+\contentsline {subsection}{\numberline {4.1}System architecture}{14}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Creating Event Candidates}{15}{subsection.4.2}
+\contentsline {paragraph}{TweetPreprocessor.py}{15}{subsection.4.2}
+\contentsline {paragraph}{ClusterCreator.py}{15}{lstnumber.2.8}
+\contentsline {paragraph}{ClusterMerger.py}{15}{lstnumber.3.1}
+\contentsline {paragraph}{EventCandidates.py}{16}{lstnumber.4.19}
+\contentsline {subsection}{\numberline {4.3}Annotation}{17}{subsection.4.3}
+\contentsline {paragraph}{Annotator.py}{17}{subsection.4.3}
+\contentsline {paragraph}{AnnotationEvaluation.py}{17}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Training classifiers}{18}{subsection.4.4}
+\contentsline {subsubsection}{\numberline {4.4.1}Feature selection}{19}{subsubsection.4.4.1}
+\contentsline {subsubsection}{\numberline {4.4.2}Results event detection}{20}{subsubsection.4.4.2}
+\contentsline {subsection}{\numberline {4.5}Event Detective}{20}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Named Entity Recognition}{20}{subsection.4.6}
+\contentsline {subsubsection}{\numberline {4.6.1}Data collection}{21}{subsubsection.4.6.1}
+\contentsline {subsubsection}{\numberline {4.6.2}Training}{22}{subsubsection.4.6.2}
+\contentsline {subsubsection}{\numberline {4.6.3}Results}{22}{subsubsection.4.6.3}
+\contentsline {section}{\numberline {5}Conclusion and discussion}{23}{section.5}
+\contentsline {section}{\numberline {6}Appendix 1}{24}{section.6}
+\contentsline {section}{\numberline {7}Appendix 2}{25}{section.7}

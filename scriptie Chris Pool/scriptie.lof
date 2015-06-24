@@ -1,5 +1,6 @@
 \deactivateaddvspace 
-\contentsline {figure}{\numberline {1}{\ignorespaces Geohash\relax }}{9}{figure.caption.3}
-\contentsline {figure}{\numberline {2}{\ignorespaces Geohash border case\relax }}{15}{figure.caption.5}
-\contentsline {figure}{\numberline {3}{\ignorespaces Annotation tool\relax }}{17}{figure.caption.7}
-\contentsline {figure}{\numberline {4}{\ignorespaces NER example\relax }}{23}{figure.caption.15}
+\contentsline {figure}{\numberline {1}{\ignorespaces Tweets with geo-information (\citealt {rios})\relax }}{8}{figure.caption.3}
+\contentsline {figure}{\numberline {2}{\ignorespaces Pipeline\relax }}{10}{figure.caption.4}
+\contentsline {figure}{\numberline {3}{\ignorespaces Geohash\relax }}{11}{figure.caption.5}
+\contentsline {figure}{\numberline {4}{\ignorespaces Geohash border case\relax }}{16}{figure.caption.7}
+\contentsline {figure}{\numberline {5}{\ignorespaces Division dataset\relax }}{18}{figure.caption.11}

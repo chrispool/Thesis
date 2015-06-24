@@ -3,44 +3,46 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: scriptie.aux
 The style file: authordate1.bst
 Database file #1: chris.bib
-You've used 7 entries,
+Warning--empty journal in allan1998topic
+You've used 13 entries,
             2441 wiz_defined-function locations,
-            610 strings with 5504 characters,
-and the built_in function-call counts, 3156 in all, are:
-= -- 321
-> -- 98
-< -- 27
-+ -- 28
-- -- 28
-* -- 222
-:= -- 485
-add.period$ -- 32
-call.type$ -- 7
-change.case$ -- 44
-chr.to.int$ -- 7
-cite$ -- 7
-duplicate$ -- 131
-empty$ -- 242
-format.name$ -- 36
-if$ -- 696
+            642 strings with 6337 characters,
+and the built_in function-call counts, 5282 in all, are:
+= -- 525
+> -- 191
+< -- 47
++ -- 57
+- -- 55
+* -- 393
+:= -- 854
+add.period$ -- 56
+call.type$ -- 13
+change.case$ -- 82
+chr.to.int$ -- 13
+cite$ -- 14
+duplicate$ -- 209
+empty$ -- 381
+format.name$ -- 70
+if$ -- 1118
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 6
-newline$ -- 42
-num.names$ -- 21
-pop$ -- 48
+missing$ -- 13
+newline$ -- 72
+num.names$ -- 39
+pop$ -- 88
 preamble$ -- 1
-purify$ -- 51
+purify$ -- 95
 quote$ -- 0
-skip$ -- 144
+skip$ -- 227
 stack$ -- 0
-substring$ -- 205
-swap$ -- 52
+substring$ -- 298
+swap$ -- 64
 text.length$ -- 4
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 52
-warning$ -- 0
-while$ -- 24
+type$ -- 96
+warning$ -- 1
+while$ -- 38
 width$ -- 0
-write$ -- 94
+write$ -- 167
+(There was 1 warning)

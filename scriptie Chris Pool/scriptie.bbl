@@ -7,11 +7,30 @@ Alan~Ritter, Sam~Clark, Mausam, \& Etzioni, Oren. 2011.
   on Empirical Methods in Natural Language Processing}.
 \newblock Computer Science and Engineering, University of Washington.
 
+\bibitem[\protect\citename{Allan {\em et~al.\ }\relax, }1998]{allan1998topic}
+Allan, James, Carbonell, Jaime~G, Doddington, George, Yamron, Jonathan, \&
+  Yang, Yiming. 1998.
+\newblock Topic detection and tracking pilot study final report.
+
+\bibitem[\protect\citename{Ashwini \& Choi, }2014]{ashwini2014targetable}
+Ashwini, Sandeep, \& Choi, Jinho~D. 2014.
+\newblock Targetable Named Entity Recognition in Social Media.
+\newblock {\em arXiv preprint arXiv:1408.0782}.
+
+\bibitem[\protect\citename{Birant \& Kut, }2007]{birant2007st}
+Birant, Derya, \& Kut, Alp. 2007.
+\newblock ST-DBSCAN: An algorithm for clustering spatial--temporal data.
+\newblock {\em Data \& Knowledge Engineering}, {\bf 60}(1), 208--221.
+
 \bibitem[\protect\citename{Dawson, }2012]{dawson}
 Dawson, R. 2012.
-\newblock {\em Which countries have the most Twitter users per
-  capita?[online]}.
+\newblock {\em Which countries have the most Twitter users per capita?}
 \newblock [Online; accessed 3-June-2015].
+
+\bibitem[\protect\citename{Han {\em et~al.\ }\relax, }2006]{han2006data}
+Han, Jiawei, Kamber, Micheline, \& Pei, Jian. 2006.
+\newblock {\em Data mining, southeast asia edition: Concepts and techniques}.
+\newblock Morgan kaufmann.
 
 \bibitem[\protect\citename{Liu {\em et~al.\ }\relax, }2011]{liu2011ner}
 Liu, X., Zhang, S., Wei, F., \& Zhou, M. 2011.
@@ -20,6 +39,18 @@ Liu, X., Zhang, S., Wei, F., \& Zhou, M. 2011.
   Meeting of the Association for Computational Linguistics: Human Language
   Technologies-Volume 1}.
 \newblock Computer Science and Engineering, University of Washington.
+
+\bibitem[\protect\citename{Manning {\em et~al.\ }\relax,
+  }2008]{manning2008introduction}
+Manning, Christopher~D, Raghavan, Prabhakar, \& Sch{\"u}tze, Hinrich. 2008.
+\newblock {\em Introduction to information retrieval}.
+\newblock  Vol. 1.
+\newblock Cambridge university press Cambridge.
+
+\bibitem[\protect\citename{Ríos, }2014]{rios}
+Ríos, Miguel. 2014.
+\newblock {\em The geography of Tweets}.
+\newblock [Online; accessed 7-June-2015].
 
 \bibitem[\protect\citename{Sakaki {\em et~al.\ }\relax,
   }2010]{sakaki2010earthquake}
