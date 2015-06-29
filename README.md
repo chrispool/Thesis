@@ -52,7 +52,7 @@ If you are done annotating, take a deep breath and start training classifiers. J
 and select a dataset with event candidates and annotations. An important note is that you will need two datasets
 to be able to save the actual classifiers (or whatever, just cheat and remove `if self.realTest:` on line 53): one to train
 (your `DEVTEST` dataset) and one to test (your `TEST` dataset). The classifiers will be saved in the folder of the 
-selected dataset.
+`DEVTEST` dataset.
 
 ### Time for the detective
 
@@ -61,6 +61,72 @@ map! If you have created a dataset containing new event candidates with `EventCa
 
 `./EventDetective.py`
 
-and first select the dataset with your trained classifiers and then the new dataset. 
+and first select the `DEVTEST` dataset with your trained classifiers and then the new dataset. 
 
 And now... have a look at `vis/map/chart.html` and watch the magic ^_^
+
+<!--
+VOORBEELDCOMMANDO'S (Of zie Listing 1 van "scriptie David de Kleer/scriptie.pdf")
+
+# Voor de volgende commando's wordt aangenomen dat een gebruiker in de hoofdmap van de
+# repository https://github.com/chrispool/Thesis is en de toegang heeft tot de Karora−
+# server van de Rijksuniversiteit Groningen.
+Chris_Thesis$ cd corpus/
+
+# verbinden met Karora
+Chris_Thesis/corpus$ ssh s_of_p_nummer@bastion.service.rug.nl
+bastion:~$ ssh s_of_p_nummer@karora.let.rug.nl
+
+# "speelgoed"−traindata (tweets van 10 juni) verzamelen
+karora:~$ zcat /net/corpora/twitter2/Tweets/2015/06/20150610???.out.gz | /net/corpora/twitter2/
+tools/tweet2tab −i text coordinates user date | grep −P "^[^\t]+\t[^\t]+" > june10_train.txt
+
+# "speelgoed"−testdata (tweets van 11 juni) verzamelen
+karora:~$ zcat /net/corpora/twitter2/Tweets/2015/06/20150611???.out.gz | /net/corpora/twitter2/
+tools/tweet2tab −i text coordinates user date | grep −P "^[^\t]+\t[^\t]+" > june11_test.txt
+
+# zet de data over naar eigen computer
+karora:~$ exit
+bastion:~$ sftp s_of_p_nummer@karora.let.rug.nl
+sftp> get june10_train.txt
+sftp> get june11_test.txt
+sftp> exit
+bastion:~$ exit
+Chris_Thesis/corpus$ sftp s_of_p_nummer@bastion.service.rug.nl
+sftp> get june10_train.txt
+sftp> get june11_test.txt
+sftp> exit
+Chris_Thesis/corpus$ cd ..
+
+# event candidates van corpus/june10_train.txt verzamelen in een dataset genaamd june10
+Chris_Thesis$ ./EventCandidates.py corpus/june10_train.txt june10
+
+# event candidates van corpus/june11_test.txt verzamelen in een dataset genaamd june11
+Chris_Thesis$ ./EventCandidates.py corpus/june11_test.txt june11
+
+# Annoteren voor annotator David. Voer het nummer van dataset june10 in, daarna voor iedere
+# event candidate het nummer van de categorie waar deze het beste onder past.
+#
+# Herhaal annotatie voor de testset en voer eerst het nummer van dataset june11 in.
+#
+# Wanneer er sprake is van twee annotatoren moet de annotatie vanzelfsprekend worden
+# herhaald voor een andere annotator, en moet vervolgens ./AnnotationEvaluation.py
+# worden uitgevoerd (voor de kappa−score en het samenvoegen van de annotaties).
+Chris_Thesis$ ./Annotator.py David
+
+# DEVTEST met de trainset (willekeurige 80/20 split), voer het nummer van dataset june10 in.
+Chris_Thesis$ ./ClassifierCreator.py
+
+# TEST met de train− en testset. Voer de nummers van dataset june10 (trainset) in om te trainen
+# en het nummer van dataset june11 (testset) om te testen. De classifiers worden weggeschreven
+# naar data/june10/categoryClassifier.bin en data/june10/eventClassifier.bin.
+Chris_Thesis$ ./ClassifierCreator.py −test
+
+# Nu kunnen events worden gedetecteerd met EventDetective.py (gewone Google Map met markers)
+# OF EventDetectiveChart.py (Google Map met markers en staafdiagram). Voer eerst het nummer
+# van dataset june10 in, vervolgens het nummer van een dataset met event candidates.
+Chris_Thesis$ ./EventDetective (of ./EventDetectiveChart.py)
+
+# Open /vis/map/map.html voor een visualisatie van de gedetecteerde events.
+Chris_Thesis$ firefox vis/map/map.html &
+-->
